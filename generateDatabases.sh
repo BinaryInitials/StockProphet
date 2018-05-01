@@ -4,7 +4,7 @@ if [ -e generateIndexes.jar ]; then
 	echo "Recycling generateIndexes.jar..."
 else
 	echo "Compiling generateIndexes.jar..."
-	build-index-generator.sh
+	./build-index-generator.sh
 fi
 
 tic=`date +%s`
