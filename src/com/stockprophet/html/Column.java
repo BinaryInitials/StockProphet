@@ -1,23 +1,23 @@
 package com.stockprophet.html;
 
 public enum Column {
-	RANK(false, null, null, true),
+	RANKING(false, null, null, true),
 	DIFF(false, null, null, true),
-	SYMBOL(false, null, null, false),
+	SYMB(false, null, null, false),
 	COMPANY(false, null, null, false),
 	SCORE(true, 0, 100, true),
 	ALGO(true, 0, 100, true),
 	RIGID(true, 0, 100, true),
-	TURBUL(true, 0, 100, true),
+	TURB(true, 0, 100, true),
 	MONTH1(true, -99, 99, true),
 	MONTH3(true, -99, 99, true),
 	MONTH6(true, -999,999, true),
 	YEAR1(true, -999,999, true),
 	MOMENT(true, -99, 99, true),
 	INERT(true, -99, 99, true),
-	STAB(true, 0, 100, true),
-	CONF(true, 0, 100, true),
-	CONSIST(true, 0, 100, true);
+	STAB(true, 0, 99, true),
+	CONF(true, 0, 99, true),
+	CONS(true, 0, 99, true);
 	
 	private boolean isFilterable;
 	private boolean isNumber;

@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,10 +17,6 @@ public class GeneratePhp {
 	public static final int DIFF_INDEX = 1;
 	public static final int SYMBOL_INDEX = 2;
 	public static final int COMPANY_INDEX = 3;
-	
-	
-	public static final String[] DAYS = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
-	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 	
 	public static void write(List<HashMap<Column, String>> data) {
 		File file = new File("index.php");
@@ -43,19 +41,80 @@ public class GeneratePhp {
 			buffer.write("<html>\n");
 			buffer.write("<head>\n");
 			buffer.write("<title> STOCK PROPHET </title>\n");
-			buffer.write("<link rel=\"stylesheet\" href=\"css/cssFile.css\" />\n");
-			buffer.write("<link rel=\"stylesheet\" href=\"css/c12_2.css\" />\n");
-			buffer.write("<link rel=\"stylesheet\" href=\"css/index.css\" />\n");
-			buffer.write("<link rel=\"stylesheet\" href=\"css/prettify.css\"/>\n");
-			buffer.write("<link rel=\"stylesheet\" href=\"css/ranking.css\"/>\n");
+			List<String> cssFiles = getWebFiles(WebFileType.CSS);
+			for(String cssFile : cssFiles)
+				buffer.write("<link rel=\"stylesheet\" href=\"css/"+ cssFile + "\" />\n");
+
+			
+			buffer.write("<style>\n");
+			buffer.write(".tooltip {\n");
+			buffer.write("position: relative;\n");
+			buffer.write("display: inline-block;\n");
+			buffer.write("border-bottom: 1px dotted black;\n");
+			buffer.write("}\n");
+			buffer.write(".tooltip .tooltiptext {\n");
+			buffer.write("visibility: hidden;\n");
+			buffer.write("width: 120px;\n");
+			buffer.write("background-color: #555;\n");
+			buffer.write("color: #fff;\n");
+			buffer.write("text-align: center;\n");
+			buffer.write("border-radius: 6px;\n");
+			buffer.write("padding: 5px 0;\n");
+			buffer.write("position: absolute;\n");
+			buffer.write("z-index: 1;\n");
+			buffer.write("bottom: 125%;\n");
+			buffer.write("left: 50%;\n");
+			buffer.write("margin-left: -60px;\n");
+			buffer.write("opacity: 0;\n");
+			buffer.write("transition: opacity 0.3s;\n");
+			buffer.write("}\n");
+			buffer.write(".tooltip .tooltiptext::after {\n");
+			buffer.write("content: \"\";\n");
+			buffer.write("position: absolute;\n");
+			buffer.write("top: 100%;\n");
+			buffer.write("left: 50%;\n");
+			buffer.write("margin-left: -5px;\n");
+			buffer.write("border-width: 5px;\n");
+			buffer.write("border-style: solid;\n");
+			buffer.write("border-color: #555 transparent transparent transparent;\n");
+			buffer.write("}\n");
+			buffer.write(".tooltip:hover .tooltiptext {\n");
+			buffer.write("visibility: visible;\n");
+			buffer.write("opacity: 1;\n");
+			buffer.write("}\n");
+			buffer.write("</style>\n");
+			
+			buffer.write("<style>\n");
+			buffer.write("body {\n");
+			buffer.write("margin: 0;\n");
+			buffer.write("font-family: Arial;\n");
+			buffer.write("}\n");
+			buffer.write(".top-container {\n");
+			buffer.write("background-color: #f1f1f1;\n");
+			buffer.write("background: linear-gradient(180deg, #666666, #999999);\n");
+			buffer.write("padding: 30px;\n");
+			buffer.write("}\n");
+			buffer.write(".header {\n");
+			buffer.write("padding: 10px 16px;\n");
+			buffer.write("background: #f1f1f1;\n");
+			buffer.write("background: linear-gradient(180deg, #777777, #F1F1F1);\n");
+			buffer.write("color: #f1f1f1;\n");
+			buffer.write("}\n");
+			buffer.write(".content {\n");
+			buffer.write("}\n");
+			buffer.write(".sticky {\n");
+			buffer.write("position: fixed;\n");
+			buffer.write("top: 0;\n");
+			buffer.write("width: 100%;\n");
+			buffer.write("}\n");
+			buffer.write(".sticky + .content {\n");
+			buffer.write("padding-top: 320px;\n");
+			buffer.write("}\n");
+			buffer.write("</style>\n");
+
 			buffer.write("</head>\n");
 			buffer.write("<body>\n");
-			buffer.write("<br>\n");
-			buffer.write("<br>\n");
-			
-			buffer.write("<label2 id=\"header\">STOCK PROPHET</label2>\n");
-			buffer.write("<font color=\"#333333\">" + formatTimestamp(timestamp) + "</font>\n");
-			buffer.write("<br><font color=\"#AACCFF\">" + formatTimestamp2(timestamp) + "</font>\n");
+			buffer.write("<div class=\"header\" id=\"myHeader\">\n");
 			buffer.write("<ul>\n");
 			
 			buffer.write("<table id=\"setting-table\">\n");
@@ -85,7 +144,8 @@ public class GeneratePhp {
 			buffer.write("</table>\n");
 			
 			buffer.write("<div>\n");
-			buffer.write("<input id=\"checkboxId\" type=\"checkbox\" onclick=\"resetValues()\" name=\"resetFilterValues\"/>Reset Values\n");
+			String cleanTimestamp = formatTimestamp2(timestamp); 
+			buffer.write("<input id=\"checkboxId\" type=\"checkbox\" onclick=\"resetValues()\" name=\"resetFilterValues\"/><div class=\"tooltip\">Reset Values<span class=\"tooltiptext\">Generated on " + cleanTimestamp + "</span></div>\n");
 			buffer.write("</div>");
 			
 			buffer.write("<br>\n");
@@ -93,7 +153,9 @@ public class GeneratePhp {
 			buffer.write("<div id=\"search\">\n");
 			buffer.write("<input type=\"text\" size=\"2\" placeholder=\"Search...\" onkeyup=\"search()\" id=\"filter-search\" style=\"width: 500px;\"/>\n");
 			buffer.write("</div>\n");
+			buffer.write("</div>\n");
 			
+			buffer.write("<div class=\"content\">\n");
 			buffer.write("<table id=\"myTable\" class=\"sortable\">");
 			
 			String tableHeader = "<thead><tr>";
@@ -123,7 +185,7 @@ public class GeneratePhp {
 				
 				String tableRow = "<tr>";
 				int columnIndex=0;
-				String symbol = data.get(row).get(Column.SYMBOL);
+				String symbol = data.get(row).get(Column.SYMB);
 				for(Column column : Column.values()){
 					if(columnIndex == RANK_INDEX){
 						tableRow += "<td  class=\"tbl-prevrank-icon\" style=\"background-color: #" + convertToColor(color) +  "\">" + (row+1) + "    <span class=\"rank-" + rankQualifier + "\" />" + "</td>";
@@ -251,8 +313,25 @@ public class GeneratePhp {
 			buffer.write("}\n");
 			buffer.write("</script>\n");
 			
-			buffer.write("<script src=\"js/jquery-1.11.0.js\"></script>\n");
-			buffer.write("<script src=\"js/sort-table.js\"></script>\n");
+			
+			buffer.write("<script>\n");
+			buffer.write("window.onscroll = function() {myFunction()};\n");
+			buffer.write("var header = document.getElementById(\"myHeader\");\n");
+			buffer.write("var sticky = header.offsetTop;\n");
+			buffer.write("function myFunction() {\n");
+			buffer.write("if (window.pageYOffset >= sticky) {\n");
+			buffer.write("header.classList.add(\"sticky\");\n");
+			buffer.write("} else {\n");
+			buffer.write("header.classList.remove(\"sticky\");\n");
+			buffer.write("}\n");
+			buffer.write("}\n");
+			buffer.write("</script>\n");
+
+			
+			List<String> jsFiles = getWebFiles(WebFileType.JS);
+			Collections.sort(jsFiles);
+			for(String jsFile : jsFiles)
+				buffer.write("<script src=\"js/" + jsFile + "\"></script>\n");
 
 			buffer.write("</tbody>\n");
 			buffer.write("</table>\n");
@@ -264,11 +343,6 @@ public class GeneratePhp {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	private static String formatTimestamp(Date date){
-		return DAYS[(date.getDay())] + ", " + MONTHS[date.getMonth()] + " " + date.getDate() + ", " + (date.getYear() + 1900);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -332,5 +406,18 @@ public class GeneratePhp {
 		int gray = (int)Math.round(-metric*250);
 		return new int[]{gray, gray, gray};
 	}
-
+	enum WebFileType {
+		CSS,
+		JS
+	}
+	
+	private static List<String> getWebFiles(WebFileType wbf){
+		String extension = wbf.toString().toLowerCase();
+		File folder = 	new File(extension + "/");
+		List<String> files = new ArrayList<String>();
+		for(File file : folder.listFiles())
+			if(file.isFile() && file.getName().endsWith(extension))
+				files.add(file.getName().replaceAll(".*/", ""));
+		return files;
+	}
 }

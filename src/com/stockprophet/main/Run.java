@@ -67,14 +67,14 @@ public class Run {
 		//Overall ranking
 		HashMap<String, Integer> totalRank = new HashMap<String, Integer>();
 		for (HashMap<Column, String> row : columnsToday)
-			totalRank.put(row.get(Column.SYMBOL),0);
+			totalRank.put(row.get(Column.SYMB),0);
 		for(Column column : Column.values())
-			if(column != Column.RANK && column != Column.COMPANY && column != Column.SYMBOL && column != Column.DIFF && column != Column.SCORE && column != Column.MOMENT && column != Column.INERT){
+			if(column != Column.RANKING && column != Column.COMPANY && column != Column.SYMB && column != Column.DIFF && column != Column.SCORE && column != Column.MOMENT && column != Column.INERT){
 				System.out.println("RANKING " + column.toString());
 				List<HashMap<String, String>> entries = new ArrayList<HashMap<String, String>>();
 				for(HashMap<Column, String> row : columnsToday){
 					HashMap<String, String> entrie = new HashMap<String, String>();
-					entrie.put("KEY", row.get(Column.SYMBOL));
+					entrie.put("KEY", row.get(Column.SYMB));
 					entrie.put("VALUE", row.get(column));
 					entries.add(entrie);
 				}
@@ -99,35 +99,35 @@ public class Run {
 		Collections.sort(columnsYesterday, CustomComparators.StockComparator);
 		
 		for(int i=0;i<columnsYesterday.size();i++)
-			yesterdaysRank.put(columnsYesterday.get(i).get(Column.SYMBOL), i);
+			yesterdaysRank.put(columnsYesterday.get(i).get(Column.SYMB), i);
 		
 		for(int i=0;i<columnsToday.size();i++)
-			if(yesterdaysRank.containsKey(columnsToday.get(i).get(Column.SYMBOL)))
-				stockRankDiff.put(columnsToday.get(i).get(Column.SYMBOL), yesterdaysRank.get(columnsToday.get(i).get(Column.SYMBOL))-i);
+			if(yesterdaysRank.containsKey(columnsToday.get(i).get(Column.SYMB)))
+				stockRankDiff.put(columnsToday.get(i).get(Column.SYMB), yesterdaysRank.get(columnsToday.get(i).get(Column.SYMB))-i);
 
 		System.out.println("YESTERDAY");
 		for(int rank=0;rank<20;rank++)
 			System.out.println((rank+1) + "\t" + 
-					columnsYesterday.get(rank).get(Column.SYMBOL) + "\t" +
+					columnsYesterday.get(rank).get(Column.SYMB) + "\t" +
 					columnsYesterday.get(rank).get(Column.ALGO) + "\t" +
 					columnsYesterday.get(rank).get(Column.RIGID) + "\t" +
-					columnsYesterday.get(rank).get(Column.TURBUL) + "\t" +
+					columnsYesterday.get(rank).get(Column.TURB) + "\t" +
 					columnsYesterday.get(rank).get(Column.YEAR1)
 					);
 		
 		System.out.println("TODAY");
 		for(int rank=0;rank<20;rank++)
 			System.out.println((rank+1) + "\t" + 
-					columnsToday.get(rank).get(Column.SYMBOL) + "\t" +
+					columnsToday.get(rank).get(Column.SYMB) + "\t" +
 					columnsToday.get(rank).get(Column.ALGO) + "\t" +
 					columnsToday.get(rank).get(Column.RIGID) + "\t" +
-					columnsToday.get(rank).get(Column.TURBUL) + "\t" +
+					columnsToday.get(rank).get(Column.TURB) + "\t" +
 					columnsToday.get(rank).get(Column.YEAR1)
 					);
 		
 		for(int rank=0;rank<columnsToday.size();rank++){
-			columnsToday.get(rank).put(Column.DIFF, "" + stockRankDiff.get(columnsToday.get(rank).get(Column.SYMBOL)));
-			columnsToday.get(rank).put(Column.RANK, "" + (rank+1));
+			columnsToday.get(rank).put(Column.DIFF, "" + stockRankDiff.get(columnsToday.get(rank).get(Column.SYMB)));
+			columnsToday.get(rank).put(Column.RANKING, "" + (rank+1));
 		}
 		System.out.println("4. Generation Website");
 		GeneratePhp.write(columnsToday);
@@ -139,7 +139,7 @@ public class Run {
 
 	public static HashMap<Column, String> populateColumns(Stock stock, int startingPoint){
 		HashMap<Column, String> columns = new HashMap<Column, String>();
-		columns.put(Column.SYMBOL, stock.getSymbol());
+		columns.put(Column.SYMB, stock.getSymbol());
 		columns.put(Column.COMPANY, truncate(stock.getCompany()));
 
 		List<Double> prices = stock.getPrices().subList(startingPoint, ONE_YEAR-1+startingPoint);
@@ -152,12 +152,11 @@ public class Run {
 		columns.put(Column.SCORE, "" + 100*score);
 		columns.put(Column.ALGO, "" + 100*metricMap.get(CalculatedMetricType.ALGO_SCORE));
 		columns.put(Column.RIGID, "" + 100*metricMap.get(CalculatedMetricType.RIGIDITY_SCORE));
-		columns.put(Column.TURBUL, "" + 100*metricMap.get(CalculatedMetricType.TURBULANCE_SCORE));
+		columns.put(Column.TURB, "" + 100*metricMap.get(CalculatedMetricType.TURBULANCE_SCORE));
 		
 		columns.put(Column.MONTH1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 20))); 
 		columns.put(Column.MONTH3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 60))); 
 		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
-		
 		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices)); 
 		
 		List<Double> clone = new ArrayList<>();
@@ -183,15 +182,13 @@ public class Run {
 		columns.put(Column.MOMENT, "" + 100*(3*coefs.get(3)*subprices.size()*subprices.size() + 2 * coefs.get(2) * subprices.size() + coefs.get(1)));
 		columns.put(Column.INERT, "" + 1000*(6*coefs.get(3)*subprices.size() + 2 * coefs.get(2)));
 		columns.put(Column.STAB, "" + 100*lengthNormalized);
-		columns.put(Column.CONSIST, ""+ 100*consistency);
+		columns.put(Column.CONS, ""+ 100*consistency);
 		
 		return columns;
 	}
 	
 	private static String truncate(String nameRaw){
-		String name = nameRaw.replaceAll(",? Inc\\.?", "").replaceAll("\\(page does not exist\\)","");
-		if(name.length() > 20)
-			return name.substring(0, 17) + "...";
-		return name;
+		String name = nameRaw.replaceAll(",? Inc\\.?", "").replaceAll(" [Cc]orp[a-z\\.]+","").replaceAll("\\(page does not exist\\)","");
+		return name.length() > 12 ? name.substring(0, 9) + "..." : name;
 	}
 }

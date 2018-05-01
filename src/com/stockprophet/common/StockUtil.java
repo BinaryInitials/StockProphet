@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,14 +71,6 @@ public class StockUtil {
 		return prices.get(0)/prices.get(prices.size()-1) - 1;
 	}
 
-	public static double calculateExpected(List<Double> data, List<Double> weights) {
-		double expected = 0.0;
-		for (int i = 0; i < weights.size(); i++)
-			expected += data.get(data.size() - 1 - i) * weights.get(i);
-		return expected / weights.size();
-	}
-	
-	
 	public enum CalculatedMetricType {
 		ALGO_SCORE,
 		GROWTH_SCORE,
@@ -292,26 +283,6 @@ public class StockUtil {
 		return null;
 	}
 	
-	
-
-	
-
-
-
-	
-
-	
-	public static final Comparator<HashMap<String, String>> CustomComparator = new Comparator<HashMap<String, String>>() {
-
-		    @Override
-		    public int compare(HashMap<String, String>left, HashMap<String, String> right) {
-		      Double leftMarket = Double.valueOf(left.get("MARKET"));
-		      Double rightMarket = Double.valueOf(right.get("MARKET"));
-		      return -leftMarket.compareTo(rightMarket);
-		    }
-	};
-	
-
 	public static List<Double> getPriceFromFile(String key) {
 		List<Double> prices = new ArrayList<Double>();
 		try {
