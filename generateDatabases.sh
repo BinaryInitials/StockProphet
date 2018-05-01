@@ -1,12 +1,11 @@
 #!/bin/bash
 
-if [ -e generateIndexes.jar ]; then
-	echo "Recycling generateIndexes.jar..."
-else
-	echo "Compiling generateIndexes.jar..."
-	./build-index-generator.sh
-fi
+echo "Compiling generateIndexes.jar..."
+./build-index-generator.sh
 
+mkdir -p data
+
+echo "Generating database..."
 tic=`date +%s`
 for key in $(java -jar generateIndexes.jar); 
 do 
