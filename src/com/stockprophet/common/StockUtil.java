@@ -316,10 +316,10 @@ public class StockUtil {
 		List<Double> prices = new ArrayList<Double>();
 		try {
 			BufferedReader buffer = new BufferedReader(new FileReader(new File("data/" + key + ".csv")));
-
+			System.out.println("Reading " + key);
 			//Skip headers
 			String line = buffer.readLine();
-			if(line.startsWith("{")){
+			if(line == null || line.startsWith("{")){
 				System.out.println("Skipping " + key);
 				buffer.close();
 				return prices;
