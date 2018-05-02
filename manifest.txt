@@ -1,3 +1,0 @@
-Class-Path: 
- libs/Jama-1.0.3.jar 
-Main-Class: com.stockprophet.main.Run
