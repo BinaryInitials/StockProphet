@@ -1,0 +1,18 @@
+.tbl-prevrank-icon>span.rank-fall {
+    background-position: -6px -128px;
+}
+
+.tbl-prevrank-icon>span.rank-rise {
+    background-position: -6px -100px;
+}
+
+.tbl-prevrank-icon>span {
+    display: inline-block;
+    zoom: 1;
+    width: 18px;
+    height: 18px;
+    background-image: url(../images/moversIcons.png);
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: -6px -72px;
+}

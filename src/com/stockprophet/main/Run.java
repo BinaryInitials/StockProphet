@@ -64,15 +64,64 @@ public class Run {
 			}
 		}
 		
-		//Overall ranking
+		List<HashMap<Column, String>> sortedColumnsToday = overallRanking(columnsToday);
+		List<HashMap<Column, String>> sortedColumnsYesterday = overallRanking(columnsYesterday);
+		
+		for(int i=0;i<sortedColumnsYesterday.size();i++)
+			yesterdaysRank.put(sortedColumnsYesterday.get(i).get(Column.SYMB), i);
+		
+		for(int i=0;i<sortedColumnsToday.size();i++)
+			if(yesterdaysRank.containsKey(sortedColumnsToday.get(i).get(Column.SYMB)))
+				stockRankDiff.put(sortedColumnsToday.get(i).get(Column.SYMB), yesterdaysRank.get(sortedColumnsToday.get(i).get(Column.SYMB))-i);
+
+		System.out.println("YESTERDAY");
+		for(int rank=0;rank<20;rank++)
+			System.out.println((rank+1) + "\t" + 
+					sortedColumnsYesterday.get(rank).get(Column.SYMB) + "\t" +
+					sortedColumnsYesterday.get(rank).get(Column.LINEAR) + "\t" +
+					sortedColumnsYesterday.get(rank).get(Column.RIGID) + "\t" +
+					sortedColumnsYesterday.get(rank).get(Column.TURB) + "\t" +
+					sortedColumnsYesterday.get(rank).get(Column.YEAR1)
+					);
+		
+		System.out.println("TODAY");
+		for(int rank=0;rank<20;rank++)
+			System.out.println((rank+1) + "\t" + 
+					sortedColumnsToday.get(rank).get(Column.SYMB) + "\t" +
+					sortedColumnsToday.get(rank).get(Column.LINEAR) + "\t" +
+					sortedColumnsToday.get(rank).get(Column.RIGID) + "\t" +
+					sortedColumnsToday.get(rank).get(Column.TURB) + "\t" +
+					sortedColumnsToday.get(rank).get(Column.YEAR1)
+					);
+		
+		for(int rank=0;rank<sortedColumnsToday.size();rank++){
+			sortedColumnsToday.get(rank).put(Column.DIFF, "" + stockRankDiff.get(sortedColumnsToday.get(rank).get(Column.SYMB)));
+			sortedColumnsToday.get(rank).put(Column.RANKING, "" + (rank+1));
+		}
+		System.out.println("4. Generation Website");
+		GeneratePhp.write(sortedColumnsToday);
+		
+		Date toc = new Date();
+		System.out.println(toc.getTime() - tic.getTime() + " msec");
+	}
+	
+	public static List<HashMap<Column, String>> overallRanking(List<HashMap<Column, String>> columns){
 		HashMap<String, Integer> totalRank = new HashMap<String, Integer>();
-		for (HashMap<Column, String> row : columnsToday)
+		for (HashMap<Column, String> row : columns)
 			totalRank.put(row.get(Column.SYMB),0);
 		for(Column column : Column.values())
-			if(column != Column.RANKING && column != Column.COMPANY && column != Column.SYMB && column != Column.DIFF && column != Column.SCORE && column != Column.MOMENT && column != Column.INERT){
+			if(
+					column != Column.RANKING && 
+					column != Column.COMPANY && 
+					column != Column.SYMB && 
+					column != Column.DIFF && 
+					column != Column.MOMENT && 
+					column != Column.INERT &&
+					column != Column.PRICE
+				){
 				System.out.println("RANKING " + column.toString());
 				List<HashMap<String, String>> entries = new ArrayList<HashMap<String, String>>();
-				for(HashMap<Column, String> row : columnsToday){
+				for(HashMap<Column, String> row : columns){
 					HashMap<String, String> entrie = new HashMap<String, String>();
 					entrie.put("KEY", row.get(Column.SYMB));
 					entrie.put("VALUE", row.get(column));
@@ -87,56 +136,20 @@ public class Run {
 		for(String key : totalRank.keySet())
 			hackyList.add(key + "," + totalRank.get(key));
 		Collections.sort(hackyList, CustomComparators.FinalRankComparator);
-		
-		System.out.println("FINAL RANK:");
-		for(int i=0;i<20;i++){
-			String key = hackyList.get(i).split(",")[0];
-			Integer score = Integer.valueOf(hackyList.get(i).split(",")[1]);
-			System.out.println((i+1) + "\t" + key + "\t" + score);
+		List<HashMap<Column, String>> sortedColumns = new ArrayList<HashMap<Column, String>>();
+		for(String item : hackyList){
+			String symbol = item.split(",")[0];
+			for(HashMap<Column, String> column : columns){
+				if(column.get(Column.SYMB).equals(symbol)){
+					sortedColumns.add(column);
+					break;
+				}
+			}
 		}
-		
-		Collections.sort(columnsToday, CustomComparators.StockComparator);
-		Collections.sort(columnsYesterday, CustomComparators.StockComparator);
-		
-		for(int i=0;i<columnsYesterday.size();i++)
-			yesterdaysRank.put(columnsYesterday.get(i).get(Column.SYMB), i);
-		
-		for(int i=0;i<columnsToday.size();i++)
-			if(yesterdaysRank.containsKey(columnsToday.get(i).get(Column.SYMB)))
-				stockRankDiff.put(columnsToday.get(i).get(Column.SYMB), yesterdaysRank.get(columnsToday.get(i).get(Column.SYMB))-i);
-
-		System.out.println("YESTERDAY");
-		for(int rank=0;rank<20;rank++)
-			System.out.println((rank+1) + "\t" + 
-					columnsYesterday.get(rank).get(Column.SYMB) + "\t" +
-					columnsYesterday.get(rank).get(Column.ALGO) + "\t" +
-					columnsYesterday.get(rank).get(Column.RIGID) + "\t" +
-					columnsYesterday.get(rank).get(Column.TURB) + "\t" +
-					columnsYesterday.get(rank).get(Column.YEAR1)
-					);
-		
-		System.out.println("TODAY");
-		for(int rank=0;rank<20;rank++)
-			System.out.println((rank+1) + "\t" + 
-					columnsToday.get(rank).get(Column.SYMB) + "\t" +
-					columnsToday.get(rank).get(Column.ALGO) + "\t" +
-					columnsToday.get(rank).get(Column.RIGID) + "\t" +
-					columnsToday.get(rank).get(Column.TURB) + "\t" +
-					columnsToday.get(rank).get(Column.YEAR1)
-					);
-		
-		for(int rank=0;rank<columnsToday.size();rank++){
-			columnsToday.get(rank).put(Column.DIFF, "" + stockRankDiff.get(columnsToday.get(rank).get(Column.SYMB)));
-			columnsToday.get(rank).put(Column.RANKING, "" + (rank+1));
-		}
-		System.out.println("4. Generation Website");
-		GeneratePhp.write(columnsToday);
-		
-		Date toc = new Date();
-		System.out.println(toc.getTime() - tic.getTime() + " msec");
+		return sortedColumns;
 	}
 	
-
+	
 	public static HashMap<Column, String> populateColumns(Stock stock, int startingPoint){
 		HashMap<Column, String> columns = new HashMap<Column, String>();
 		columns.put(Column.SYMB, stock.getSymbol());
@@ -144,20 +157,20 @@ public class Run {
 
 		List<Double> prices = stock.getPrices().subList(startingPoint, ONE_YEAR-1+startingPoint);
 		
-		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateSeparateMetrics(prices);
-		Double score = StockUtil.calculatedMetric(metricMap);
-		if(score == null || score.isNaN())
-			return null;
+		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateMetrics(prices);
 
-		columns.put(Column.SCORE, "" + 100*score);
-		columns.put(Column.ALGO, "" + 100*metricMap.get(CalculatedMetricType.ALGO_SCORE));
+		columns.put(Column.LINEAR, "" + 100*metricMap.get(CalculatedMetricType.ALGO_SCORE));
 		columns.put(Column.RIGID, "" + 100*metricMap.get(CalculatedMetricType.RIGIDITY_SCORE));
 		columns.put(Column.TURB, "" + 100*metricMap.get(CalculatedMetricType.TURBULANCE_SCORE));
 		
 		columns.put(Column.MONTH1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 20))); 
+		columns.put(Column.MONTH2, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 40))); 
 		columns.put(Column.MONTH3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 60))); 
 		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
-		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices)); 
+		columns.put(Column.MONTH9, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 180))); 
+		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices));
+		
+		columns.put(Column.PRICE, "" + prices.get(0));
 		
 		List<Double> clone = new ArrayList<>();
 		for(Double price : prices)

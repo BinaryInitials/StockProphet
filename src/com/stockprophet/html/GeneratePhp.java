@@ -179,9 +179,8 @@ public class GeneratePhp {
 					rankQualifier = "fall";
 					sign = "";
 				}
-				
-				int[] color = generateColorsFromColorMap(Double.valueOf(data.get(row).get(Column.SCORE))/100.0, colorMap);
-				
+				double score = (data.size() - Integer.valueOf(data.get(row).get(Column.RANKING))-1)/(double)data.size();
+				int[] color = generateColorsFromColorMap(score, colorMap);
 				
 				String tableRow = "<tr>";
 				int columnIndex=0;
@@ -350,19 +349,23 @@ public class GeneratePhp {
 		return ((date.getYear()+1900)%100) + "." + (date.getMonth()+1) + "." + date.getDate() + "." + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds();
 	}
 	
+	private static int COLOR_INCREMENT = 10;
+	
 	private static HashMap<Integer, int[]> generateColorMap(){
 		HashMap<Integer, int[]> colorMap = new HashMap<Integer, int[]>();
-		colorMap.put(100, new int[]{250,250,250});	//WHITE
-		colorMap.put(95, new int[]{150,200,250});	//CYAN
-		colorMap.put(90, new int[]{0,50,250});	//BLUE
-		colorMap.put(85, new int[]{0,250,50});	//GREEN
-		colorMap.put(80, new int[]{150,250,50});	//CHARTREUSE
-		colorMap.put(75, new int[]{250,250,50});	//YELLOW
-		colorMap.put(70, new int[]{250,150,50});	//ORANGE
-		colorMap.put(65, new int[]{250,25,25});	//RED
-		colorMap.put(60, new int[]{150,15,15});	//BROWN
-		colorMap.put(55, new int[]{50,0,0});	//DARK BROWN
-		colorMap.put(50, new int[]{0,0,0});	//BLACK
+		int count = 10; 
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{250,250,250});	//WHITE
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{150,200,250});	//CYAN
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{0,50,250});	//BLUE
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{0,250,50});	//GREEN
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{150,250,50});	//CHARTREUSE
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{250,250,50});	//YELLOW
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{250,150,50});	//ORANGE
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{250,25,25});	//RED
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{150,15,15});	//BROWN
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{50,0,0});	//DARK BROWN
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{20,0,0});	//BLACK
+		colorMap.put(COLOR_INCREMENT*count--, new int[]{0,0,0});	//BLACK
 		return colorMap;
 	}
 	
@@ -388,23 +391,17 @@ public class GeneratePhp {
 	}
 	
 	private static int[] generateColorsFromColorMap(double metric, HashMap<Integer, int[]> colorMap){
-		if(metric > 0.5){
-			for(int key=95;key>=0;key-=5){
-				if(key < metric * 100){
-					int[] rgb1 = colorMap.get(key+5);
-					int[] rgb2 = colorMap.get(key);
-					int[] rgb = new int[3];
-					for(int i=0;i<3;i++){
-						rgb[i] = (int)Math.round((rgb1[i] - rgb2[i])*(100.0*metric - key)/5.0 + rgb2[i]); 
-					}
-					return rgb;
-				}
+		for(int key=90;key>=-COLOR_INCREMENT;key-=COLOR_INCREMENT){
+			if(key < metric * 100){
+				int[] rgb1 = colorMap.get(key+COLOR_INCREMENT);
+				int[] rgb2 = colorMap.get(key);
+				int[] rgb = new int[3];
+				for(int i=0;i<3;i++)
+					rgb[i] = (int)Math.round((rgb1[i] - rgb2[i])*(100.0*metric - key)/(double)COLOR_INCREMENT + rgb2[i]);
+				return rgb;
 			}
-		}else if(metric > 0){
-			return new int[]{0,0,0};
 		}
-		int gray = (int)Math.round(-metric*250);
-		return new int[]{gray, gray, gray};
+		return new int[]{0,0,0};
 	}
 	enum WebFileType {
 		CSS,

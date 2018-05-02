@@ -78,7 +78,7 @@ public class StockUtil {
 		TURBULANCE_SCORE
 	}
 	
-	public static HashMap<CalculatedMetricType, Double> calculateSeparateMetrics(List<Double> prices){
+	public static HashMap<CalculatedMetricType, Double> calculateMetrics(List<Double> prices){
 		HashMap<CalculatedMetricType, Double> calculatedMetrics = new HashMap<CalculatedMetricType, Double>();
 		double maxChange = StockUtil.findMaxChange(prices, PeriodType.ONE_YEAR);
 		double metric1 = StockUtil.calculateScore(prices, PeriodType.ONE_YEAR);
@@ -93,16 +93,16 @@ public class StockUtil {
 		return calculatedMetrics;
 	}
 	
-	public static double calculatedMetric(HashMap<CalculatedMetricType, Double> metrics){
-		return metrics.get(CalculatedMetricType.ALGO_SCORE)*0.50 + 
-			   metrics.get(CalculatedMetricType.GROWTH_SCORE)*0.25 +
-			   metrics.get(CalculatedMetricType.RIGIDITY_SCORE)*0.10 +
-			   metrics.get(CalculatedMetricType.TURBULANCE_SCORE)*0.15;
-	}
+//	public static double calculatedMetric(HashMap<CalculatedMetricType, Double> metrics){
+//		return metrics.get(CalculatedMetricType.ALGO_SCORE)*0.50 + 
+//			   metrics.get(CalculatedMetricType.GROWTH_SCORE)*0.25 +
+//			   metrics.get(CalculatedMetricType.RIGIDITY_SCORE)*0.10 +
+//			   metrics.get(CalculatedMetricType.TURBULANCE_SCORE)*0.15;
+//	}
 	
-	public static double calculateMetric(List<Double> prices){
-		return calculatedMetric(calculateSeparateMetrics(prices));
-	}
+//	public static double calculateMetric(List<Double> prices){
+//		return calculatedMetric(calculateSeparateMetrics(prices));
+//	}
 	
 	public static enum PeriodType {
 		FIVE_YEARS,
