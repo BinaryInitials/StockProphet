@@ -22,5 +22,5 @@ cp css/* $folder/css
 cp js/* $folder/js
 cp images/* $folder/images
 echo "Website creation successful."
-cat $folder/index.php | sed '1,/?>/d'> $folder/index.html
-open $folder/index.html
+#cat $folder/index.php | sed '1,/?>/d'> $folder/index.html
+#open $folder/index.html
