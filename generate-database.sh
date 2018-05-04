@@ -9,7 +9,7 @@ echo "Generating database..."
 tic=`date +%s`
 for key in $(java -jar generateIndexes.jar); 
 do 
-	./getData.sh $key; 
+	./get-data.sh $key; 
 done
 toc=`date +%s`
 
