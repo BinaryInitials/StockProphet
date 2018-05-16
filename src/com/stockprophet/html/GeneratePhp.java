@@ -46,6 +46,7 @@ public class GeneratePhp {
 				buffer.write("<link rel=\"stylesheet\" href=\"css/"+ cssFile + "\" />\n");
 
 			
+			buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />");
 			buffer.write("<style>\n");
 			buffer.write(".tooltip {\n");
 			buffer.write("position: relative;\n");
