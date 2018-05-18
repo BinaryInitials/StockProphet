@@ -18,6 +18,7 @@ mkdir $folder/images/
 ./build-stockprophet.sh
 java -jar stockprophet.jar
 cp index.php $folder
+cp mobile.php $folder
 cp css/* $folder/css
 cp js/* $folder/js
 cp images/* $folder/images
