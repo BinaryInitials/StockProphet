@@ -83,6 +83,9 @@ public class GeneratePhp {
 			buffer.write("</ul>\n");
 			buffer.write("</div>\n");
 			
+			buffer.write("<div class=\"content\">\n");
+			buffer.write("table id=\"myTable\" class=\"sortable\"><thead><tr><th data-sort=\"number\" style=\"width:100px;\">RANK</th><th data-sort=\"name\">SYMB</th><th data-sort=\"name\">YEAR1</th></tr></thead>\n");
+
 			buffer.write("<tbody>\n");
 			
 			HashMap<Integer, int[]> colorMap = generateColorMap();
@@ -103,7 +106,7 @@ public class GeneratePhp {
 				
 				String tableRow = "<tr>";
 				String symbol = data.get(row).get(Column.SYMB);
-				tableRow += "<td  class=\"tbl-prevrank-icon\" style=\"background-color: #" + convertToColor(color) +  "\">" + (row+1) + "    <span class=\"rank-" + rankQualifier + "\" />" + sign + diff +"</td>";
+				tableRow += "<td  class=\"tbl-prevrank-icon\" style=\"background-color: #" + convertToColor(color) +  "\">" + (row+1) + "    <span class=\"rank-" + rankQualifier + "\"></span> " + sign + diff +" </td>";
 				tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, 1)) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" + symbol + "</td>";
 				tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, 2)) + "\">" + String.format("%.1f", Double.valueOf(data.get(row).get(Column.YEAR1))) + "</td>";
 				tableRow += "</tr>\n";
