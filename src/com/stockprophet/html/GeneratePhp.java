@@ -17,8 +17,162 @@ public class GeneratePhp {
 	public static final int DIFF_INDEX = 1;
 	public static final int SYMBOL_INDEX = 2;
 	public static final int COMPANY_INDEX = 3;
+	public static void writeMobile(List<HashMap<Column, String>> data){
+		File file = new File("mobile.php");
+		try{
+			file.createNewFile();
+			FileWriter writer = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter buffer = new BufferedWriter(writer);
+			
+			buffer.write("<?php\n");
+			buffer.write("$file = fopen(\"stockprophet_mobile_log.html\", \"a\") or die(\"Unable to open file!\");\n");
+			buffer.write("fwrite($file, date('Y-m-d|H:i:s'));\n");
+			buffer.write("fwrite($file,\"|\");\n");
+			buffer.write("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
+			buffer.write("fwrite($file,\"|\");\n");
+			buffer.write("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
+			buffer.write("fwriteln($file,'<br>');\n");
+			buffer.write("fclose( $file );\n");
+			buffer.write("?>\n");
+			
+			buffer.write("<!DOCTYPE html>\n");
+			buffer.write("<html>\n");
+			buffer.write("<head>\n");
+			buffer.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /> ");
+			buffer.write("<title> STOCK PROPHET </title>\n");
+			List<String> cssFiles = getWebFiles(WebFileType.CSS, true);
+			for(String cssFile : cssFiles)
+				buffer.write("<link rel=\"stylesheet\" href=\"css/"+ cssFile + "\" />\n");
+
+			buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />\n");
+			buffer.write("<style>\n");
+			buffer.write("body {\n");
+			buffer.write("margin: 0;\n");
+			buffer.write("font-family: Arial;\n");
+			buffer.write("}\n");
+			buffer.write(".top-container {\n");
+			buffer.write("background-color: #f1f1f1;\n");
+			buffer.write("background: linear-gradient(180deg, #666666, #999999);\n");
+			buffer.write("}\n");
+			buffer.write(".header {\n");
+			buffer.write("background: #f1f1f1;\n");
+			buffer.write("background: linear-gradient(180deg, #777777, #F1F1F1);\n");
+			buffer.write("color: #f1f1f1;\n");
+			buffer.write("}\n");
+			buffer.write(".content {\n");
+			buffer.write("}\n");
+			buffer.write(".sticky {\n");
+			buffer.write("position: fixed;\n");
+			buffer.write("top: 0;\n");
+			buffer.write("width: 100%;\n");
+			buffer.write("}\n");
+			buffer.write(".sticky + .content {\n");
+			buffer.write("padding-top: 120px;\n");
+			buffer.write("}\n");
+			buffer.write("</style>\n");			
+			
+			
+			buffer.write("</head>\n");
+			buffer.write("<body>\n");
+			buffer.write("<div class=\"header\" id=\"myHeader\">\n");
+			buffer.write("<ul>\n");
+			
+			buffer.write("<div id=\"search\">\n");
+			buffer.write("<input type=\"text\" size=\"2\" placeholder=\"Search...\" onkeyup=\"search()\" id=\"filter-search\" />\n");
+			buffer.write("</div>\n");
+			buffer.write("</ul>\n");
+			buffer.write("</div>\n");
+			
+			buffer.write("<tbody>\n");
+			
+			HashMap<Integer, int[]> colorMap = generateColorMap();
+
+			for(int row=0;row<data.size();row++){
+				String rankQualifier = "equal";
+				int diff = Integer.valueOf(data.get(row).get(Column.DIFF));
+				String sign = "+";
+				
+				if(diff > 0){
+					rankQualifier = "rise";
+				}else if(diff < 0){
+					rankQualifier = "fall";
+					sign = "";
+				}
+				double score = (data.size() - Integer.valueOf(data.get(row).get(Column.RANKING))-1)/(double)data.size();
+				int[] color = generateColorsFromColorMap(score, colorMap);
+				
+				String tableRow = "<tr>";
+				String symbol = data.get(row).get(Column.SYMB);
+				tableRow += "<td  class=\"tbl-prevrank-icon\" style=\"background-color: #" + convertToColor(color) +  "\">" + (row+1) + "    <span class=\"rank-" + rankQualifier + "\" />" + sign + diff +"</td>";
+				tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, 1)) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" + symbol + "</td>";
+				tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, 2)) + "\">" + String.format("%.1f", Double.valueOf(data.get(row).get(Column.YEAR1))) + "</td>";
+				tableRow += "</tr>\n";
+				buffer.write(tableRow);
+			}
+			
+			//Javascript
+			buffer.write("<script>\n");
+			
+			buffer.write("function search() {\n");
+			buffer.write("var input, filter, table, tr, td1, i;\n");
+			buffer.write("input = document.getElementById(\"filter-search\");\n");
+			buffer.write("filter = input.value.toUpperCase().split(\" \");\n");
+			buffer.write("table = document.getElementById(\"myTable\");\n");
+			buffer.write("tr = table.getElementsByTagName(\"tr\");\n");
+			buffer.write("for (i = 0; i < tr.length; i++) {\n");
+			buffer.write("td1 = tr[i].getElementsByTagName(\"td\")[" + (SYMBOL_INDEX-1) + "];\n");
+			buffer.write("if (td1) {\n");
+			buffer.write("var exist = false;\n");
+			buffer.write("for(j=0;j<filter.length;j++){\n");
+			buffer.write("if (td1.innerHTML.toUpperCase().indexOf(filter[j]) > -1) {\n");
+			buffer.write("exist = true;\n");
+			buffer.write("}\n");
+			buffer.write("}\n");
+			buffer.write("if(exist){\n");
+			buffer.write("tr[i].style.display = \"\";\n");
+			buffer.write("} else {\n");
+			buffer.write("tr[i].style.display = \"none\"\n");
+			buffer.write("}\n");
+			buffer.write("}\n");
+			buffer.write("}\n");
+			buffer.write("}\n");
+			
+			
+			buffer.write("</script>\n");
+			
+			
+			buffer.write("<script>\n");
+			buffer.write("window.onscroll = function() {myFunction()};\n");
+			buffer.write("var header = document.getElementById(\"myHeader\");\n");
+			buffer.write("var sticky = header.offsetTop;\n");
+			buffer.write("function myFunction() {\n");
+			buffer.write("if (window.pageYOffset >= sticky) {\n");
+			buffer.write("header.classList.add(\"sticky\");\n");
+			buffer.write("} else {\n");
+			buffer.write("header.classList.remove(\"sticky\");\n");
+			buffer.write("}\n");
+			buffer.write("}\n");
+			buffer.write("</script>\n");
+
+			
+			List<String> jsFiles = getWebFiles(WebFileType.JS, true);
+			Collections.sort(jsFiles);
+			for(String jsFile : jsFiles)
+				buffer.write("<script src=\"js/" + jsFile + "\"></script>\n");
+
+			buffer.write("</tbody>\n");
+			buffer.write("</table>\n");
+			buffer.write("</ul>\n");
+			buffer.write("<script type=\"text/javascript\" src=\"js/prettify.js\"></script>\n");
+			buffer.write("</body>\n");
+			buffer.write("</html>\n");
+			buffer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	public static void write(List<HashMap<Column, String>> data) {
+	public static void writeWeb(List<HashMap<Column, String>> data) {
 		File file = new File("index.php");
 		Date timestamp = new Date();
 		try{
@@ -33,7 +187,7 @@ public class GeneratePhp {
 			buffer.write("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
 			buffer.write("fwrite($file,\"|\");\n");
 			buffer.write("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
-			buffer.write("fwrite($file,'<br>');\n");
+			buffer.write("fwriteln($file,'<br>');\n");
 			buffer.write("fclose( $file );\n");
 			buffer.write("?>\n");
 			
@@ -41,7 +195,7 @@ public class GeneratePhp {
 			buffer.write("<html>\n");
 			buffer.write("<head>\n");
 			buffer.write("<title> STOCK PROPHET </title>\n");
-			List<String> cssFiles = getWebFiles(WebFileType.CSS);
+			List<String> cssFiles = getWebFiles(WebFileType.CSS, false);
 			for(String cssFile : cssFiles)
 				buffer.write("<link rel=\"stylesheet\" href=\"css/"+ cssFile + "\" />\n");
 
@@ -319,6 +473,12 @@ public class GeneratePhp {
 			buffer.write("}\n");
 			buffer.write("</script>\n");
 			
+			buffer.write("<script type=\"text/javascript\">\n");
+			buffer.write("if (screen.width <= 699) {\n");
+			buffer.write("document.location = \"mobile.php\"\n");
+			buffer.write("}\n");
+			buffer.write("</script>\n");
+			
 			
 			buffer.write("<script>\n");
 			buffer.write("window.onscroll = function() {myFunction()};\n");
@@ -334,7 +494,7 @@ public class GeneratePhp {
 			buffer.write("</script>\n");
 
 			
-			List<String> jsFiles = getWebFiles(WebFileType.JS);
+			List<String> jsFiles = getWebFiles(WebFileType.JS, false);
 			Collections.sort(jsFiles);
 			for(String jsFile : jsFiles)
 				buffer.write("<script src=\"js/" + jsFile + "\"></script>\n");
@@ -415,13 +575,17 @@ public class GeneratePhp {
 		JS
 	}
 	
-	private static List<String> getWebFiles(WebFileType wbf){
+	private static List<String> getWebFiles(WebFileType wbf, boolean isMobile){
 		String extension = wbf.toString().toLowerCase();
 		File folder = 	new File(extension + "/");
 		List<String> files = new ArrayList<String>();
 		for(File file : folder.listFiles())
 			if(file.isFile() && file.getName().endsWith(extension))
-				files.add(file.getName().replaceAll(".*/", ""));
+				if(isMobile && !file.getName().contains("Desktop"))
+					files.add(file.getName().replaceAll(".*/", ""));
+				else if(!isMobile && !file.getName().contains("Mobile")){
+					files.add(file.getName().replaceAll(".*/", ""));
+				}
 		return files;
 	}
 }

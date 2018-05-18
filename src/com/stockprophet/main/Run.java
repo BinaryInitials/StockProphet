@@ -99,7 +99,8 @@ public class Run {
 			sortedColumnsToday.get(rank).put(Column.RANKING, "" + (rank+1));
 		}
 		System.out.println("4. Generation Website");
-		GeneratePhp.write(sortedColumnsToday);
+		GeneratePhp.writeWeb(sortedColumnsToday);
+		GeneratePhp.writeMobile(sortedColumnsToday);
 		
 		Date toc = new Date();
 		System.out.println(toc.getTime() - tic.getTime() + " msec");

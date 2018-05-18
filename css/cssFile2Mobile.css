@@ -58,7 +58,6 @@ button:button.active {
 	color: #fff;
 	cursor: pointer;}
 
-/* Search input */
 input {
 	font-size: 120%;
 	border: 1px solid #999;
@@ -69,11 +68,8 @@ input:focus {
 	border: 1px solid #00cccc;
 	outline: none;}
 
-/* Table styles */
 table {
 	margin: 0 auto;
-	width: 600px;
-/* 	position: relative; */
 	}
 
 th, td {
@@ -88,7 +84,7 @@ th, td {
 	border-left: 1px solid #000000;
 	border-right: 1px solid #000000;
 
-  	font-size: 12px;
+  	font-size: 20px;
   	letter-spacing: .05em;
   	list-style-type: none;
   	text-shadow: 2px 2px 1px #000000;
