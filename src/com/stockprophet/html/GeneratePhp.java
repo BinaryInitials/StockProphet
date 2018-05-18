@@ -301,7 +301,7 @@ public class GeneratePhp {
 			buffer.write("</tbody>\n");
 			buffer.write("</table>\n");
 			
-			buffer.write("<div>\n");
+			buffer.write("<div align=\"center\">\n");
 			String cleanTimestamp = formatTimestamp2(timestamp); 
 			buffer.write("<input id=\"checkboxId\" type=\"checkbox\" onclick=\"resetValues()\" name=\"resetFilterValues\"/><div class=\"tooltip\">Reset Values<span class=\"tooltiptext\">Generated on " + cleanTimestamp + "</span></div>\n");
 			buffer.write("</div>");
