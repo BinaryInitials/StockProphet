@@ -203,6 +203,7 @@ public class Run {
 	
 	private static String truncate(String nameRaw){
 		String name = nameRaw.replaceAll(",? Inc\\.?", "").replaceAll(" [Cc]orp[a-z\\.]+","").replaceAll("\\(page does not exist\\)","");
-		return name.length() > 12 ? name.substring(0, 9) + "..." : name;
+		//You know what? If the column cant handle it, fuck it.
+		return name.length() > 20 ? name.substring(0, 9) + "..." : name;
 	}
 }

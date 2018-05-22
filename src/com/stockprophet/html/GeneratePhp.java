@@ -127,7 +127,7 @@ public class GeneratePhp {
 			buffer.write("if (td1) {\n");
 			buffer.write("var exist = false;\n");
 			buffer.write("for(j=0;j<filter.length;j++){\n");
-			buffer.write("if (td1.innerHTML.toUpperCase().indexOf(filter[j]) > -1) {\n");
+			buffer.write("if (td1.innerHTML.toUpperCase().indexOf(\">\"+filter[j]+\"<\") > -1) {\n");
 			buffer.write("exist = true;\n");
 			buffer.write("}\n");
 			buffer.write("}\n");
@@ -398,7 +398,7 @@ public class GeneratePhp {
 			buffer.write("if (td1 && td2) {\n");
 			buffer.write("var exist = false;\n");
 			buffer.write("for(j=0;j<filter.length;j++){\n");
-			buffer.write("if (td1.innerHTML.toUpperCase().indexOf(filter[j]) > -1 || td2.innerHTML.toUpperCase().indexOf(filter[j]) > -1) {\n");
+			buffer.write("if (td1.innerHTML.toUpperCase().indexOf(\">\"+filter[j]+\"<\") > -1 || td2.innerHTML.toUpperCase().indexOf(\">\"+filter[j]) > -1) {\n");
 			buffer.write("exist = true;\n");
 			buffer.write("}\n");
 			buffer.write("}\n");
