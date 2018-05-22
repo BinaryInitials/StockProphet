@@ -31,7 +31,7 @@ public class GeneratePhp {
 			buffer.write("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
 			buffer.write("fwrite($file,\"|\");\n");
 			buffer.write("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
-			buffer.write("fwrite($file,'\n<br>');\n");
+			buffer.write("fwrite($file,'<br>\n');\n");
 			buffer.write("fclose( $file );\n");
 			buffer.write("?>\n");
 			
@@ -190,7 +190,7 @@ public class GeneratePhp {
 			buffer.write("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
 			buffer.write("fwrite($file,\"|\");\n");
 			buffer.write("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
-			buffer.write("fwrite($file,'\n<br>');\n");
+			buffer.write("fwrite($file,'<br>\n');\n");
 			buffer.write("fclose( $file );\n");
 			buffer.write("?>\n");
 			
