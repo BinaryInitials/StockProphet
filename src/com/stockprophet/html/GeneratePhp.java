@@ -589,6 +589,7 @@ public class GeneratePhp {
 				else if(!isMobile && !file.getName().contains("Mobile")){
 					files.add(file.getName().replaceAll(".*/", ""));
 				}
+		Collections.sort(files);
 		return files;
 	}
 }

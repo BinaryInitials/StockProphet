@@ -14,7 +14,10 @@ then
 fi
 
 END_DATE=$(date +%s)
-START_DATE=$(echo /dev/null/ | awk '{print '$END_DATE'-365*24*60*60}')
+
+#5 years from today 
+START_DATE=$(echo /dev/null/ | awk '{print '$END_DATE'-5*365*24*60*60}')
+
 cookieJar=$(mktemp)
 function getCrumb () {
   echo -en "$(curl -s --cookie-jar $cookieJar $1)" | tr "}" "\n" | grep CrumbStore | cut -d':' -f 3 | sed 's/"//g'

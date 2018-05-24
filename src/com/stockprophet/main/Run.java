@@ -20,7 +20,7 @@ import com.stockprophet.math.GaussianCalculator;
 
 public class Run {
 	
-	public static final int ONE_YEAR = 250;
+	public static final int FIVE_YEARS = 1251;
 	public static final int TODAY = 0;
 	public static final int YESTERDAY = 1;
 	
@@ -44,7 +44,7 @@ public class Run {
 		for (String key : indexMap.keySet()) {
 			List<Double> prices = StockUtil.getPriceFromFile(key);
 			
-			if (prices.size() < ONE_YEAR)
+			if (prices.size() < FIVE_YEARS)
 				continue;
 			stocks.add(new Stock(key, indexMap.get(key), prices));
 		}
@@ -116,8 +116,6 @@ public class Run {
 					column != Column.COMPANY && 
 					column != Column.SYMB && 
 					column != Column.DIFF && 
-					column != Column.MOMENT && 
-					column != Column.INERT &&
 					column != Column.PRICE
 				){
 				System.out.println("RANKING " + column.toString());
@@ -156,7 +154,7 @@ public class Run {
 		columns.put(Column.SYMB, stock.getSymbol());
 		columns.put(Column.COMPANY, truncate(stock.getCompany()));
 
-		List<Double> prices = stock.getPrices().subList(startingPoint, ONE_YEAR-1+startingPoint);
+		List<Double> prices = stock.getPrices().subList(startingPoint, FIVE_YEARS-1+startingPoint);
 		
 		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateMetrics(prices);
 
@@ -169,20 +167,22 @@ public class Run {
 		columns.put(Column.MONTH3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 60))); 
 		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
 		columns.put(Column.MONTH9, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 180))); 
-		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices));
+		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 250)));
+		columns.put(Column.YEAR3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 750)));
+		columns.put(Column.YEAR5, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 1250)));
 		
 		columns.put(Column.PRICE, "" + prices.get(0));
 		
 		List<Double> clone = new ArrayList<>();
 		for(Double price : prices)
 			clone.add(price);
-    	List<Double> subprices = clone.subList(0, 20);
 		
-		Collections.reverse(subprices);
+		Collections.reverse(clone);
 		//^ After reversing, index 0 is old, index.size()-1 is new
 		
-    	List<Double> normalized = GaussianCalculator.normalizeDataTo0(subprices);
-    	List<Double> coefs = GaussianCalculator.calculateCoefficients(normalized, 3);
+    	List<Double> normalized = GaussianCalculator.normalizeDataTo0(clone);
+    	List<Double> coefs3 = GaussianCalculator.calculateCoefficients(normalized, 3);
+    	List<Double> coefs5 = GaussianCalculator.calculateCoefficients(normalized, 5);
 
     	List<Double> pricesMDA5 = CommonFinancialMathMethods.calculateMovingAverage(prices);
     	List<Double> pricesMDA5Normalized = GaussianCalculator.normalizeTo0and1(pricesMDA5);
@@ -193,8 +193,12 @@ public class Run {
 		double consistency = Math.sqrt(consistency1 * consistency2);
 		
 		columns.put(Column.CONF, "" + 100*consistencyMetrics.get(3));
-		columns.put(Column.MOMENT, "" + 100*(3*coefs.get(3)*subprices.size()*subprices.size() + 2 * coefs.get(2) * subprices.size() + coefs.get(1)));
-		columns.put(Column.INERT, "" + 1000*(6*coefs.get(3)*subprices.size() + 2 * coefs.get(2)));
+		columns.put(Column.MOMENT3, "" + 1000*(3*coefs3.get(3)*clone.size()*clone.size() + 2 * coefs3.get(2) * clone.size() + coefs3.get(1)));
+		columns.put(Column.INERT3, "" + 1000000*(6*coefs3.get(3)*clone.size() + 2 * coefs3.get(2)));
+
+		columns.put(Column.MOMENT5, "" + 1000*(5*coefs5.get(5)*clone.size()*clone.size()*clone.size()*clone.size() + 4*coefs5.get(4)*clone.size()*clone.size()*clone.size() + 3*coefs5.get(3)*clone.size()*clone.size() + 2 * coefs5.get(2) * clone.size() + coefs5.get(1)));
+		columns.put(Column.INERT5, "" + 1000000*(20*coefs5.get(5)*clone.size()*clone.size()*clone.size() + 12*coefs5.get(4)*clone.size()*clone.size() + 6*coefs5.get(3)*clone.size() + 2*coefs5.get(2)));
+
 		columns.put(Column.STAB, "" + 100*lengthNormalized);
 		columns.put(Column.CONS, ""+ 100*consistency);
 		
