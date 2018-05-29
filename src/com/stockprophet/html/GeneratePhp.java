@@ -17,6 +17,85 @@ public class GeneratePhp {
 	public static final int DIFF_INDEX = 1;
 	public static final int SYMBOL_INDEX = 2;
 	public static final int COMPANY_INDEX = 3;
+	
+	
+	//NOTE: When using JSON, content is uploaded before header. So had to include header. But when this is done, column sorting doesn't work.
+	public static void generateJson(List<HashMap<Column, String>> data){
+		List<String> rows = new ArrayList<String>();
+		HashMap<Integer, int[]> colorMap = generateColorMap();
+		
+		for(int row=0;row<data.size();row++){
+			String rankQualifier = "equal";
+			int diff = Integer.valueOf(data.get(row).get(Column.DIFF));
+			String sign = "+";
+			
+			if(diff > 0){
+				rankQualifier = "rise";
+			}else if(diff < 0){
+				rankQualifier = "fall";
+				sign = "";
+			}
+			double score = (data.size() - Integer.valueOf(data.get(row).get(Column.RANKING))-1)/(double)data.size();
+			int[] color = generateColorsFromColorMap(score, colorMap);
+			
+			String tableRow = "<tr>";
+			int columnIndex=0;
+			String symbol = data.get(row).get(Column.SYMB);
+			for(Column column : Column.values()){
+				if(columnIndex == RANK_INDEX){
+					tableRow += "<td  class=\"tbl-prevrank-icon\" style=\"background-color: #" + convertToColor(color) +  "\">" + (row+1) + "    <span class=\"rank-" + rankQualifier + "\" />" + "</td>";
+				}else if(columnIndex == DIFF_INDEX){
+					tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\">" + sign + diff + "</td>";
+				}else if(columnIndex == SYMBOL_INDEX){
+					tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" + symbol + "</td>";
+				}else if(columnIndex == COMPANY_INDEX){
+					tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" +  data.get(row).get(Column.COMPANY) + "</td>";
+				}else{
+					if(data.get(row).get(column) != null){
+						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.1f", Double.valueOf(data.get(row).get(column))) + "</td>";
+					}else{
+						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">null</td>";
+					}
+				}
+				columnIndex++;
+			}
+			tableRow += "</tr>";
+			rows.add(tableRow);
+		}
+		
+		System.out.println("[");
+		
+		System.out.println("\t{");
+		String tableHeader = "<table id=\"myTable\" class=\"sortable\"><thead><tr>";
+		for(Column column : Column.values())
+			tableHeader += "<th data-sort=\"" + (column.isNumber()? "number" : "name") + "\">" + column.name().toUpperCase() + "</th>";
+
+		tableHeader += "</tr></thead>";
+		System.out.println("\t\t\"row\":" + "\"" + tableHeader.replaceAll("\"","\\\\\"") + "\"");
+		System.out.println("\t},");
+
+		System.out.println("\t{");
+		System.out.println("\t\t\"row\": \"<tbody>\"");
+		System.out.println("\t},");
+		
+		for(String row : rows){
+			System.out.println("\t{");
+			System.out.println("\t\t\"row\":" + "\"" + row.replaceAll("\"","\\\\\"") + "\"");
+			System.out.println("\t},");
+		}
+		
+		System.out.println("\t{");
+		System.out.println("\t\t\"row\":\"<\\tbody>\"");
+		System.out.println("\t},");
+		System.out.println("\t{");
+		System.out.println("\t\t\"row\":\"<\\table>\"");
+		System.out.println("\t}");
+		
+		System.out.println("]");
+		
+	}
+	
+	
 	public static void writeMobile(List<HashMap<Column, String>> data){
 		File file = new File("mobile.php");
 		try{
@@ -266,7 +345,7 @@ public class GeneratePhp {
 			buffer.write("width: 100%;\n");
 			buffer.write("}\n");
 			buffer.write(".sticky + .content {\n");
-			buffer.write("padding-top: 320px;\n");
+			buffer.write("padding-top: 340px;\n");
 			buffer.write("}\n");
 			buffer.write("</style>\n");
 

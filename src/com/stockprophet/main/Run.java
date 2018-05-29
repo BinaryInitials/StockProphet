@@ -44,8 +44,10 @@ public class Run {
 		for (String key : indexMap.keySet()) {
 			List<Double> prices = StockUtil.getPriceFromFile(key);
 			
-			if (prices.size() < FIVE_YEARS)
+			if (prices.size() < FIVE_YEARS){
+				System.out.println("Not enough data points for " + key + ": " + prices.size());
 				continue;
+			}
 			stocks.add(new Stock(key, indexMap.get(key), prices));
 		}
 		
@@ -56,6 +58,8 @@ public class Run {
 			HashMap<Column, String> columnToday = populateColumns(stock, TODAY);
 			if(columnToday != null){
 				columnsToday.add(columnToday);
+			}else{
+				System.out.println("Error found for " + stock.getSymbol());
 			}
 
 			HashMap<Column, String> columnYesterday = populateColumns(stock, YESTERDAY);
@@ -99,6 +103,7 @@ public class Run {
 			sortedColumnsToday.get(rank).put(Column.RANKING, "" + (rank+1));
 		}
 		System.out.println("4. Generation Website");
+
 		GeneratePhp.writeWeb(sortedColumnsToday);
 		GeneratePhp.writeMobile(sortedColumnsToday);
 		
@@ -163,10 +168,8 @@ public class Run {
 		columns.put(Column.TURB, "" + 100*metricMap.get(CalculatedMetricType.TURBULANCE_SCORE));
 		
 		columns.put(Column.MONTH1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 20))); 
-		columns.put(Column.MONTH2, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 40))); 
 		columns.put(Column.MONTH3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 60))); 
 		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
-		columns.put(Column.MONTH9, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 180))); 
 		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 250)));
 		columns.put(Column.YEAR3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 750)));
 		columns.put(Column.YEAR5, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 1250)));
