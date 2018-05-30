@@ -25,4 +25,4 @@ function getCrumb () {
 curl -s --cookie $cookieJar  "https://query1.finance.yahoo.com/v7/finance/download/"$SYMBOL"?period1="$START_DATE"&period2="$END_DATE"&interval=1d&events=history"$BASE_URL"&crumb="$(getCrumb "https://finance.yahoo.com/quote/$SYMBOL/?p=$SYMBOL") > data/$SYMBOL.csv
 
 ((ATTEMPTS++))
-if grep "cookie" data/$SYMBOL.csv ; then echo $SYMBOL": Cookie Issues, new attempt..."; getData.sh $1 $ATTEMPTS; else echo $SYMBOL": Success"; fi
+if grep "cookie" data/$SYMBOL.csv ; then echo $SYMBOL": Cookie Issues, new attempt..."; get-data.sh $1 $ATTEMPTS; else echo $SYMBOL": Success"; fi
