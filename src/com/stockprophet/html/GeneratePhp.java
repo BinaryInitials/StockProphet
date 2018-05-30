@@ -163,7 +163,7 @@ public class GeneratePhp {
 			buffer.write("</div>\n");
 			
 			buffer.write("<div class=\"content\">\n");
-			buffer.write("<table id=\"myTable\" class=\"sortable\"><thead><tr><th data-sort=\"number\" style=\"width:100px;\">RANK</th><th data-sort=\"name\">SYMB</th><th data-sort=\"name\">YEAR1</th></tr></thead>\n");
+			buffer.write("<table id=\"myTable\" class=\"sortable\"><thead><tr><th data-sort=\"number\" style=\"width:100px;\">RANK</th><th data-sort=\"name\">SYMB</th><th data-sort=\"number\">YEAR1</th></tr></thead>\n");
 
 			buffer.write("<tbody>\n");
 			

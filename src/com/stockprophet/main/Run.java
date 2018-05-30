@@ -167,6 +167,9 @@ public class Run {
 		columns.put(Column.RIGID, "" + 100*metricMap.get(CalculatedMetricType.RIGIDITY_SCORE));
 		columns.put(Column.TURB, "" + 100*metricMap.get(CalculatedMetricType.TURBULANCE_SCORE));
 		
+		columns.put(Column.DAY3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 3))); 
+		columns.put(Column.DAY5, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 5))); 
+		columns.put(Column.WEEK2, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 10))); 
 		columns.put(Column.MONTH1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 20))); 
 		columns.put(Column.MONTH3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 60))); 
 		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
