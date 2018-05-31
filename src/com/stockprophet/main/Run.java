@@ -10,8 +10,10 @@ import com.stockprophet.common.CustomComparators;
 import com.stockprophet.common.Stock;
 import com.stockprophet.common.StockUtil;
 import com.stockprophet.common.StockUtil.CalculatedMetricType;
+import com.stockprophet.common.StockUtil.PriceType;
 import com.stockprophet.html.Column;
 import com.stockprophet.html.GeneratePhp;
+import com.stockprophet.math.AdvancedFinancialMathMethods;
 import com.stockprophet.math.CommonFinancialMathMethods;
 import com.stockprophet.math.CommonLinearAlgebraMethods;
 import com.stockprophet.math.GaussianCalculator;
@@ -167,6 +169,14 @@ public class Run {
 		columns.put(Column.RIGID, "" + 100*metricMap.get(CalculatedMetricType.RIGIDITY_SCORE));
 		columns.put(Column.TURB, "" + 100*metricMap.get(CalculatedMetricType.TURBULANCE_SCORE));
 		
+		List<Double> open = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.OPEN);  
+		List<Double> high = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.HIGH);  
+				
+		double[] metrics = AdvancedFinancialMathMethods.calculateOptimalAndMaximalIntradayReturns(open, high);
+		
+		columns.put(Column.OIDR, "" + metrics[0]);
+		columns.put(Column.MIDR, "" + metrics[1]);
+		
 		columns.put(Column.DAY3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 3))); 
 		columns.put(Column.DAY5, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 5))); 
 		columns.put(Column.WEEK2, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 10))); 
@@ -214,6 +224,6 @@ public class Run {
 	private static String truncate(String nameRaw){
 		String name = nameRaw.replaceAll(",? Inc\\.?", "").replaceAll(" [Cc]orp[a-z\\.]+","").replaceAll("\\(page does not exist\\)","");
 		//You know what? If the column cant handle it, fuck it.
-		return name.length() > 20 ? name.substring(0, 9) + "..." : name;
+		return name.length() > 30 ? name.substring(0, 9) + "..." : name;
 	}
 }

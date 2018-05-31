@@ -9,6 +9,8 @@ public enum Column {
 	LINEAR(true, 0, 99, true),
 	RIGID(true, 0, 99, true),
 	TURB(true, 0, 99, true),
+	OIDR(true, 0, 9, true),
+	MIDR(true, 0, 9, true),
 	DAY3(true, -99, 99, true),
 	DAY5(true, -99, 99, true),
 	WEEK2(true, -99, 99, true),

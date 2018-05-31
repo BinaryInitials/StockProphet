@@ -283,11 +283,31 @@ public class StockUtil {
 		return null;
 	}
 	
+	public enum PriceType {
+		OPEN(1),
+		HIGH(2),
+		LOW(3),
+		CLOSE(4),
+		ADJ(5);
+		
+		int index;
+		
+		PriceType(int index){
+			this.index = index; 
+		}
+		public int getIndex(){
+			return index;
+		}
+			
+	}
+	
 	public static List<Double> getPriceFromFile(String key) {
+		return getPriceFromFile(key, PriceType.ADJ);
+	}
+	public static List<Double> getPriceFromFile(String key, PriceType priceType) {
 		List<Double> prices = new ArrayList<Double>();
 		try {
 			BufferedReader buffer = new BufferedReader(new FileReader(new File("data/" + key + ".csv")));
-			System.out.println("Reading " + key);
 			//Skip headers
 			String line = buffer.readLine();
 			if(line == null || line.startsWith("{")){
@@ -296,8 +316,8 @@ public class StockUtil {
 				return prices;
 			}
 			while((line=buffer.readLine())!=null)
-				if(!line.contains("null"))
-					prices.add(Double.valueOf(line.split(",")[5]));
+				if(!line.contains("null") && line.contains(","))
+					prices.add(Double.valueOf(line.split(",")[priceType.getIndex()]));
 			Collections.reverse(prices);
 			buffer.close();
 		} catch (IOException e) {
@@ -309,4 +329,5 @@ public class StockUtil {
 		}
 		return prices;
 	}
+
 }
