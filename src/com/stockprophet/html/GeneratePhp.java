@@ -332,7 +332,6 @@ public class GeneratePhp {
 			buffer.write("padding: 30px;\n");
 			buffer.write("}\n");
 			buffer.write(".header {\n");
-			buffer.write("padding: 10px 16px;\n");
 			buffer.write("background: #f1f1f1;\n");
 			buffer.write("background: linear-gradient(180deg, #777777, #F1F1F1);\n");
 			buffer.write("color: #f1f1f1;\n");
@@ -353,6 +352,13 @@ public class GeneratePhp {
 			buffer.write("<body>\n");
 			buffer.write("<div class=\"header\" id=\"myHeader\">\n");
 			buffer.write("<ul>\n");
+			
+			/*
+			 * This line allows the settings table to scroll horizontally. 
+			 * It's a wonder that the main table doesn't need it and yet can
+			 * still scroll that way.
+			 */ 
+			buffer.write("<div style=\"overflow-x:auto;\">\n");
 			
 			buffer.write("<table id=\"setting-table\">\n");
 			buffer.write("<thead>\n");
@@ -379,6 +385,9 @@ public class GeneratePhp {
 			buffer.write("</tr>\n");
 			buffer.write("</tbody>\n");
 			buffer.write("</table>\n");
+
+			//Closing the div block that allows the table to move horizontally
+			buffer.write("</div>\n");
 			
 			buffer.write("<div align=\"center\">\n");
 			String cleanTimestamp = formatTimestamp2(timestamp); 
