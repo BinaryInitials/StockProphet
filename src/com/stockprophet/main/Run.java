@@ -1,5 +1,6 @@
 package com.stockprophet.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -11,12 +12,13 @@ import com.stockprophet.common.Stock;
 import com.stockprophet.common.StockUtil;
 import com.stockprophet.common.StockUtil.CalculatedMetricType;
 import com.stockprophet.common.StockUtil.PriceType;
-import com.stockprophet.html.Column;
-import com.stockprophet.html.GeneratePhp;
 import com.stockprophet.math.AdvancedFinancialMathMethods;
 import com.stockprophet.math.CommonFinancialMathMethods;
 import com.stockprophet.math.CommonLinearAlgebraMethods;
 import com.stockprophet.math.GaussianCalculator;
+import com.stockprophet.web.Column;
+import com.stockprophet.web.GenerateJSON;
+import com.stockprophet.web.GeneratePhp;
 
 
 
@@ -26,7 +28,7 @@ public class Run {
 	public static final int TODAY = 0;
 	public static final int YESTERDAY = 1;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		Date tic = new Date();
 
@@ -102,10 +104,13 @@ public class Run {
 		
 		for(int rank=0;rank<sortedColumnsToday.size();rank++){
 			sortedColumnsToday.get(rank).put(Column.DIFF, "" + stockRankDiff.get(sortedColumnsToday.get(rank).get(Column.SYMB)));
-			sortedColumnsToday.get(rank).put(Column.RANKING, "" + (rank+1));
+			sortedColumnsToday.get(rank).put(Column.RANK, "" + (rank+1));
 		}
 		System.out.println("4. Generation Website");
 
+		for(Column column : Column.values())
+			if(column != Column.RANK && column != Column.COMPANY && column != Column.SYMB && column != Column.DIFF)
+				GenerateJSON.generateJsonForMobile(sortedColumnsToday, column);
 		GeneratePhp.writeWeb(sortedColumnsToday);
 		GeneratePhp.writeMobile(sortedColumnsToday);
 		
@@ -119,7 +124,7 @@ public class Run {
 			totalRank.put(row.get(Column.SYMB),0);
 		for(Column column : Column.values())
 			if(
-					column != Column.RANKING && 
+					column != Column.RANK && 
 					column != Column.COMPANY && 
 					column != Column.SYMB && 
 					column != Column.DIFF && 

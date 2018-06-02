@@ -1,7 +1,7 @@
-package com.stockprophet.html;
+package com.stockprophet.web;
 
 public enum Column {
-	RANKING(false, null, null, true),
+	RANK(false, null, null, true),
 	DIFF(false, null, null, true),
 	SYMB(false, null, null, false),
 	COMPANY(false, null, null, false),
