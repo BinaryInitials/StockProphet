@@ -197,7 +197,7 @@ public class Run {
 		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
 		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 250)));
 		columns.put(Column.YEAR3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 750)));
-		columns.put(Column.YEAR5, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 1250)));
+		columns.put(Column.YEAR5, "" + 100*StockUtil.calculateGrowth(prices.subList(0, Run.FIVE_YEARS)));
 		
 		columns.put(Column.PRICE, "" + prices.get(0));
 		
