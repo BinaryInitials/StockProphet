@@ -288,7 +288,8 @@ public class StockUtil {
 		HIGH(2),
 		LOW(3),
 		CLOSE(4),
-		ADJ(5);
+		ADJ(5),
+		VOLUME(6);
 		
 		int index;
 		

@@ -2,7 +2,7 @@ function loadFromJSON(suffix){
 	var container = document.getElementById("content");
 	container.innerHTML = "";
 	var request = new XMLHttpRequest();
-	request.open('GET', 'http://174.104.191.111/stockprophet/stocks_mobile_'+suffix+'.json');
+	request.open('GET', 'stocks_mobile_'+suffix+'.json');
 	request.onload = function() {
 	if (request.status >= 200 && request.status < 400) {
 	  var data = JSON.parse(request.responseText);

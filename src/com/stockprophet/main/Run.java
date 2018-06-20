@@ -24,7 +24,7 @@ import com.stockprophet.web.GeneratePhp;
 
 public class Run {
 	
-	public static final int FIVE_YEARS = 1251;
+	public static final int FIVE_YEARS = 1213;
 	public static final int TODAY = 0;
 	public static final int YESTERDAY = 1;
 	
@@ -176,7 +176,14 @@ public class Run {
 		
 		List<Double> open = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.OPEN);  
 		List<Double> high = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.HIGH);  
-				
+		List<Double> low = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.LOW);  
+		List<Double> volume = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.VOLUME);  
+		
+		double noise = 200*(high.get(high.size()-1) - low.get(low.size()-1))/((high.get(high.size()-1) + low.get(low.size()-1)));
+		columns.put(Column.NOISE, "" + noise);
+		double marketCap = Math.log10(volume.get(volume.size()-1) * prices.get(0));
+		columns.put(Column.MKTCAP, "" + marketCap);
+		
 		double[] metrics = AdvancedFinancialMathMethods.calculateOptimalAndMaximalIntradayReturns(open, high);
 		
 		columns.put(Column.OIDR, "" + metrics[0]);
@@ -214,11 +221,18 @@ public class Run {
 		double consistency = Math.sqrt(consistency1 * consistency2);
 		
 		columns.put(Column.CONF, "" + 100*consistencyMetrics.get(3));
+		
 		columns.put(Column.MOMENT3, "" + 1000*(3*coefs3.get(3)*clone.size()*clone.size() + 2 * coefs3.get(2) * clone.size() + coefs3.get(1)));
 		columns.put(Column.INERT3, "" + 1000000*(6*coefs3.get(3)*clone.size() + 2 * coefs3.get(2)));
 
 		columns.put(Column.MOMENT5, "" + 1000*(5*coefs5.get(5)*clone.size()*clone.size()*clone.size()*clone.size() + 4*coefs5.get(4)*clone.size()*clone.size()*clone.size() + 3*coefs5.get(3)*clone.size()*clone.size() + 2 * coefs5.get(2) * clone.size() + coefs5.get(1)));
 		columns.put(Column.INERT5, "" + 1000000*(20*coefs5.get(5)*clone.size()*clone.size()*clone.size() + 12*coefs5.get(4)*clone.size()*clone.size() + 6*coefs5.get(3)*clone.size() + 2*coefs5.get(2)));
+
+		columns.put(Column.MOMENT7, "" + 1000*(5*coefs5.get(5)*clone.size()*clone.size()*clone.size()*clone.size() + 4*coefs5.get(4)*clone.size()*clone.size()*clone.size() + 3*coefs5.get(3)*clone.size()*clone.size() + 2 * coefs5.get(2) * clone.size() + coefs5.get(1)));
+		columns.put(Column.INERT7, "" + 1000000*(20*coefs5.get(5)*clone.size()*clone.size()*clone.size() + 12*coefs5.get(4)*clone.size()*clone.size() + 6*coefs5.get(3)*clone.size() + 2*coefs5.get(2)));
+
+		columns.put(Column.MOMENT9, "" + 1000*(5*coefs5.get(5)*clone.size()*clone.size()*clone.size()*clone.size() + 4*coefs5.get(4)*clone.size()*clone.size()*clone.size() + 3*coefs5.get(3)*clone.size()*clone.size() + 2 * coefs5.get(2) * clone.size() + coefs5.get(1)));
+		columns.put(Column.INERT9, "" + 1000000*(20*coefs5.get(5)*clone.size()*clone.size()*clone.size() + 12*coefs5.get(4)*clone.size()*clone.size() + 6*coefs5.get(3)*clone.size() + 2*coefs5.get(2)));
 
 		columns.put(Column.STAB, "" + 100*lengthNormalized);
 		columns.put(Column.CONS, ""+ 100*consistency);

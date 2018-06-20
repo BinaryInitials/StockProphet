@@ -26,4 +26,6 @@ cp *.json $folder/
 
 echo "Website creation successful."
 cat $folder/index.php | sed '1,/?>/d'> $folder/index.html
+cat $folder/mobile.php | sed '1,/?>/d'> $folder/mobile.html
+
 open $folder/index.html

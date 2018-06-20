@@ -9,6 +9,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +35,8 @@ public class GeneratePhp {
 		buffer.write("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
 		buffer.write("fwrite($file,\"|\");\n");
 		buffer.write("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
-		buffer.write("fwrite($file,'<br>\n');\n");
+		buffer.write("fwrite($file,'<br>');\n");
+		buffer.write("fwrite($file,\"\\\n\")\n");
 		buffer.write("fclose( $file );\n");
 		buffer.write("?>\n");
 		
@@ -48,6 +53,37 @@ public class GeneratePhp {
 		buffer.write("</head>\n");
 		buffer.write("<body>\n");
 		buffer.write("<div class=\"header\" id=\"myHeader\">\n");
+		
+		//This is where the navbar will be in place
+		buffer.write("<div class=\"navbar\" id=\"myTopnav\">\n");
+		buffer.write("<div class=\"dropdown\">\n");
+		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Release<i class=\"fa fa-caret-down\"></i></div>\n");
+		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
+		
+		Path path = Paths.get("data/AAPL.csv");
+		BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
+		buffer.write("<a href=\"#\">Data: " + attr.creationTime().toString() + "</a>\n");
+		Date date = new Date();
+		buffer.write("<a href=\"#\">Website: " + date.toString() + "</a>\n");
+		buffer.write("</div>\n");
+		buffer.write("</div>\n");
+		buffer.write("<a href=\"MeetTheTeam.php\">About</a>\n");
+		buffer.write("<div class=\"dropdown\">\n");
+		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Contact<i class=\"fa fa-caret-down\"></i></div>\n");
+		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
+		buffer.write("<a href=\"mailto:stockprophetcontact@gmail.com\">stockprophetcontact@gmail.com</a>\n");
+		buffer.write("</div>\n");
+		buffer.write("</div>\n");
+		buffer.write("<div class=\"dropdown\">\n");
+		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Metrics<i class=\"fa fa-caret-down\"></i></div>\n");
+		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
+		
+		for(Column column : Column.values())
+			if(column.isFilterable())
+				buffer.write("<a href=\"#\" onkeyup=\"loadFromJSON(" + column.toString() + ")\">" + column.toString() + "</a>\n");
+		buffer.write("</div>\n");
+		buffer.write("</div>\n");
+		
 		buffer.write("<ul>\n");
 		
 		buffer.write("<div id=\"search\">\n");
@@ -195,7 +231,11 @@ public class GeneratePhp {
 						tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" +  data.get(row).get(Column.COMPANY) + "</td>";
 					}else{
 						if(data.get(row).get(column) != null){
-							tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.1f", Double.valueOf(data.get(row).get(column))) + "</td>";
+							if(column == Column.OIDR || column == Column.MIDR || column == Column.MKTCAP || column == Column.PRICE){
+								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
+							}else{
+								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.1f", Double.valueOf(data.get(row).get(column))) + "</td>";
+							}
 						}else{
 							tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">null</td>";
 						}
