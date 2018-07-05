@@ -1,13 +1,20 @@
 function dropDown() {
-    document.getElementById("myDropdown").classList.toggle("show");
+    document.getElementById("myDropDown").classList.toggle("show");
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      openDropdown.style.display = "";
+    }
 }
 
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(e) {
-  if (!e.target.matches('.dropbtn')) {
-    var myDropdown = document.getElementById("myDropdown");
-      if (myDropdown.classList.contains('show')) {
-        myDropdown.classList.remove('show');
-      }
-  }
+window.onclick = function(event) {
+    if ($(event.target).attr("onclick") && $(event.target).attr("onclick").toString().match('.*loadFromJSON.*') !== null) {
+	    var dropdowns = document.getElementsByClassName("dropdown-content");
+	    var i;
+	    for (i = 0; i < dropdowns.length; i++) {
+    		var openDropdown = dropdowns[i];
+			openDropdown.style.display = "none";
+	    }
+	}
 }

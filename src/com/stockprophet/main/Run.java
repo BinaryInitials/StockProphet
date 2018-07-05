@@ -18,7 +18,7 @@ import com.stockprophet.math.CommonLinearAlgebraMethods;
 import com.stockprophet.math.GaussianCalculator;
 import com.stockprophet.web.Column;
 import com.stockprophet.web.GenerateJSON;
-import com.stockprophet.web.GeneratePhp;
+import com.stockprophet.web.GenerateHtml;
 
 
 
@@ -111,8 +111,8 @@ public class Run {
 		for(Column column : Column.values())
 			if(column != Column.RANK && column != Column.COMPANY && column != Column.SYMB && column != Column.DIFF)
 				GenerateJSON.generateJsonForMobile(sortedColumnsToday, column);
-		GeneratePhp.writeWeb(sortedColumnsToday);
-		GeneratePhp.writeMobile(sortedColumnsToday);
+		GenerateHtml.writeWeb(sortedColumnsToday);
+		GenerateHtml.writeMobile();
 		
 		Date toc = new Date();
 		System.out.println(toc.getTime() - tic.getTime() + " msec");
@@ -167,6 +167,7 @@ public class Run {
 		columns.put(Column.COMPANY, truncate(stock.getCompany()));
 
 		List<Double> prices = stock.getPrices().subList(startingPoint, FIVE_YEARS-1+startingPoint);
+		
 		
 		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateMetrics(prices);
 

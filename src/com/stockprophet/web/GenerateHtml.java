@@ -13,32 +13,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
-public class GeneratePhp {
+public class GenerateHtml {
 	
 	
-	public static void writeMobile(List<HashMap<Column, String>> data) throws IOException{
+	public static void writeMobile() throws IOException{
 		File file = new File("mobile.php");
+		List<String> phpLogCode = loadPhpLog(false);
 		file.createNewFile();
 		FileWriter writer = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter buffer = new BufferedWriter(writer);
 		
-		buffer.write("<?php\n");
-		buffer.write("$file = fopen(\"stockprophet_mobile_log.html\", \"a\") or die(\"Unable to open file!\");\n");
-		buffer.write("fwrite($file, date('Y-m-d|H:i:s'));\n");
-		buffer.write("fwrite($file,\"|\");\n");
-		buffer.write("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
-		buffer.write("fwrite($file,\"|\");\n");
-		buffer.write("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
-		buffer.write("fwrite($file,'<br>');\n");
-		buffer.write("fwrite($file,\"\\\n\")\n");
-		buffer.write("fclose( $file );\n");
-		buffer.write("?>\n");
+		for(String phpLog : phpLogCode)
+			buffer.write(phpLog);
 		
 		buffer.write("<!DOCTYPE html>\n");
 		buffer.write("<html>\n");
@@ -62,7 +57,15 @@ public class GeneratePhp {
 		
 		Path path = Paths.get("data/AAPL.csv");
 		BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-		buffer.write("<a href=\"#\">Data: " + attr.creationTime().toString() + "</a>\n");
+		String dataTimestamp = attr.creationTime().toString().replaceAll("([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2}).*", "$1 $2");
+		try {
+			SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			buffer.write("<a href=\"#\">Data: " + sdf.parse(dataTimestamp).toString() + "</a>\n");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}  
+		
 		Date date = new Date();
 		buffer.write("<a href=\"#\">Website: " + date.toString() + "</a>\n");
 		buffer.write("</div>\n");
@@ -80,7 +83,8 @@ public class GeneratePhp {
 		
 		for(Column column : Column.values())
 			if(column.isFilterable())
-				buffer.write("<a href=\"#\" onkeyup=\"loadFromJSON(" + column.toString() + ")\">" + column.toString() + "</a>\n");
+				buffer.write("<a href=\"#\" onkeyup=\"loadFromJSON('" + column.toString() + "')\">" + column.toString() + "</a>\n");
+		buffer.write("</div>\n");
 		buffer.write("</div>\n");
 		buffer.write("</div>\n");
 		
@@ -107,25 +111,34 @@ public class GeneratePhp {
 		buffer.close();
 	}
 	
+	public static List<String> loadPhpLog(boolean isMobile){
+		List<String> phpLogCode = new ArrayList<String>();
+		String fileName = isMobile ? "stockprophet_mobile_log.html" : "stockprophet_log.html";
+		phpLogCode.add("<?php\n");
+		phpLogCode.add("$file = fopen(\"" + fileName + "\", \"a\") or die(\"Unable to open file!\");\n");
+		phpLogCode.add("fwrite($file, date('Y-m-d|H:i:s'));\n");
+		phpLogCode.add("fwrite($file,\"|\");\n");
+		phpLogCode.add("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
+		phpLogCode.add("fwrite($file,\"|\");\n");
+		phpLogCode.add("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
+		phpLogCode.add("fwrite($file,'<br>\n');\n");
+		phpLogCode.add("fclose( $file );\n");
+		phpLogCode.add("?>\n");
+		return phpLogCode;
+	}
+	
+	
 	public static void writeWeb(List<HashMap<Column, String>> data) {
 		File file = new File("index.php");
 		Date timestamp = new Date();
+		List<String> phpLogCode = loadPhpLog(false);
 		try{
 			file.createNewFile();
 			FileWriter writer = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter buffer = new BufferedWriter(writer);
-			
-			buffer.write("<?php\n");
-			buffer.write("$file = fopen(\"stockprophet_log.html\", \"a\") or die(\"Unable to open file!\");\n");
-			buffer.write("fwrite($file, date('Y-m-d|H:i:s'));\n");
-			buffer.write("fwrite($file,\"|\");\n");
-			buffer.write("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
-			buffer.write("fwrite($file,\"|\");\n");
-			buffer.write("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
-			buffer.write("fwrite($file,'<br>\n');\n");
-			buffer.write("fclose( $file );\n");
-			buffer.write("?>\n");
-			
+			for(String phpLog : phpLogCode)
+				buffer.write(phpLog);
+						
 			buffer.write("<!DOCTYPE html>\n");
 			buffer.write("<html>\n");
 			buffer.write("<head>\n");
