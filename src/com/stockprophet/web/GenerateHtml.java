@@ -70,7 +70,15 @@ public class GenerateHtml {
 		buffer.write("<a href=\"#\">Website: " + date.toString() + "</a>\n");
 		buffer.write("</div>\n");
 		buffer.write("</div>\n");
-		buffer.write("<a href=\"MeetTheTeam.php\">About</a>\n");
+		
+		buffer.write("<div class=\"dropdown\">\n");
+		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">About<i class=\"fa fa-caret-down\"></i></div>\n");
+		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
+		buffer.write("<a href=\"MeetTheTeam.php\">Meet The Team</a>\n");
+		buffer.write("</div>\n");
+		buffer.write("</div>\n");
+		
+		
 		buffer.write("<div class=\"dropdown\">\n");
 		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Contact<i class=\"fa fa-caret-down\"></i></div>\n");
 		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
@@ -83,7 +91,7 @@ public class GenerateHtml {
 		
 		for(Column column : Column.values())
 			if(column.isFilterable())
-				buffer.write("<a href=\"#\" onkeyup=\"loadFromJSON('" + column.toString() + "')\">" + column.toString() + "</a>\n");
+				buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + column.toString() + "')\">" + column.toString() + "</a>\n");
 		buffer.write("</div>\n");
 		buffer.write("</div>\n");
 		buffer.write("</div>\n");
