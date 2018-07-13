@@ -228,8 +228,19 @@ public class Run {
 		columns.put(Column.MOMENT3, "" + 1000*(3*coefs3.get(3)*clone.size()*clone.size() + 2 * coefs3.get(2) * clone.size() + coefs3.get(1)));
 		columns.put(Column.INERT3, "" + 1000000*(2*3*coefs3.get(3)*clone.size() + 2*coefs3.get(2)));
 
-		columns.put(Column.MOMENT5, "" + 1000*(5*coefs5.get(5)*clone.size()*clone.size()*clone.size()*clone.size() + 4*coefs5.get(4)*clone.size()*clone.size()*clone.size() + 3*coefs5.get(3)*clone.size()*clone.size() + 2 * coefs5.get(2) * clone.size() + coefs5.get(1)));
-		columns.put(Column.INERT5, "" + 1000000*(5*4*coefs5.get(5)*clone.size()*clone.size()*clone.size() + 4*3*coefs5.get(4)*clone.size()*clone.size() + 3*2*coefs5.get(3)*clone.size() + 2*1*coefs5.get(2)));
+		columns.put(Column.MOMENT5, "" + 1000*(
+				5*coefs5.get(5)*Math.pow(clone.size(),  4.0) + 
+				4*coefs5.get(4)*Math.pow(clone.size(), 3.0) + 
+				3*coefs5.get(3)*Math.pow(clone.size(), 2.0) + 
+				2*coefs5.get(2)*clone.size() +
+				1*coefs5.get(1)
+				));
+		columns.put(Column.INERT5, "" + 1000000*(
+				5*4*coefs5.get(5)*Math.pow(clone.size(), 3.0) + 
+				4*3*coefs5.get(4)*Math.pow(clone.size(), 2.0) + 
+				3*2*coefs5.get(3)*clone.size() + 
+				2*1*coefs5.get(2)
+				));
 
 		columns.put(Column.MOMENT7, "" + 1000*(
 				7*coefs7.get(7)*Math.pow(clone.size(), 6.0) + 
