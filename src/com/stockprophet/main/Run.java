@@ -293,6 +293,6 @@ public class Run {
 	private static String truncate(String nameRaw){
 		String name = nameRaw.replaceAll(",? Inc\\.?", "").replaceAll(" [Cc]orp[a-z\\.]+","").replaceAll("\\(page does not exist\\)","");
 		//You know what? If the column cant handle it, fuck it.
-		return name.length() > 30 ? name.substring(0, 9) + "..." : name;
+		return name.length() > 30 ? name.substring(0, 27) + "..." : name;
 	}
 }

@@ -219,7 +219,7 @@ public class StockUtil {
 	public static HashMap<String, String> cleanMap(HashMap<String, String> map){
 		HashMap<String, String> cleanMap = new HashMap<String, String>();
 		for(String key : map.keySet())
-			cleanMap.put(key, map.get(key).replaceAll("\\(.*\\)", ""));
+			cleanMap.put(key, map.get(key).replaceAll("\\(.*\\)", "").replaceAll("&#39;", "'").replaceAll(".(Inc|Corp)(\\.|$)","").replaceAll(" Corporation","").replaceAll(",$",""));
 		return cleanMap;
 	}
 	
@@ -245,9 +245,8 @@ public class StockUtil {
 			BufferedReader bf = new BufferedReader(new InputStreamReader(url.openStream()));
 			String newLine = "";
 			List<String> lines = new ArrayList<String>();
-			while((newLine = bf.readLine()) != null){
+			while((newLine = bf.readLine()) != null)
 				lines.add(newLine.replaceAll("&amp;", "&"));
-			}
 			for(int i=0; i<lines.size();i++){
 				if(indexType == IndexType.NASDAQ100){
 					if(lines.get(i).matches(IndexType.getFilter(indexType))){
@@ -260,10 +259,14 @@ public class StockUtil {
 					String key = "";
 					String value = "";
 					if(lines.get(i).matches(IndexType.getFilter(indexType)) && i < lines.size()-1){
-						key = lines.get(i).replaceAll(".*>([A-Z][A-Z]*)<.*", "$1");
-						value = lines.get(i+1).replaceAll("<td><a href=\".*\" title=\"", "").replaceAll("\">.*","").replaceAll("\".*", "").replaceAll("&amp;", "&");
+						key = lines.get(i).replaceAll(".*>([A-Z]+)<.*", "$1");
+						if(lines.get(i+1).matches(".*title.*")){
+							value = lines.get(i+1).replaceAll("<td><a href=\".*\" title=\"", "").replaceAll("\">.*","").replaceAll("\".*", "").replaceAll("&amp;", "&");
+						}else if(lines.get(i+2).matches(".*title.*")){
+							value = lines.get(i+2).replaceAll("<td><a href=\".*\" title=\"", "").replaceAll("\">.*","").replaceAll("\".*", "").replaceAll("&amp;", "&");
+						}
 						map.put(key, value);
-					}else if(lines.get(i).equals("/table>")){
+					}else if(lines.get(i).endsWith("/table>")){
 						break;
 					}
 				}else if(indexType == IndexType.DOWJONES){
