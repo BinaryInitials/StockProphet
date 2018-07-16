@@ -81,14 +81,14 @@ th, td {
 	color: #fff;
 	border-radius: 3px;
 	padding: 10px 10px 5px 10px;
-	max-width: 10em;
+	max-width: 20em;
 	min-width: 3em;
 	border-top: 1px solid #000000;
 	border-bottom: 1px solid #000000;
 	border-left: 1px solid #000000;
 	border-right: 1px solid #000000;
 
-  	font-size: 20px;
+  	font-size: 18px;
   	letter-spacing: .05em;
   	list-style-type: none;
   	text-shadow: 2px 2px 1px #000000;
