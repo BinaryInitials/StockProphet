@@ -5,7 +5,7 @@ public enum Column {
 	DIFF(false, null, null, true),
 	SYMB(false, null, null, false),
 	COMPANY(false, null, null, false),
-	PRICE(true, 0, 9999, true),
+	PRICE(true, 0, 999999, true),
 	NOISE(true, 0, 99, true),
 	MKTCAP(true, 0, 99, true),
 	LINEAR(true, 0, 99, true),
@@ -20,8 +20,8 @@ public enum Column {
 	MONTH3(true, -99, 99, true),
 	MONTH6(true, -999,999, true),
 	YEAR1(true, -999,999, true),
-	YEAR3(true, -999,999, true),
-	YEAR5(true, -999,999, true),
+	YEAR3(true, -9999,9999, true),
+	YEAR5(true, -9999,9999, true),
 	MOMENT3(true, -999, 999, true),
 	INERT3(true, -999, 999, true),
 	MOMENT5(true, -999, 999, true),
@@ -30,9 +30,9 @@ public enum Column {
 	INERT7(true, -999, 999, true),
 	MOMENT9(true, -999, 999, true),
 	INERT9(true, -999, 999, true),
-	STAB(true, 0, 99, true),
-	CONF(true, 0, 99, true),
-	CONS(true, 0, 99, true);
+	STAB(true, 0, 100, true),
+	CONF(true, 0, 100, true),
+	CONS(true, 0, 100, true);
 	
 	private boolean isFilterable;
 	private boolean isNumber;
