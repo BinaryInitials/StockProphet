@@ -46,6 +46,10 @@ public class GenerateJSON {
 						tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" + symbol + "</td>";
 					}else if(column == Column.COMPANY){
 						tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" +  data.get(row).get(Column.COMPANY) + "</td>";
+					}else if(column == Column.SECTOR){
+						tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\">" +  data.get(row).get(Column.SECTOR) + "</td>";
+					}else if(column == Column.INDUSTRY){
+						tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
 					}else{
 						if(data.get(row).get(column) != null){
 							tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.1f", Double.valueOf(data.get(row).get(column))) + "</td>";

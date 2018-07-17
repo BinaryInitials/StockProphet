@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.stockprophet.common.CustomComparators;
-import com.stockprophet.common.Stock;
 import com.stockprophet.common.StockUtil;
 import com.stockprophet.common.StockUtil.CalculatedMetricType;
 import com.stockprophet.common.StockUtil.PriceType;
@@ -17,14 +16,14 @@ import com.stockprophet.math.CommonFinancialMathMethods;
 import com.stockprophet.math.CommonLinearAlgebraMethods;
 import com.stockprophet.math.GaussianCalculator;
 import com.stockprophet.web.Column;
-import com.stockprophet.web.GenerateJSON;
 import com.stockprophet.web.GenerateHtml;
+import com.stockprophet.web.GenerateJSON;
 
 
 
 public class Run {
 	
-	public static final int FIVE_YEARS = 1213;
+	public static final int FIVE_YEARS = 1201;
 	public static final int TODAY = 0;
 	public static final int YESTERDAY = 1;
 	
@@ -33,10 +32,10 @@ public class Run {
 		Date tic = new Date();
 
 		System.out.println("1. Loading Index");
-		HashMap<String, String> indexMap = GenerateCommonIndexes.generateCommonIndexes();
+		HashMap<String, String[]> indexMap = GenerateCommonIndexes.generateCommonIndexes();
 		
 		System.out.println("2. Data Acquisition");
-		List<Stock> stocks = new ArrayList<Stock>();
+		HashMap<String, List<Double>> stocks = new HashMap<String, List<Double>>();
 		HashMap<String, Integer> yesterdaysRank = new HashMap<String, Integer>();
 		HashMap<String, Integer> stockRankDiff = new HashMap<String, Integer>();
 		
@@ -52,21 +51,20 @@ public class Run {
 				System.out.println("Not enough data points for " + key + ": " + prices.size());
 				continue;
 			}
-			stocks.add(new Stock(key, indexMap.get(key), prices));
+			stocks.put(key, prices);
 		}
-		
 		
 		System.out.println("3. Calculate Metrics");
 		//calculate metrics
-		for(Stock stock : stocks){
-			HashMap<Column, String> columnToday = populateColumns(stock, TODAY);
+		for(String key : stocks.keySet()){
+			HashMap<Column, String> columnToday = populateColumns(key, indexMap.get(key), stocks.get(key), TODAY);
 			if(columnToday != null){
 				columnsToday.add(columnToday);
 			}else{
-				System.out.println("Error found for " + stock.getSymbol());
+				System.out.println("Error found for " + key);
 			}
 
-			HashMap<Column, String> columnYesterday = populateColumns(stock, YESTERDAY);
+			HashMap<Column, String> columnYesterday = populateColumns(key, indexMap.get(key), stocks.get(key), YESTERDAY);
 			if(columnYesterday != null){
 				columnsYesterday.add(columnYesterday);
 			}
@@ -108,9 +106,13 @@ public class Run {
 		}
 		System.out.println("4. Generation Website");
 
-		for(Column column : Column.values())
-			if(column != Column.RANK && column != Column.COMPANY && column != Column.SYMB && column != Column.DIFF)
-				GenerateJSON.generateJsonForMobile(sortedColumnsToday, column);
+		
+				
+		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.DAY5);
+		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.MONTH1);
+		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.MONTH6);
+		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR1);
+		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR5);
 		GenerateHtml.writeWeb(sortedColumnsToday);
 		GenerateHtml.writeMobile();
 		
@@ -126,6 +128,8 @@ public class Run {
 			if(
 					column != Column.RANK && 
 					column != Column.COMPANY && 
+					column != Column.SECTOR && 
+					column != Column.INDUSTRY && 
 					column != Column.SYMB && 
 					column != Column.DIFF && 
 					column != Column.PRICE
@@ -161,12 +165,14 @@ public class Run {
 	}
 	
 	
-	public static HashMap<Column, String> populateColumns(Stock stock, int startingPoint){
+	public static HashMap<Column, String> populateColumns(String symbol, String[] properties, List<Double> allPrices, int startingPoint){
 		HashMap<Column, String> columns = new HashMap<Column, String>();
-		columns.put(Column.SYMB, stock.getSymbol());
-		columns.put(Column.COMPANY, truncate(stock.getCompany()));
-
-		List<Double> prices = stock.getPrices().subList(startingPoint, FIVE_YEARS-1+startingPoint);
+		columns.put(Column.SYMB, symbol);
+		columns.put(Column.COMPANY, truncate(properties[0]));
+		columns.put(Column.SECTOR, properties[1]);
+		columns.put(Column.INDUSTRY, properties[2]);
+		
+		List<Double> prices = allPrices.subList(startingPoint, FIVE_YEARS-1+startingPoint);
 		
 		
 		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateMetrics(prices);
@@ -175,10 +181,10 @@ public class Run {
 		columns.put(Column.RIGID, "" + 100*metricMap.get(CalculatedMetricType.RIGIDITY_SCORE));
 		columns.put(Column.TURB, "" + 100*metricMap.get(CalculatedMetricType.TURBULANCE_SCORE));
 		
-		List<Double> open = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.OPEN);  
-		List<Double> high = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.HIGH);  
-		List<Double> low = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.LOW);  
-		List<Double> volume = StockUtil.getPriceFromFile(stock.getSymbol(), PriceType.VOLUME);  
+		List<Double> open = StockUtil.getPriceFromFile(symbol, PriceType.OPEN);  
+		List<Double> high = StockUtil.getPriceFromFile(symbol, PriceType.HIGH);  
+		List<Double> low = StockUtil.getPriceFromFile(symbol, PriceType.LOW);  
+		List<Double> volume = StockUtil.getPriceFromFile(symbol, PriceType.VOLUME);  
 		
 		double noise = 200*(high.get(high.size()-1) - low.get(low.size()-1))/((high.get(high.size()-1) + low.get(low.size()-1)));
 		columns.put(Column.NOISE, "" + noise);
@@ -292,7 +298,6 @@ public class Run {
 	
 	private static String truncate(String nameRaw){
 		String name = nameRaw.replaceAll(",? Inc\\.?", "").replaceAll(" [Cc]orp[a-z\\.]+","").replaceAll("\\(page does not exist\\)","");
-		//You know what? If the column cant handle it, fuck it.
 		return name.length() > 30 ? name.substring(0, 27) + "..." : name;
 	}
 }

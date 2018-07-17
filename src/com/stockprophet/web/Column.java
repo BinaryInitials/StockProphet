@@ -5,6 +5,8 @@ public enum Column {
 	DIFF(false, null, null, true),
 	SYMB(false, null, null, false),
 	COMPANY(false, null, null, false),
+	SECTOR(false, null, null, false),
+	INDUSTRY(false, null, null, false),
 	PRICE(true, 0, 1000000, true),
 	NOISE(true, 0, 99, true),
 	MKTCAP(true, 0, 99, true),

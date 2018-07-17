@@ -216,11 +216,84 @@ public class StockUtil {
 		return PeriodType.getConstants(periodType).length+1;
 	}
 	
-	public static HashMap<String, String> cleanMap(HashMap<String, String> map){
-		HashMap<String, String> cleanMap = new HashMap<String, String>();
+	public static HashMap<String, String[]> cleanMap(HashMap<String, String[]> map){
+		HashMap<String, String[]> cleanMap = new HashMap<String, String[]>();
 		for(String key : map.keySet())
-			cleanMap.put(key, map.get(key).replaceAll("\\(.*\\)", "").replaceAll("&#39;", "'").replaceAll(".(Inc|Corp)(\\.|$)","").replaceAll(" Corporation","").replaceAll(",$",""));
+			cleanMap.put(key, 
+					new String[]{
+						map.get(key)[0].
+								replaceAll("\\(.*\\)", "").
+								replaceAll("&#39;", "'").
+								replaceAll("&amp;","&").
+								replaceAll(".(Inc|Corp)(\\.|$)","").
+								replaceAll(" Corporation","").
+								replaceAll(",$",""), 
+						map.get(key)[1], 
+						map.get(key)[2].replaceAll("&amp;", "&")
+								});
 		return cleanMap;
+	}
+	
+	public static HashMap<String, String[]> generateSPwithSectorsMap() {
+		HashMap<String, String[]> map = new HashMap<String, String[]>();
+		URL url;
+		List<IndexType> indices = new ArrayList<IndexType>();
+		indices.add(IndexType.SP400);
+		indices.add(IndexType.SP500);
+		for(IndexType indexType : indices){
+			try {
+				url = new URL(IndexType.getUrl(indexType));
+				BufferedReader bf = new BufferedReader(new InputStreamReader(url.openStream()));
+				String newLine = "";
+				List<String> lines = new ArrayList<String>();
+				while((newLine = bf.readLine()) != null){
+					if(newLine.toLowerCase().contains("sec_filing")){
+						while(!(newLine = bf.readLine()).contains("<tr>")){}
+						break;
+					}
+				}
+				while((newLine = bf.readLine()) != null){
+					if(!newLine.contains("</table>")){
+						String clean = newLine.replaceAll("<[^>]+>", "");
+						if(!clean.isEmpty())
+							lines.add(clean);
+					}
+				}
+				bf.close();
+				for(int i=0; i<lines.size();i++){
+					String key = "";
+					String company = "";
+					String sector = "";
+					String industry = "";
+					if(indexType == IndexType.SP400){
+						if(lines.get(i).equals("view")){
+							key = lines.get(i-4);
+							company = lines.get(i-3);
+							sector = lines.get(i-2);
+							industry = lines.get(i-1);
+							map.put(key, new String[]{company, sector, industry});
+						}else if(lines.get(i).endsWith("</table>")){
+							break;
+						}
+					}else if(indexType == IndexType.SP500){
+						if(lines.get(i).equals("reports")){
+							key = lines.get(i-2);
+							company = lines.get(i-1);
+							sector = lines.get(i+1);
+							industry = lines.get(i+2);
+							map.put(key, new String[]{company, sector, industry});
+						}else if(lines.get(i).endsWith("</table>")){
+							break;
+						}
+					}
+				}
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		}
+		return map;
 	}
 	
 	public static HashMap<String, String> generateMap(IndexType indexType) {

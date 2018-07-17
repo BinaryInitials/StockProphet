@@ -89,9 +89,12 @@ public class GenerateHtml {
 		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Metrics<i class=\"fa fa-caret-down\"></i></div>\n");
 		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
 		
-		for(Column column : Column.values())
-			if(column.isFilterable())
-				buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + column.toString() + "')\">" + column.toString() + "</a>\n");
+		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.DAY5.toString() + "')\">" + Column.DAY5.toString() + "</a>\n");
+		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.MONTH1.toString() + "')\">" + Column.MONTH1.toString() + "</a>\n");
+		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.MONTH6.toString() + "')\">" + Column.MONTH6.toString() + "</a>\n");
+		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.YEAR1.toString() + "')\">" + Column.YEAR1.toString() + "</a>\n");
+		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.YEAR5.toString() + "')\">" + Column.YEAR5.toString() + "</a>\n");
+		
 		buffer.write("</div>\n");
 		buffer.write("</div>\n");
 		buffer.write("</div>\n");
@@ -249,7 +252,11 @@ public class GenerateHtml {
 					}else if(column == Column.SYMB){
 						tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" + symbol + "</td>";
 					}else if(column == Column.COMPANY){
-						tableRow += "<td style=\"background-color: #" + convertToColor(color) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" +  data.get(row).get(Column.COMPANY) + "</td>";
+						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" +  data.get(row).get(Column.COMPANY) + "</td>";
+					}else if(column == Column.SECTOR){
+						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" +  data.get(row).get(Column.SECTOR) + "</td>";
+					}else if(column == Column.INDUSTRY){
+						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
 					}else{
 						if(data.get(row).get(column) != null){
 							if(column == Column.OIDR || column == Column.MIDR || column == Column.MKTCAP || column == Column.PRICE){
