@@ -30,8 +30,6 @@ public enum Column {
 	INERT5(true, -999, 999, true),
 	MOMENT7(true, -999, 999, true),
 	INERT7(true, -999, 999, true),
-	MOMENT9(true, -999, 999, true),
-	INERT9(true, -999, 999, true),
 	STAB(true, 0, 100, true),
 	CONF(true, 0, 100, true),
 	CONS(true, 0, 100, true);

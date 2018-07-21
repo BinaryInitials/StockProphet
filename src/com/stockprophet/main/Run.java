@@ -219,7 +219,6 @@ public class Run {
     	List<Double> coefs3 = GaussianCalculator.calculateCoefficients(normalized, 3);
     	List<Double> coefs5 = GaussianCalculator.calculateCoefficients(normalized, 5);
     	List<Double> coefs7 = GaussianCalculator.calculateCoefficients(normalized, 7);
-    	List<Double> coefs9 = GaussianCalculator.calculateCoefficients(normalized, 9);
 
     	List<Double> pricesMDA5 = CommonFinancialMathMethods.calculateMovingAverage(prices);
     	List<Double> pricesMDA5Normalized = GaussianCalculator.normalizeTo0and1(pricesMDA5);
@@ -264,30 +263,6 @@ public class Run {
 				4*3*coefs7.get(4)*Math.pow(clone.size(), 2.0) + 
 				3*2*coefs7.get(3)*clone.size() + 
 				2*1*coefs7.get(2) 
-				));
-		
-		
-		columns.put(Column.MOMENT9, "" + 1000*(
-				9*coefs9.get(9)*Math.pow(clone.size(), 8.0) + 
-				8*coefs9.get(8)*Math.pow(clone.size(), 7.0) +
-				7*coefs9.get(7)*Math.pow(clone.size(), 6.0) +
-				6*coefs9.get(6)*Math.pow(clone.size(), 5.0) +
-				5*coefs9.get(5)*Math.pow(clone.size(), 4.0) +
-				4*coefs9.get(4)*Math.pow(clone.size(), 3.0) +
-				3*coefs9.get(3)*Math.pow(clone.size(), 2.0) +
-				2*coefs9.get(2)*clone.size() + 
-				1*coefs9.get(1)
-			));
-		columns.put(Column.INERT9, "" + 1000000*(20*coefs5.get(5)*clone.size()*clone.size()*clone.size() + 12*coefs5.get(4)*clone.size()*clone.size() + 6*coefs5.get(3)*clone.size() + 2*coefs5.get(2)));
-		columns.put(Column.INERT9, "" + 1000000*(
-				9*8*coefs9.get(9)*Math.pow(clone.size(), 7.0) + 
-				8*7*coefs9.get(8)*Math.pow(clone.size(), 6.0) + 
-				7*6*coefs9.get(7)*Math.pow(clone.size(), 5.0) + 
-				6*5*coefs9.get(6)*Math.pow(clone.size(), 4.0) + 
-				5*4*coefs9.get(5)*Math.pow(clone.size(), 3.0) + 
-				4*3*coefs9.get(4)*Math.pow(clone.size(), 2.0) + 
-				3*2*coefs9.get(3)*clone.size() + 
-				2*1*coefs9.get(2) 
 				));
 		
 		columns.put(Column.STAB, "" + 100*lengthNormalized);

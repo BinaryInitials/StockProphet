@@ -23,5 +23,4 @@ tr[i].style.display = "none"
 }
 }
 }
-filterFunction();
 }
