@@ -90,9 +90,11 @@ public class Run {
 				bufferWriter.write(header);
 				String line;
 				int lineCounter = 0;
-				while((line=bufferReader.readLine())!=null)
+				while((line=bufferReader.readLine())!=null){
 					for(List<Double> yHat : yHats)
-						bufferWriter.write(line + "," + 0.0001*Math.round(10000*yHat.get(lineCounter++)));
+						bufferWriter.write(line + "," + 0.0001*Math.round(10000*yHat.get(lineCounter)));
+					lineCounter++;
+				}
 				bufferReader.close();
 				bufferWriter.close();
 			}catch(IOException e){
