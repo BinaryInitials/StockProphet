@@ -259,7 +259,9 @@ public class GenerateHtml {
 						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\" onclick=\"searchIndustry('" + data.get(row).get(Column.INDUSTRY) + "')\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
 					}else{
 						if(data.get(row).get(column) != null){
-							if(column == Column.OIDR || column == Column.MIDR || column == Column.MKTCAP || column == Column.PRICE){
+							if( column == Column.PRICE ){
+								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\"><a href=\"financeChart.html?s=" + symbol + "\" target=\"_blank\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
+							}else if(column == Column.OIDR || column == Column.MIDR || column == Column.MKTCAP){
 								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
 							}else{
 								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.1f", Double.valueOf(data.get(row).get(column))) + "</td>";

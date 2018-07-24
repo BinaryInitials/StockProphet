@@ -1,5 +1,10 @@
 package com.stockprophet.main;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +59,51 @@ public class Run {
 			stocks.put(key, prices);
 		}
 		
-		System.out.println("3. Calculate Metrics");
+		System.out.println("3. Generation of Gaussian Least Squares");
+		for(String key : stocks.keySet()){
+			
+			List<Double> clone = new ArrayList<>();
+			for(Double price : stocks.get(key))
+				clone.add(price);
+			
+			Collections.reverse(clone);
+			//^ After reversing, index 0 is old, index.size()-1 is new
+			
+	    	List<List<Double>> coefss = new ArrayList<List<Double>>();
+	    	List<List<Double>> yHats = new ArrayList<List<Double>>();
+	    	for(int p=3;p<10;p++)
+	    		coefss.add(GaussianCalculator.calculateCoefficients(clone, p));
+	    	
+	    	for(List<Double> coefs : coefss)
+    			yHats.add(GaussianCalculator.calculateYHat(clone.size(), coefs));
+	    	
+	    	File file = new File(key + ".json");
+			try{
+				file.createNewFile();
+				FileWriter writer = new FileWriter(file.getAbsoluteFile());
+				BufferedWriter bufferWriter = new BufferedWriter(writer);
+				
+				BufferedReader bufferReader = new BufferedReader(new FileReader(new File("data/" + key + ".csv")));
+				String header = bufferReader.readLine();
+				for(int i=0;i<yHats.size();i++)
+					header += ",Fit" + (i+3);
+				bufferWriter.write(header);
+				String line;
+				int lineCounter = 0;
+				while((line=bufferReader.readLine())!=null)
+					for(List<Double> yHat : yHats)
+						bufferWriter.write(line + "," + 0.0001*Math.round(10000*yHat.get(lineCounter++)));
+				bufferReader.close();
+				bufferWriter.close();
+			}catch(IOException e){
+				
+			}
+			
+	    	
+		}
+		
+		
+		System.out.println("4. Calculate Metrics");
 		//calculate metrics
 		for(String key : stocks.keySet()){
 			HashMap<Column, String> columnToday = populateColumns(key, indexMap.get(key), stocks.get(key), TODAY);
