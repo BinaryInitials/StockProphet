@@ -254,9 +254,9 @@ public class GenerateHtml {
 					}else if(column == Column.COMPANY){
 						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\"><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" +  data.get(row).get(Column.COMPANY) + "</td>";
 					}else if(column == Column.SECTOR){
-						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" +  data.get(row).get(Column.SECTOR) + "</td>";
+						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\" onclick=\"searchSector('" + data.get(row).get(Column.SECTOR) + "')\">" +  data.get(row).get(Column.SECTOR) + "</td>";
 					}else if(column == Column.INDUSTRY){
-						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
+						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\" onclick=\"searchSector('" + data.get(row).get(Column.INDUSTRY) + "')\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
 					}else{
 						if(data.get(row).get(column) != null){
 							if(column == Column.OIDR || column == Column.MIDR || column == Column.MKTCAP || column == Column.PRICE){
@@ -310,6 +310,9 @@ public class GenerateHtml {
 					varRow2 += "td" + i++ + ", ";
 			varRow2 += "i;\n";
 			buffer.write(varRow2);
+			buffer.write("var input, filter, table, te1, te2, te3, te4;\n");
+			buffer.write("input = document.getElementById(\"filter-search\");\n");
+			buffer.write("filter = input.value.toUpperCase().split(\" \");\n");
 			i=1;
 			for(Column column : Column.values())
 				if(column.isFilterable()){
@@ -321,6 +324,9 @@ public class GenerateHtml {
 			buffer.write("table = document.getElementById(\"myTable\");\n");
 			buffer.write("tr = table.getElementsByTagName(\"tr\");\n");
 			buffer.write("for (i = 0; i < tr.length; i++) {\n");
+			for(int j=0;j<4;j++)
+				buffer.write("te" + (j+1) + "= tr[i].getElementsByTagName(\"td\")[" + (j+2) + "];\n");
+			
 			int columnIndex=0;
 			i=1;
 			for(Column column : Column.values()){
@@ -329,6 +335,20 @@ public class GenerateHtml {
 				columnIndex++;
 			}
 			buffer.write("\n");
+			
+			//First if of text
+			buffer.write("if (te1 && te2 && te3 && te4) {\n");
+			buffer.write("var exist = false;\n");
+			for(int j=0;j<4;j++)
+				buffer.write("var s" + (j+1) +" = te" + (j+1) + ".innerHTML.toUpperCase().replace(/<[^>]+>/g,\"\");\n");
+			buffer.write("for(j=0;j<filter.length;j++){\n");
+			buffer.write("if ((filter[j].length < 5 && s1 === (filter[j])) || (filter[j].length > 4 && (s2.indexOf(filter[j]) > -1 || s3.indexOf(filter[j]) > -1 || s4.indexOf(filter[j]) > -1)) || input.value== \"\") {\n");
+			buffer.write("exist = true;\n");
+			buffer.write("}\n");
+			buffer.write("}\n");
+			buffer.write("}\n");
+			
+			
 			String conditionRow = "if (";
 			i=1;
 			for(Column column : Column.values())
@@ -348,7 +368,7 @@ public class GenerateHtml {
 					i++;
 				}
 			}
-			giantCondition += "true\n){\n";
+			giantCondition += "exist\n){\n";
 			buffer.write(giantCondition);
 			buffer.write("tr[i].style.display = \"\";\n");
 			buffer.write("} else {\n");

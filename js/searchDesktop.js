@@ -11,10 +11,17 @@ td3 = tr[i].getElementsByTagName("td")[4];
 td4 = tr[i].getElementsByTagName("td")[5];
 if (td1 && td2 && td3 && td4) {
 var exist = false;
+var s1 = td1.innerHTML.toUpperCase().replace(/<[^>]+>/g,"");
+var s2 = td2.innerHTML.toUpperCase().replace(/<[^>]+>/g,"");
+var s3 = td3.innerHTML.toUpperCase().replace(/<[^>]+>/g,"");
+var s4 = td4.innerHTML.toUpperCase().replace(/<[^>]+>/g,"");
+
 for(j=0;j<filter.length;j++){
-if (td1.innerHTML.toUpperCase().indexOf(">"+filter[j]+"<") > -1 || td2.innerHTML.toUpperCase().indexOf(">"+filter[j]+"<") > -1 || td3.innerHTML.toUpperCase().indexOf(">"+input.value.toUpperCase() +"<") > -1 || td4.innerHTML.toUpperCase().indexOf(">"+input.value.toUpperCase() +"<") > -1 || filter[j] == "") {
-exist = true;
-}
+	console.log(filter[j]);
+	console.log(s1);
+	if ((filter[j].length < 5 && s1 === (filter[j])) || (filter[j].length > 4 && (s2.indexOf(filter[j]) > -1 || s3.indexOf(filter[j]) > -1 || s4.indexOf(filter[j]) > -1)) || input.value.toUpperCase() == "") {
+		exist = true;
+	}
 }
 if(exist){
 tr[i].style.display = "";
