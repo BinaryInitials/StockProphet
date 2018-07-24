@@ -256,7 +256,7 @@ public class GenerateHtml {
 					}else if(column == Column.SECTOR){
 						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\" onclick=\"searchSector('" + data.get(row).get(Column.SECTOR) + "')\">" +  data.get(row).get(Column.SECTOR) + "</td>";
 					}else if(column == Column.INDUSTRY){
-						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\" onclick=\"searchSector('" + data.get(row).get(Column.INDUSTRY) + "')\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
+						tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\" onclick=\"searchIndustry('" + data.get(row).get(Column.INDUSTRY) + "')\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
 					}else{
 						if(data.get(row).get(column) != null){
 							if(column == Column.OIDR || column == Column.MIDR || column == Column.MKTCAP || column == Column.PRICE){
