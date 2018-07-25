@@ -22,6 +22,7 @@ cp mobile.php $folder
 cp css/* $folder/css
 cp js/* $folder/js
 cp images/* $folder/images
+rm -r data/
 cp *.json $folder/
 
 echo "Website creation successful."
