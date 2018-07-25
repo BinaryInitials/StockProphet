@@ -87,12 +87,13 @@ public class Run {
 				String header = bufferReader.readLine();
 				for(int i=0;i<yHats.size();i++)
 					header += ",Fit" + (i+3);
-				bufferWriter.write(header);
+				bufferWriter.write(header + "\n");
 				String line;
 				int lineCounter = 0;
 				while((line=bufferReader.readLine())!=null){
 					for(List<Double> yHat : yHats)
 						bufferWriter.write(line + "," + 0.0001*Math.round(10000*yHat.get(lineCounter)));
+					bufferWriter.write("\n");
 					lineCounter++;
 				}
 				bufferReader.close();
