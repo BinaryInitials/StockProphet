@@ -25,6 +25,30 @@ import java.util.TimeZone;
 public class GenerateHtml {
 	
 	
+	public static void writePlotHtml() throws IOException{
+		File file = new File("financeChart.php");
+		List<String> phpLogCode = loadPhpLog("plotLog.html");
+		file.createNewFile();
+		FileWriter writer = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter buffer = new BufferedWriter(writer);
+		
+		for(String phpLog : phpLogCode)
+			buffer.write(phpLog);
+		buffer.write("<head>\n");
+		buffer.write("<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>\n");
+		buffer.write("<script src=\"js/candlestick.js\"></script>\n");
+		buffer.write("</head>\n");
+		buffer.write("<body>\n");
+		buffer.write("<div id=\"graph\"></div>\n");
+		buffer.write("<script>\n");
+		buffer.write("var stock = window.location.href.replace(/.*=/g,\"\")\n");
+		buffer.write("plot(stock)\n");
+		buffer.write("</script>\n");
+		buffer.write("</body>\n");
+		
+		buffer.close();
+	}
+	
 	public static void writeMobile() throws IOException{
 		File file = new File("mobile.php");
 		List<String> phpLogCode = loadPhpLog(false);
@@ -122,12 +146,15 @@ public class GenerateHtml {
 		buffer.close();
 	}
 	
-	public static List<String> loadPhpLog(boolean isMobile){
+	public static List<String> loadPhpLog(String fileName){
 		List<String> phpLogCode = new ArrayList<String>();
-		String fileName = isMobile ? "stockprophet_mobile_log.html" : "stockprophet_log.html";
 		phpLogCode.add("<?php\n");
 		phpLogCode.add("$file = fopen(\"" + fileName + "\", \"a\") or die(\"Unable to open file!\");\n");
 		phpLogCode.add("fwrite($file, date('Y-m-d|H:i:s'));\n");
+		phpLogCode.add("fwrite($file,\"|\");\n");
+		phpLogCode.add("fwrite($file, $_SERVER[\"HTTP_REFERER\"]);\n");
+		phpLogCode.add("fwrite($file,\"|\");\n");
+		phpLogCode.add("fwrite($file, $_SERVER[\"HTTP_HOST\"]);\n");
 		phpLogCode.add("fwrite($file,\"|\");\n");
 		phpLogCode.add("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
 		phpLogCode.add("fwrite($file,\"|\");\n");
@@ -136,6 +163,10 @@ public class GenerateHtml {
 		phpLogCode.add("fclose( $file );\n");
 		phpLogCode.add("?>\n");
 		return phpLogCode;
+	}
+	
+	public static List<String> loadPhpLog(boolean isMobile){
+		return loadPhpLog(isMobile ? "stockprophet_mobile_log.html" : "stockprophet_log.html");
 	}
 	
 	

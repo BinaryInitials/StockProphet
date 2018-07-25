@@ -166,6 +166,7 @@ public class Run {
 		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR1);
 		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR5);
 		GenerateHtml.writeWeb(sortedColumnsToday);
+		GenerateHtml.writePlotHtml();
 		GenerateHtml.writeMobile();
 		
 		Date toc = new Date();
