@@ -21,6 +21,5 @@ public class CustomComparators {
 			Double value2 = Double.valueOf(e2.get("VALUE"));
 			return -Double.compare(value1, value2);
 		}
-	};
-	
+	};	
 }

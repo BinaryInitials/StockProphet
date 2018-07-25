@@ -5,8 +5,10 @@ import static com.stockprophet.web.Methods.darken;
 import static com.stockprophet.web.Methods.generateColorMap;
 import static com.stockprophet.web.Methods.generateColorsFromColorMap;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,9 +27,70 @@ import java.util.TimeZone;
 public class GenerateHtml {
 	
 	
+	public static List<HashMap<Employee, String>> loadEmployees(String teamDescription) throws IOException{
+		BufferedReader buffer = new BufferedReader(new FileReader(new File("txt/bios.txt")));
+		teamDescription = buffer.readLine();
+		String line;
+		List<HashMap<Employee, String>> employees = new ArrayList<HashMap<Employee, String>>();
+		List<String> bios = new ArrayList<String>();
+		while((line=buffer.readLine())!=null)
+			bios.add(line);
+		buffer.close();
+		for(int i=0;i<bios.size();i++)
+			if(i%4==3){
+				HashMap<Employee, String> employee = new HashMap<Employee, String>();
+				employee.put(Employee.NAME, bios.get(i-3));
+				employee.put(Employee.TITLE, bios.get(i-2));
+				employee.put(Employee.IMAGE, bios.get(i-1));
+				employee.put(Employee.DESCRIPTION, bios.get(i-0));
+				employees.add(employee);
+			}
+		return employees;
+	}
+	
+	
+	public static void writeMeetTheTeam() throws IOException{
+		String teamDescription = "";
+		List<HashMap<Employee, String>> employees = loadEmployees(teamDescription); 
+		File file = new File("MeetTheTeam.php");
+		List<String> phpLogCode = loadPhpLog("meettheteam_log.html");
+		file.createNewFile();
+		FileWriter writer = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter buffer = new BufferedWriter(writer);
+		for(String phpLog : phpLogCode)
+			buffer.write(phpLog);
+		buffer.write("<!DOCTYPE html>\n");
+		buffer.write("<html><head><meta name=\"viewport\" http-equiv=\"Content-Type\" content=\"width=device-width, initial-scale=1\">\n");
+		buffer.write("<title>Stock Prophet</title>\n");
+		buffer.write("<link rel=\"stylesheet\" href=\"css/c13.css\">\n");
+		buffer.write("<link rel=\"stylesheet\" href=\"css/jquery-ui-1.10.3.custom.min.css\">\n");
+		buffer.write("</head>\n");
+		buffer.write("<body link=\"blue\">\n");
+		buffer.write("<div class=\"container\">\n");
+		buffer.write("<form>\n");
+		buffer.write("<div class=\"one-third column\">\n");
+		buffer.write("<img src=\"images/logo.png\" alt=\"logo\" id=\"logo\">");
+		buffer.write("<h2 class=\"welcome\">Meet The Team</h2>\n");
+		buffer.write("<p class=\"intro\" align=\"justify\">" + teamDescription + "</p>");
+		buffer.write("<center></center></div>\n");
+		
+		for(HashMap<Employee, String> employee : employees){
+			buffer.write("<div class=\"one-third column\">\n");
+			buffer.write("<h2>" + employee.get(Employee.NAME) + "</h2>\n");
+			buffer.write("<div class=\"name\">\n");
+			buffer.write("<label for=\"name\" class=\"required\">" + employee.get(Employee.TITLE) + "</label>\n");
+			buffer.write("<center><img src=\"images/" + employee.get(Employee.IMAGE) + "\" style=\"width:250px;height:350px;\"></center>\n");
+			buffer.write("</div>\n");
+			buffer.write("<p class=\"intro\" align=\"justify\">" + employee.get(Employee.DESCRIPTION) + "</p>\n");
+			buffer.write("</div>\n");
+		}
+		buffer.write("</form></div></body></html>\n");
+		buffer.close();
+	}
+	
 	public static void writePlotHtml() throws IOException{
 		File file = new File("financeChart.php");
-		List<String> phpLogCode = loadPhpLog("plotLog.html");
+		List<String> phpLogCode = loadPhpLog("plot-log.html");
 		file.createNewFile();
 		FileWriter writer = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter buffer = new BufferedWriter(writer);

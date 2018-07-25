@@ -22,7 +22,6 @@ import com.stockprophet.math.CommonLinearAlgebraMethods;
 import com.stockprophet.math.GaussianCalculator;
 import com.stockprophet.web.Column;
 import com.stockprophet.web.GenerateHtml;
-import com.stockprophet.web.GenerateJSON;
 
 
 
@@ -33,12 +32,12 @@ public class Run {
 	public static final int YESTERDAY = 1;
 	
 	public static void main(String[] args) throws IOException {
-
-		Date tic = new Date();
-
+		List<Date> timeSteps = new ArrayList<Date>();
+		timeSteps.add(new Date());
 		System.out.println("1. Loading Index");
 		HashMap<String, String[]> indexMap = GenerateCommonIndexes.generateCommonIndexes();
-		
+		timeSteps.add(new Date());
+		System.out.println("Time: " + getTime(timeSteps) + " seconds");
 		System.out.println("2. Data Acquisition");
 		HashMap<String, List<Double>> stocks = new HashMap<String, List<Double>>();
 		HashMap<String, Integer> yesterdaysRank = new HashMap<String, Integer>();
@@ -58,7 +57,8 @@ public class Run {
 			}
 			stocks.put(key, prices);
 		}
-		
+		timeSteps.add(new Date());
+		System.out.println("Time: " + getTime(timeSteps) + " seconds");
 		System.out.println("3. Generation of Gaussian Least Squares");
 		for(String key : stocks.keySet()){
 			
@@ -91,8 +91,9 @@ public class Run {
 				String line;
 				int lineCounter = 0;
 				while((line=bufferReader.readLine())!=null){
+					bufferWriter.write(line);
 					for(List<Double> yHat : yHats)
-						bufferWriter.write(line + "," + 0.0001*Math.round(10000*yHat.get(lineCounter)));
+						bufferWriter.write("," + 0.0001*Math.round(10000*yHat.get(lineCounter)));
 					bufferWriter.write("\n");
 					lineCounter++;
 				}
@@ -105,7 +106,8 @@ public class Run {
 	    	
 		}
 		
-		
+		timeSteps.add(new Date());
+		System.out.println("Time: " + getTime(timeSteps) + " seconds");
 		System.out.println("4. Calculate Metrics");
 		//calculate metrics
 		for(String key : stocks.keySet()){
@@ -156,21 +158,30 @@ public class Run {
 			sortedColumnsToday.get(rank).put(Column.DIFF, "" + stockRankDiff.get(sortedColumnsToday.get(rank).get(Column.SYMB)));
 			sortedColumnsToday.get(rank).put(Column.RANK, "" + (rank+1));
 		}
-		System.out.println("4. Generation Website");
-
 		
-				
-		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.DAY5);
-		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.MONTH1);
-		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.MONTH6);
-		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR1);
-		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR5);
+		timeSteps.add(new Date());
+		System.out.println("Time: " + getTime(timeSteps) + " seconds");
+		System.out.println("5. Generation Website");
+
+//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.DAY5);
+//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.MONTH1);
+//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.MONTH6);
+//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR1);
+//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR5);
 		GenerateHtml.writeWeb(sortedColumnsToday);
 		GenerateHtml.writePlotHtml();
-		GenerateHtml.writeMobile();
+//		GenerateHtml.writeMobile();
 		
-		Date toc = new Date();
-		System.out.println(toc.getTime() - tic.getTime() + " msec");
+		timeSteps.add(new Date());
+		System.out.println("Total Elapsed time: "  + getTime(timeSteps, true)/60 + " minutes");
+	}
+	
+	public static long getTime(List<Date> steps){
+		return getTime(steps, false);
+	}
+	
+	public static long getTime(List<Date> steps, boolean total){
+		return (steps.get(steps.size()-1).getTime()-steps.get(total ? 0 : steps.size()-2).getTime())/1000;
 	}
 	
 	public static List<HashMap<Column, String>> overallRanking(List<HashMap<Column, String>> columns){
