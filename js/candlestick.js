@@ -7,7 +7,7 @@ function unpack(rows, key) {
   });
 }
 
-var trace1 = {
+var price = {
   x: unpack(rows, 'Date'),
   close: unpack(rows, 'Close'),
   high: unpack(rows, 'High'),
@@ -23,11 +23,11 @@ var trace1 = {
   yaxis: 'y'
 };
 
-var trace2 = {
+var fit3 = {
   x: unpack(rows, 'Date'),
-  y: unpack(rows, 'Fit9'),
+  y: unpack(rows, 'Fit3'),
   line: {
-  	color: 'rgb(50, 100, 120)',
+  	color: '#0011FF',
   	width: 1
   },
   mode: 'lines',
@@ -36,7 +36,86 @@ var trace2 = {
   yaxis: 'y'
 };
 
-var data = [trace1, trace2];
+var fit4 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit4'),
+  line: {
+  	color: '#2277DD',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
+var fit5 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit5'),
+  line: {
+  	color: '#44CCBB',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
+var fit6 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit6'),
+  line: {
+  	color: '#66FF99',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
+var fit7 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit7'),
+  line: {
+  	color: '#AAFF55',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
+var fit8 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit8'),
+  line: {
+  	color: '#CCCC33',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
+var fit9 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit9'),
+  line: {
+  	color: '#FFAA33',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
+
+var data = [price, fit3, fit4, fit5, fit6, fit7, fit8, fit9];
 
 var layout = {
   dragmode: 'zoom',

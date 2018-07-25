@@ -176,7 +176,7 @@ public class GenerateHtml {
 		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Metrics<i class=\"fa fa-caret-down\"></i></div>\n");
 		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
 		
-		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.DAY5.toString() + "')\">" + Column.DAY5.toString() + "</a>\n");
+		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.WEEK1.toString() + "')\">" + Column.WEEK1.toString() + "</a>\n");
 		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.MONTH1.toString() + "')\">" + Column.MONTH1.toString() + "</a>\n");
 		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.MONTH6.toString() + "')\">" + Column.MONTH6.toString() + "</a>\n");
 		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.YEAR1.toString() + "')\">" + Column.YEAR1.toString() + "</a>\n");
