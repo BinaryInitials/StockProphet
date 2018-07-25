@@ -41,7 +41,7 @@ public class GenerateHtml {
 		buffer.write("<body>\n");
 		buffer.write("<div id=\"graph\"></div>\n");
 		buffer.write("<script>\n");
-		buffer.write("var stock = window.location.href.replace(/.*=/g,\"\")\n");
+		buffer.write("var stock = location.search.substring(1).replace(/.*=/g,'');\n");
 		buffer.write("plot(stock)\n");
 		buffer.write("</script>\n");
 		buffer.write("</body>\n");
