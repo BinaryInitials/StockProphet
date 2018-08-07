@@ -11,18 +11,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 
 public class GenerateHtml {
 	
@@ -112,102 +105,102 @@ public class GenerateHtml {
 		buffer.close();
 	}
 	
-	public static void writeMobile() throws IOException{
-		File file = new File("mobile.php");
-		List<String> phpLogCode = loadPhpLog(false);
-		file.createNewFile();
-		FileWriter writer = new FileWriter(file.getAbsoluteFile());
-		BufferedWriter buffer = new BufferedWriter(writer);
-		
-		for(String phpLog : phpLogCode)
-			buffer.write(phpLog);
-		
-		buffer.write("<!DOCTYPE html>\n");
-		buffer.write("<html>\n");
-		buffer.write("<head>\n");
-		buffer.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /> ");
-		buffer.write("<title> STOCK PROPHET </title>\n");
-		List<String> cssFiles = getWebFiles(WebFileType.CSS, true);
-		for(String cssFile : cssFiles)
-			buffer.write("<link rel=\"stylesheet\" href=\"css/"+ cssFile + "\" />\n");
-
-		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />\n");
-		buffer.write("</head>\n");
-		buffer.write("<body>\n");
-		buffer.write("<div class=\"header\" id=\"myHeader\">\n");
-		
-		//This is where the navbar will be in place
-		buffer.write("<div class=\"navbar\" id=\"myTopnav\">\n");
-		buffer.write("<div class=\"dropdown\">\n");
-		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Release<i class=\"fa fa-caret-down\"></i></div>\n");
-		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
-		
-		Path path = Paths.get("data/AAPL.csv");
-		BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-		String dataTimestamp = attr.creationTime().toString().replaceAll("([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2}).*", "$1 $2");
-		try {
-			SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			buffer.write("<a href=\"#\">Data: " + sdf.parse(dataTimestamp).toString() + "</a>\n");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}  
-		
-		Date date = new Date();
-		buffer.write("<a href=\"#\">Website: " + date.toString() + "</a>\n");
-		buffer.write("</div>\n");
-		buffer.write("</div>\n");
-		
-		buffer.write("<div class=\"dropdown\">\n");
-		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">About<i class=\"fa fa-caret-down\"></i></div>\n");
-		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
-		buffer.write("<a href=\"MeetTheTeam.php\">Meet The Team</a>\n");
-		buffer.write("</div>\n");
-		buffer.write("</div>\n");
-		
-		
-		buffer.write("<div class=\"dropdown\">\n");
-		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Contact<i class=\"fa fa-caret-down\"></i></div>\n");
-		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
-		buffer.write("<a href=\"mailto:stockprophetcontact@gmail.com\">stockprophetcontact@gmail.com</a>\n");
-		buffer.write("</div>\n");
-		buffer.write("</div>\n");
-		buffer.write("<div class=\"dropdown\">\n");
-		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Metrics<i class=\"fa fa-caret-down\"></i></div>\n");
-		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
-		
-		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.WEEK1.toString() + "')\">" + Column.WEEK1.toString() + "</a>\n");
-		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.MONTH1.toString() + "')\">" + Column.MONTH1.toString() + "</a>\n");
-		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.MONTH6.toString() + "')\">" + Column.MONTH6.toString() + "</a>\n");
-		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.YEAR1.toString() + "')\">" + Column.YEAR1.toString() + "</a>\n");
-		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.YEAR5.toString() + "')\">" + Column.YEAR5.toString() + "</a>\n");
-		
-		buffer.write("</div>\n");
-		buffer.write("</div>\n");
-		buffer.write("</div>\n");
-		
-		buffer.write("<ul>\n");
-		
-		buffer.write("<div id=\"search\">\n");
-		buffer.write("<input type=\"text\" size=\"2\" placeholder=\"Search...\" onkeyup=\"search()\" id=\"filter-search\" />\n");
-		buffer.write("</div>\n");
-		buffer.write("</ul>\n");
-		buffer.write("</div>\n");
-		
-		buffer.write("<div class=\"content\" id=\"content\">\n");
-		buffer.write("</div>\n");
-		//Javascript
-		
-		List<String> jsFiles = getWebFiles(WebFileType.JS, true);
-		Collections.sort(jsFiles);
-		for(String jsFile : jsFiles)
-			buffer.write("<script src=\"js/" + jsFile + "\"></script>\n");
-
-		buffer.write("<script type=\"text/javascript\" src=\"js/prettify.js\"></script>\n");
-		buffer.write("</body>\n");
-		buffer.write("</html>\n");
-		buffer.close();
-	}
+//	public static void writeMobile() throws IOException{
+//		File file = new File("mobile.php");
+//		List<String> phpLogCode = loadPhpLog(false);
+//		file.createNewFile();
+//		FileWriter writer = new FileWriter(file.getAbsoluteFile());
+//		BufferedWriter buffer = new BufferedWriter(writer);
+//		
+//		for(String phpLog : phpLogCode)
+//			buffer.write(phpLog);
+//		
+//		buffer.write("<!DOCTYPE html>\n");
+//		buffer.write("<html>\n");
+//		buffer.write("<head>\n");
+//		buffer.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /> ");
+//		buffer.write("<title> STOCK PROPHET </title>\n");
+//		List<String> cssFiles = getWebFiles(WebFileType.CSS, true);
+//		for(String cssFile : cssFiles)
+//			buffer.write("<link rel=\"stylesheet\" href=\"css/"+ cssFile + "\" />\n");
+//
+//		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />\n");
+//		buffer.write("</head>\n");
+//		buffer.write("<body>\n");
+//		buffer.write("<div class=\"header\" id=\"myHeader\">\n");
+//		
+//		//This is where the navbar will be in place
+//		buffer.write("<div class=\"navbar\" id=\"myTopnav\">\n");
+//		buffer.write("<div class=\"dropdown\">\n");
+//		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Release<i class=\"fa fa-caret-down\"></i></div>\n");
+//		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
+//		
+//		Path path = Paths.get("data/AAPL.csv");
+//		BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
+//		String dataTimestamp = attr.creationTime().toString().replaceAll("([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2}).*", "$1 $2");
+//		try {
+//			SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+//			buffer.write("<a href=\"#\">Data: " + sdf.parse(dataTimestamp).toString() + "</a>\n");
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}  
+//		
+//		Date date = new Date();
+//		buffer.write("<a href=\"#\">Website: " + date.toString() + "</a>\n");
+//		buffer.write("</div>\n");
+//		buffer.write("</div>\n");
+//		
+//		buffer.write("<div class=\"dropdown\">\n");
+//		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">About<i class=\"fa fa-caret-down\"></i></div>\n");
+//		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
+//		buffer.write("<a href=\"MeetTheTeam.php\">Meet The Team</a>\n");
+//		buffer.write("</div>\n");
+//		buffer.write("</div>\n");
+//		
+//		
+//		buffer.write("<div class=\"dropdown\">\n");
+//		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Contact<i class=\"fa fa-caret-down\"></i></div>\n");
+//		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
+//		buffer.write("<a href=\"mailto:stockprophetcontact@gmail.com\">stockprophetcontact@gmail.com</a>\n");
+//		buffer.write("</div>\n");
+//		buffer.write("</div>\n");
+//		buffer.write("<div class=\"dropdown\">\n");
+//		buffer.write("<div class=\"dropbtn\" onclick=\"dropDown()\">Metrics<i class=\"fa fa-caret-down\"></i></div>\n");
+//		buffer.write("<div class=\"dropdown-content\" id=\"myDropDown\">\n");
+//		
+//		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.WEEK1.toString() + "')\">" + Column.WEEK1.toString() + "</a>\n");
+//		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.MONTH1.toString() + "')\">" + Column.MONTH1.toString() + "</a>\n");
+//		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.MONTH6.toString() + "')\">" + Column.MONTH6.toString() + "</a>\n");
+//		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.YEAR1.toString() + "')\">" + Column.YEAR1.toString() + "</a>\n");
+//		buffer.write("<a href=\"#\" onclick=\"loadFromJSON('" + Column.YEAR5.toString() + "')\">" + Column.YEAR5.toString() + "</a>\n");
+//		
+//		buffer.write("</div>\n");
+//		buffer.write("</div>\n");
+//		buffer.write("</div>\n");
+//		
+//		buffer.write("<ul>\n");
+//		
+//		buffer.write("<div id=\"search\">\n");
+//		buffer.write("<input type=\"text\" size=\"2\" placeholder=\"Search...\" onkeyup=\"search()\" id=\"filter-search\" />\n");
+//		buffer.write("</div>\n");
+//		buffer.write("</ul>\n");
+//		buffer.write("</div>\n");
+//		
+//		buffer.write("<div class=\"content\" id=\"content\">\n");
+//		buffer.write("</div>\n");
+//		//Javascript
+//		
+//		List<String> jsFiles = getWebFiles(WebFileType.JS, true);
+//		Collections.sort(jsFiles);
+//		for(String jsFile : jsFiles)
+//			buffer.write("<script src=\"js/" + jsFile + "\"></script>\n");
+//
+//		buffer.write("<script type=\"text/javascript\" src=\"js/prettify.js\"></script>\n");
+//		buffer.write("</body>\n");
+//		buffer.write("</html>\n");
+//		buffer.close();
+//	}
 	
 	public static List<String> loadPhpLog(String fileName){
 		List<String> phpLogCode = new ArrayList<String>();
@@ -475,11 +468,11 @@ public class GenerateHtml {
 			buffer.write("}\n");
 			buffer.write("</script>\n");
 			
-			buffer.write("<script type=\"text/javascript\">\n");
-			buffer.write("if (screen.width <= 699) {\n");
-			buffer.write("document.location = \"mobile.php\"\n");
-			buffer.write("}\n");
-			buffer.write("</script>\n");
+//			buffer.write("<script type=\"text/javascript\">\n");
+//			buffer.write("if (screen.width <= 699) {\n");
+//			buffer.write("document.location = \"mobile.php\"\n");
+//			buffer.write("}\n");
+//			buffer.write("</script>\n");
 			
 			List<String> jsFiles = getWebFiles(WebFileType.JS, false);
 			Collections.sort(jsFiles);
