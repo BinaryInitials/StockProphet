@@ -1,5 +1,5 @@
 function plot(stock){
-Plotly.d3.csv('http://173.88.132.105/stockprophet/' + stock + '.json', function(err, rows){
+Plotly.d3.csv(stock, function(err, rows){
 
 function unpack(rows, key) {
   return rows.map(function(row) {

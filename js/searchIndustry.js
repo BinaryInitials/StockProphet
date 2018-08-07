@@ -7,8 +7,6 @@ for (i = 0; i < tr.length; i++) {
 td = tr[i].getElementsByTagName("td")[5];
 if (td) {
 var s = td.innerHTML.replace(/<[^>]+>/g,"").replace(/&[a-z]+; /g,"").toUpperCase().trim();
-console.log("ROW: " + s);
-console.log("INDUSTRY: " + searchTerm);
 if(searchTerm === s){
 	tr[i].style.display = "";
 } else {

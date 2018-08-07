@@ -97,8 +97,7 @@ public class GenerateHtml {
 		buffer.write("<body>\n");
 		buffer.write("<div id=\"graph\"></div>\n");
 		buffer.write("<script>\n");
-		buffer.write("var stock = location.search.substring(1).replace(/.*=/g,'');\n");
-		buffer.write("plot(stock)\n");
+		buffer.write("plot(location.search.substring(1).replace(/.*=/g,'')+'.json');\n");
 		buffer.write("</script>\n");
 		buffer.write("</body>\n");
 		
@@ -423,13 +422,17 @@ public class GenerateHtml {
 					buffer.write("td" + i++ + " = tr[i].getElementsByTagName(\"td\")[" + columnIndex + "];\n");
 				columnIndex++;
 			}
+			
+			
+			//td.innerHTML.replace(/<[^>]+>/g,"").replace(/&[a-z]+; /g,"").toUpperCase().trim()
+			
 			buffer.write("\n");
 			
 			//First if of text
-			buffer.write("if (te1 && te2 && te3 && te4) {\n");
 			buffer.write("var exist = false;\n");
+			buffer.write("if (te1 && te2 && te3 && te4) {\n");
 			for(int j=0;j<4;j++)
-				buffer.write("var s" + (j+1) +" = te" + (j+1) + ".innerHTML.toUpperCase().replace(/<[^>]+>/g,\"\");\n");
+				buffer.write("var s" + (j+1) +" = te" + (j+1) + ".innerHTML.toUpperCase().replace(/<[^>]+>/g,\"\").replace(/&[a-z]+; /g,\"\").toUpperCase().trim();\n");
 			buffer.write("for(j=0;j<filter.length;j++){\n");
 			buffer.write("if ((filter[j].length < 5 && s1 === (filter[j])) || (filter[j].length > 4 && (s2.indexOf(filter[j]) > -1 || s3.indexOf(filter[j]) > -1 || s4.indexOf(filter[j]) > -1)) || input.value== \"\") {\n");
 			buffer.write("exist = true;\n");
@@ -452,8 +455,8 @@ public class GenerateHtml {
 			i=1;
 			for(Column column : Column.values()){
 				if(column.isFilterable()){
-					giantCondition += "Number(td" + i + ".innerHTML.replace(/%$/g,\"\").replace(/N.A/,'-1')) > Number(min" + i +") &&\n";
-					giantCondition += "Number(td" + i + ".innerHTML.replace(/%$/g,\"\").replace(/N.A/,'-1')) < Number(max" + i +") &&\n";
+					giantCondition += "Number(td" + i + ".innerHTML.replace(/%$/g,\"\").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) > Number(min" + i +") &&\n";
+					giantCondition += "Number(td" + i + ".innerHTML.replace(/%$/g,\"\").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max" + i +") &&\n";
 					i++;
 				}
 			}
