@@ -26,4 +26,11 @@ public class CommonFinancialMathMethods {
 			sum+=Math.sqrt((prices.get(i)-prices.get(i-1))*(prices.get(i)-prices.get(i-1)) + deltaX*deltaX);
 		return sum;
 	}
+	
+	public static double calculateSharpe(List<Double> prices){
+		List<Double> returns = new ArrayList<Double>();
+		for(int i=0;i<prices.size()-1;i++)
+			returns.add((prices.get(i)-prices.get(i+1))/prices.get(i+1));
+		return StatsClass.getAverage(returns)/StatsClass.getStandardDeviation(returns);
+	}
 }

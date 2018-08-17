@@ -28,7 +28,8 @@ public enum Column {
 	INERT5(true, -1000, 1000, true),
 	STAB(true, 0, 100, true),
 	CONF(true, 0, 100, true),
-	CONS(true, 0, 100, true);
+	CONS(true, 0, 100, true),
+	SHARPE(true, 0, 10, true);
 	
 	private boolean isFilterable;
 	private boolean isNumber;
