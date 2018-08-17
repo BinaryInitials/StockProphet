@@ -311,8 +311,8 @@ public class Run {
 		columns.put(Column.STAB, "" + 100*lengthNormalized);
 		columns.put(Column.CONS, ""+ 100*consistency);
 		
-		double sharpe = CommonFinancialMathMethods.calculateSharpe(prices);
-		columns.put(Column.SHARPE, "" + sharpe);
+		columns.put(Column.SHARPE, "" + CommonFinancialMathMethods.calculateSharpe(prices));
+		columns.put(Column.WILLIAMS, "" + CommonFinancialMathMethods.calculateWilliams(prices));
 		
 		return columns;
 	}
