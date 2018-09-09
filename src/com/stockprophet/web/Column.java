@@ -1,5 +1,7 @@
 package com.stockprophet.web;
 
+import com.stockprophet.main.Run;
+
 public enum Column {
 	RANK(false, null, null, true),
 	DIFF(false, null, null, true),
@@ -8,6 +10,9 @@ public enum Column {
 	SECTOR(false, null, null, false),
 	INDUSTRY(false, null, null, false),
 	PRICE(true, 0, 1000000, true),
+	PRED(true, 0, 1000000, true),
+	VELOCITY(true, -100, 100, true),
+	N(true, 0, Run.TWO_YEARS, true),
 	NOISE(true, 0, 100, true),
 	MKTCAP(true, 0, 100, true),
 	LINEAR(true, 0, 100, true),
@@ -21,8 +26,6 @@ public enum Column {
 	MONTH6(true, -1000,1000, true),
 	YEAR1(true, -1000,1000, true),
 	YEAR2(true, -10000,10000, true),
-	PRED(true, 0, 1000000, true),
-	VELOCITY(true, -100, 100, true),
 	VALUE(true, -100, 100, true),
 	STAB(true, 0, 100, true),
 	CONF(true, 0, 100, true),

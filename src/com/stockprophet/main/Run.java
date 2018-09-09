@@ -288,6 +288,7 @@ public class Run {
 		double r2 = GaussianCalculator.calculateR2(estimatedPrice, coefsEstimatedPrice);
 		System.out.println(symbol + "\t" + optimizedN + "\t" + maxR2 + "\t" + coefsEstimatedPrice.get(0) + "\t" + r2);
 		
+		columns.put(Column.N, "" + optimizedN);
 		columns.put(Column.PRED, "" + coefsEstimatedPrice.get(0));
 		columns.put(Column.VELOCITY, "" + coefsEstimatedPrice.get(1));
 		columns.put(Column.VALUE, "" + 100*(prices.get(0) / coefsEstimatedPrice.get(0) - 1.0));
