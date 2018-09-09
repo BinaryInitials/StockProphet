@@ -23,11 +23,50 @@ var price = {
   yaxis: 'y'
 };
 
+var fit0 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit0'),
+  line: {
+  	color: '#0011FF',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
+var fit1 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit1'),
+  line: {
+  	color: '#2277DD',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
+var fit2 = {
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Fit2'),
+  line: {
+  	color: '#44CCBB',
+  	width: 1
+  },
+  mode: 'lines',
+  type: 'scatter',
+  xaxis: 'x',
+  yaxis: 'y'
+};
+
 var fit3 = {
   x: unpack(rows, 'Date'),
   y: unpack(rows, 'Fit3'),
   line: {
-  	color: '#0011FF',
+  	color: '#66FF99',
   	width: 1
   },
   mode: 'lines',
@@ -40,7 +79,7 @@ var fit4 = {
   x: unpack(rows, 'Date'),
   y: unpack(rows, 'Fit4'),
   line: {
-  	color: '#2277DD',
+  	color: '#AAFF55',
   	width: 1
   },
   mode: 'lines',
@@ -53,7 +92,7 @@ var fit5 = {
   x: unpack(rows, 'Date'),
   y: unpack(rows, 'Fit5'),
   line: {
-  	color: '#44CCBB',
+  	color: '#CCCC33',
   	width: 1
   },
   mode: 'lines',
@@ -66,7 +105,7 @@ var fit6 = {
   x: unpack(rows, 'Date'),
   y: unpack(rows, 'Fit6'),
   line: {
-  	color: '#66FF99',
+  	color: '#FFAA33',
   	width: 1
   },
   mode: 'lines',
@@ -79,7 +118,7 @@ var fit7 = {
   x: unpack(rows, 'Date'),
   y: unpack(rows, 'Fit7'),
   line: {
-  	color: '#AAFF55',
+  	color: '#FF7711',
   	width: 1
   },
   mode: 'lines',
@@ -92,7 +131,7 @@ var fit8 = {
   x: unpack(rows, 'Date'),
   y: unpack(rows, 'Fit8'),
   line: {
-  	color: '#CCCC33',
+  	color: '#FF3300',
   	width: 1
   },
   mode: 'lines',
@@ -105,7 +144,7 @@ var fit9 = {
   x: unpack(rows, 'Date'),
   y: unpack(rows, 'Fit9'),
   line: {
-  	color: '#FFAA33',
+  	color: '#FF1100',
   	width: 1
   },
   mode: 'lines',
@@ -115,7 +154,7 @@ var fit9 = {
 };
 
 
-var data = [price, fit3, fit4, fit5, fit6, fit7, fit8, fit9];
+var data = [price, fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9];
 
 var layout = {
   dragmode: 'zoom',

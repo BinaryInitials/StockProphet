@@ -28,6 +28,7 @@ import com.stockprophet.web.GenerateHtml;
 public class Run {
 	
 	public static final int TWO_YEARS = 503;
+	public static final int ONE_YEAR = 251;
 	public static final int TODAY = 0;
 	public static final int YESTERDAY = 1;
 	
@@ -62,19 +63,13 @@ public class Run {
 		System.out.println("3. Generation of Gaussian Least Squares");
 		for(String key : stocks.keySet()){
 			
-			List<Double> clone = new ArrayList<>();
-			for(Double price : stocks.get(key))
-				clone.add(price);
-			
-			//^index 0 is new, index.size()-1 is old
-			
 	    	List<List<Double>> coefss = new ArrayList<List<Double>>();
 	    	List<List<Double>> yHats = new ArrayList<List<Double>>();
-	    	for(int p=3;p<10;p++)
-	    		coefss.add(GaussianCalculator.calculateCoefficients(clone, p));
+	    	for(int n=0;n<10;n++)
+	    		coefss.add(GaussianCalculator.calculateCoefficients(stocks.get(key).subList(n, ONE_YEAR+n), 3));
 	    	
-	    	for(List<Double> coefs : coefss)
-    			yHats.add(GaussianCalculator.calculateYHat(clone.size(), coefs));
+	    	for(int i=0;i<coefss.size();i++)
+    			yHats.add(GaussianCalculator.calculateYHat(-ONE_YEAR+1+i, i, coefss.get(i)));
 	    	
 	    	File file = new File(key + ".json");
 			try{
@@ -82,23 +77,24 @@ public class Run {
 				FileWriter writer = new FileWriter(file.getAbsoluteFile());
 				BufferedWriter bufferWriter = new BufferedWriter(writer);
 				
-				BufferedReader bufferReader = new BufferedReader(new FileReader(new File("data/" + key + ".csv")));
+				BufferedReader bufferReader = new BufferedReader(new FileReader(new File("data/" + key.replaceAll("\\.","-") + ".csv")));
 				String header = bufferReader.readLine();
 				for(int i=0;i<yHats.size();i++)
-					header += ",Fit" + (i+3);
+					header += ",fit" + i;
 				bufferWriter.write(header + "\n");
 				String line;
-				int lineCounter = 0;
-				while((line=bufferReader.readLine())!=null){					
-					if(!line.contains("null") && line.contains(",")){
-						bufferWriter.write(line);
-						for(List<Double> yHat : yHats)
-							bufferWriter.write("," + 0.0001*Math.round(10000*yHat.get(lineCounter)));
-						bufferWriter.write("\n");
-						lineCounter++;
-					}
-				}
+				List<String> lines = new ArrayList<String>();
+				while((line=bufferReader.readLine()) != null)
+					if(!line.contains("null") && line.contains(","))
+						lines.add(line);
 				bufferReader.close();
+				for(int i=0;i<ONE_YEAR;i++){
+					String newline = lines.get(lines.size()-1-ONE_YEAR+i);
+					bufferWriter.write(newline);
+					for(List<Double> yHat : yHats)
+						bufferWriter.write("," + 0.0001*Math.round(10000*yHat.get(i)));
+					bufferWriter.write("\n");
+				}
 				bufferWriter.close();
 			}catch(IOException e){
 			}			

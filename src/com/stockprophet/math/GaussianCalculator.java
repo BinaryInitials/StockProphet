@@ -153,7 +153,7 @@ public class GaussianCalculator {
 	
 	public static double calculateResiduals(List<Double> data, List<Double> coefs){
 		double error = 0.0;
-		List<Double> yhat = calculateYHat(data.size(), coefs);
+		List<Double> yhat = calculateYHat(-data.size(), -1, coefs);
 		for(int i=0;i<data.size();i++)
 			error += (data.get(i)- yhat.get(i))*(data.get(i)- yhat.get(i));
 		return error;
@@ -192,10 +192,10 @@ public class GaussianCalculator {
 		return yHatAtT;
 	}
 	
-	public static List<Double> calculateYHat(int size, List<Double> coefs){
+	public static List<Double> calculateYHat(int startingPoint, int endPoint, List<Double> coefs){
 		List<Double> yHat = new ArrayList<Double>();
-		for(int datum = 0;datum<size;datum++)
-			yHat.add(calculateYHatAtT(-datum-1, coefs));
+		for(int datum = startingPoint;datum<endPoint;datum++)
+			yHat.add(calculateYHatAtT(datum, coefs));
 		return yHat;
 	}
 	
