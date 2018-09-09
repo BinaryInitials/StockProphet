@@ -11,6 +11,11 @@ else
 	echo "Creating "$folder"..."
 	mkdir $folder
 fi
+
+rm -rf $folder/css/
+rm -rf $folder/js/
+rm -rf $folder/images/
+
 mkdir $folder/css/
 mkdir $folder/js/
 mkdir $folder/images/
