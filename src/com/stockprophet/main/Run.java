@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import com.stockprophet.math.AdvancedFinancialMathMethods;
 import com.stockprophet.math.CommonFinancialMathMethods;
 import com.stockprophet.math.CommonLinearAlgebraMethods;
 import com.stockprophet.math.GaussianCalculator;
+import com.stockprophet.math.StatsClass;
 import com.stockprophet.web.Column;
 import com.stockprophet.web.GenerateHtml;
 
@@ -275,10 +277,42 @@ public class Run {
 			List<Double> coefs = GaussianCalculator.calculateCoefficients(subPrices, 3);
 			estimatedPrice.add(GaussianCalculator.calculateYHatAtT(i, coefs));
 		}
+		//Outlier detection
+		int indexOfMax2ndDifference = -1;
+		double max2ndDifference = -1;
+		for(int i=0;i<estimatedPrice.size()-2;i++){
+			double secondDiff = Math.pow(estimatedPrice.get(i) - 2*estimatedPrice.get(i+1) + estimatedPrice.get(i+2), 2.0);
+			if(secondDiff > max2ndDifference){
+				max2ndDifference = secondDiff;
+				indexOfMax2ndDifference = i;
+			}
+		}
+		List<Double> outlierCandidates = Arrays.asList(
+				estimatedPrice.get(indexOfMax2ndDifference),
+				estimatedPrice.get(indexOfMax2ndDifference+1),
+				estimatedPrice.get(indexOfMax2ndDifference+2)
+				);
+		double average = StatsClass.getAverage(outlierCandidates);
+		double maxDeviation = -1.0;
+		int indexOfOutlier = -1;
+		for(int i=0;i<outlierCandidates.size(); i++){
+			double deviation = Math.pow(outlierCandidates.get(i) - average, 2.0);
+			if(deviation > maxDeviation){
+				maxDeviation = deviation;
+				indexOfOutlier = i;
+			}
+		}
+		int index = indexOfMax2ndDifference + indexOfOutlier;
+		if(index > 0 && index < estimatedPrice.size()-1){
+			estimatedPrice.set(index, 0.5*(estimatedPrice.get(index-1)+estimatedPrice.get(index+1)));
+		}else if(index == 0){
+			estimatedPrice.set(index, 2.0*estimatedPrice.get(index+1) - estimatedPrice.get(index+2));
+		}else if(index == estimatedPrice.size()-1){
+			estimatedPrice.set(index, 2.0*estimatedPrice.get(index-1) - estimatedPrice.get(index-2));
+		}
 		
 		List<Double> coefsEstimatedPrice = GaussianCalculator.calculateCoefficients(estimatedPrice, 2);
 		double r2 = GaussianCalculator.calculateR2(estimatedPrice, coefsEstimatedPrice);
-		System.out.println(symbol + "\t" + optimizedN + "\t" + maxR2 + "\t" + coefsEstimatedPrice.get(0) + "\t" + r2);
 		
 		columns.put(Column.N, "" + optimizedN);
 		columns.put(Column.PRED, "" + coefsEstimatedPrice.get(0));
