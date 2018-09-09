@@ -16,7 +16,7 @@ public enum Column {
 	N(true, 0, Run.TWO_YEARS, true, false),
 	PCONF(true, 0, 100, true, true),
 	MAXR2(true, 0, 100, true, true),
-	NOISE(true, 0, 100, true, true),
+	NOISE(true, 0, 10000, true, true),
 	MKTCAP(true, 0, 100, true, false),
 	LINEAR(true, 0, 100, true, true),
 	RIGID(true, 0, 100, true, true),

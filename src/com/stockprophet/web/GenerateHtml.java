@@ -347,10 +347,8 @@ public class GenerateHtml {
 						if(data.get(row).get(column) != null){
 							if( column == Column.PRICE ){
 								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\"><a href=\"financeChart.php?s=" + symbol + "\" target=\"_blank\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
-							}else if(column == Column.OIDR || column == Column.MIDR || column == Column.MKTCAP){
-								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
 							}else{
-								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.1f", Double.valueOf(data.get(row).get(column))) + "</td>";
+								tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
 							}
 						}else{
 							tableRow += "<td style=\"background-color: #" + convertToColor(darken(color, columnIndex)) + "\">null</td>";

@@ -232,9 +232,9 @@ public class Run {
 		List<Double> low = StockUtil.getPriceFromFile(symbol, PriceType.LOW);  
 		List<Double> volume = StockUtil.getPriceFromFile(symbol, PriceType.VOLUME);  
 		
-		double noise = 2000*(high.get(high.size()-1) - low.get(low.size()-1))/((high.get(high.size()-1) + low.get(low.size()-1)));
+		double noise = 2000*(high.get(0) - low.get(0))/((high.get(0) + low.get(0)));
 		columns.put(Column.NOISE, "" + noise);
-		double marketCap = Math.log10(volume.get(volume.size()-1) * prices.get(0));
+		double marketCap = Math.log10(volume.get(0) * prices.get(0));
 		columns.put(Column.MKTCAP, "" + marketCap);
 		
 		double[] metrics = AdvancedFinancialMathMethods.calculateOptimalAndMaximalIntradayReturns(open, high);
