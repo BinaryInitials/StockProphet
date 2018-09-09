@@ -79,7 +79,7 @@ public class Run {
 				BufferedReader bufferReader = new BufferedReader(new FileReader(new File("data/" + key.replaceAll("\\.","-") + ".csv")));
 				String header = bufferReader.readLine();
 				for(int i=0;i<yHats.size();i++)
-					header += ",fit" + i;
+					header += ",Fit" + i;
 				bufferWriter.write(header + "\n");
 				String line;
 				List<String> lines = new ArrayList<String>();
