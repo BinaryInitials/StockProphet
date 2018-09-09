@@ -15,7 +15,7 @@ public class GaussianCalculator {
 		double first = prices.get(0);
 		double last = prices.get(prices.size()-1);
 		for(double price : prices)
-			normalized.add((price-first)/(last-first));
+			normalized.add((price-first)/Math.abs(last-first));
 		return normalized;
 	}
 	
@@ -115,10 +115,7 @@ public class GaussianCalculator {
 		//Creating a Vandermonde Matrix
 		for(int row = 0;row<maxDays; row++){
 			for(int col=0;col<degree+1;col++)
-				if(row == 0 && col == 0)
-					matrixX[row][col] = 1.0;
-				else
-					matrixX[row][col] = Math.pow(row,col);
+				matrixX[row][col] = Math.pow(-row-1,col);
 			matrixY[row] = data.get(row);
 		}
 		
@@ -188,15 +185,17 @@ public class GaussianCalculator {
 		return yHat;
 	}
 	
+	public static double calculateYHatAtT(int t, List<Double> coefs){
+		double yHatAtT = 0.0;
+		for(int power=0;power<coefs.size();power++)
+			yHatAtT += coefs.get(power)*Math.pow(t, power);
+		return yHatAtT;
+	}
+	
 	public static List<Double> calculateYHat(int size, List<Double> coefs){
 		List<Double> yHat = new ArrayList<Double>();
-		for(int datum = 0;datum<size;datum++){
-			double sum = 0;
-			int i=0;
-			for(double coef : coefs)
-				sum+= coef*Math.pow(datum, i++);
-			yHat.add(sum);
-		}
+		for(int datum = 0;datum<size;datum++)
+			yHat.add(calculateYHatAtT(-datum-1, coefs));
 		return yHat;
 	}
 	

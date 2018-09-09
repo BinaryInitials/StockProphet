@@ -27,7 +27,7 @@ import com.stockprophet.web.GenerateHtml;
 
 public class Run {
 	
-	public static final int FIVE_YEARS = 1201;
+	public static final int TWO_YEARS = 503;
 	public static final int TODAY = 0;
 	public static final int YESTERDAY = 1;
 	
@@ -51,7 +51,7 @@ public class Run {
 		for (String key : indexMap.keySet()) {
 			List<Double> prices = StockUtil.getPriceFromFile(key);
 			
-			if (prices.size() < FIVE_YEARS){
+			if (prices.size() < TWO_YEARS){
 				System.out.println("Not enough data points for " + key + ": " + prices.size());
 				continue;
 			}
@@ -66,8 +66,7 @@ public class Run {
 			for(Double price : stocks.get(key))
 				clone.add(price);
 			
-			Collections.reverse(clone);
-			//^ After reversing, index 0 is old, index.size()-1 is new
+			//^index 0 is new, index.size()-1 is old
 			
 	    	List<List<Double>> coefss = new ArrayList<List<Double>>();
 	    	List<List<Double>> yHats = new ArrayList<List<Double>>();
@@ -90,19 +89,19 @@ public class Run {
 				bufferWriter.write(header + "\n");
 				String line;
 				int lineCounter = 0;
-				while((line=bufferReader.readLine())!=null){
-					bufferWriter.write(line);
-					for(List<Double> yHat : yHats)
-						bufferWriter.write("," + 0.0001*Math.round(10000*yHat.get(lineCounter)));
-					bufferWriter.write("\n");
-					lineCounter++;
+				while((line=bufferReader.readLine())!=null){					
+					if(!line.contains("null") && line.contains(",")){
+						bufferWriter.write(line);
+						for(List<Double> yHat : yHats)
+							bufferWriter.write("," + 0.0001*Math.round(10000*yHat.get(lineCounter)));
+						bufferWriter.write("\n");
+						lineCounter++;
+					}
 				}
 				bufferReader.close();
 				bufferWriter.close();
 			}catch(IOException e){
-				
-			}
-			
+			}			
 	    	
 		}
 		
@@ -163,14 +162,8 @@ public class Run {
 		System.out.println("Time: " + getTime(timeSteps) + " seconds");
 		System.out.println("5. Generation Website");
 
-//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.DAY5);
-//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.MONTH1);
-//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.MONTH6);
-//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR1);
-//		GenerateJSON.generateJsonForMobile(sortedColumnsToday, Column.YEAR5);
 		GenerateHtml.writeWeb(sortedColumnsToday);
 		GenerateHtml.writePlotHtml();
-//		GenerateHtml.writeMobile();
 		
 		timeSteps.add(new Date());
 		System.out.println("Total Elapsed time: "  + getTime(timeSteps, true)/60 + " minutes");
@@ -236,7 +229,7 @@ public class Run {
 		columns.put(Column.SECTOR, properties[1]);
 		columns.put(Column.INDUSTRY, properties[2]);
 		
-		List<Double> prices = allPrices.subList(startingPoint, FIVE_YEARS-1+startingPoint);
+		List<Double> prices = allPrices.subList(startingPoint, TWO_YEARS-1+startingPoint);
 		
 		
 		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateMetrics(prices);
@@ -250,7 +243,7 @@ public class Run {
 		List<Double> low = StockUtil.getPriceFromFile(symbol, PriceType.LOW);  
 		List<Double> volume = StockUtil.getPriceFromFile(symbol, PriceType.VOLUME);  
 		
-		double noise = 200*(high.get(high.size()-1) - low.get(low.size()-1))/((high.get(high.size()-1) + low.get(low.size()-1)));
+		double noise = 2000*(high.get(high.size()-1) - low.get(low.size()-1))/((high.get(high.size()-1) + low.get(low.size()-1)));
 		columns.put(Column.NOISE, "" + noise);
 		double marketCap = Math.log10(volume.get(volume.size()-1) * prices.get(0));
 		columns.put(Column.MKTCAP, "" + marketCap);
@@ -265,23 +258,11 @@ public class Run {
 		columns.put(Column.MONTH3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 60))); 
 		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
 		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 250)));
-		columns.put(Column.YEAR3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 750)));
-		columns.put(Column.YEAR5, "" + 100*StockUtil.calculateGrowth(prices.subList(0, Run.FIVE_YEARS-1)));
+		columns.put(Column.YEAR2, "" + 100*StockUtil.calculateGrowth(prices.subList(0, TWO_YEARS-1)));
 		
 		columns.put(Column.PRICE, "" + prices.get(0));
 		
-		List<Double> clone = new ArrayList<>();
-		for(Double price : prices)
-			clone.add(price);
-		
-		Collections.reverse(clone);
-		//^ After reversing, index 0 is old, index.size()-1 is new
-		
-    	List<Double> normalized = GaussianCalculator.normalizeDataTo0(clone);
-    	List<Double> coefs3 = GaussianCalculator.calculateCoefficients(normalized, 3);
-    	List<Double> coefs5 = GaussianCalculator.calculateCoefficients(normalized, 5);
-
-    	List<Double> pricesMDA5 = CommonFinancialMathMethods.calculateMovingAverage(prices);
+    	List<Double> pricesMDA5 = CommonFinancialMathMethods.calculateMovingAverage(prices, 5);
     	List<Double> pricesMDA5Normalized = GaussianCalculator.normalizeTo0and1(pricesMDA5);
     	double lengthNormalized = Math.sqrt(2.0)/CommonFinancialMathMethods.calculateLength(pricesMDA5Normalized);
     	List<Double> consistencyMetrics = CommonLinearAlgebraMethods.calculateCustomConsistency(prices, 30, 8);
@@ -291,22 +272,28 @@ public class Run {
 		
 		columns.put(Column.CONF, "" + 100*consistencyMetrics.get(3));
 		
-		columns.put(Column.MOMENT3, "" + 1000*(3*coefs3.get(3)*clone.size()*clone.size() + 2 * coefs3.get(2) * clone.size() + coefs3.get(1)));
-		columns.put(Column.INERT3, "" + 1000000*(2*3*coefs3.get(3)*clone.size() + 2*coefs3.get(2)));
-
-		columns.put(Column.MOMENT5, "" + 1000*(
-				5*coefs5.get(5)*Math.pow(clone.size(),  4.0) + 
-				4*coefs5.get(4)*Math.pow(clone.size(), 3.0) + 
-				3*coefs5.get(3)*Math.pow(clone.size(), 2.0) + 
-				2*coefs5.get(2)*clone.size() +
-				1*coefs5.get(1)
-				));
-		columns.put(Column.INERT5, "" + 1000000*(
-				5*4*coefs5.get(5)*Math.pow(clone.size(), 3.0) + 
-				4*3*coefs5.get(4)*Math.pow(clone.size(), 2.0) + 
-				3*2*coefs5.get(3)*clone.size() + 
-				2*1*coefs5.get(2)
-				));
+		double maxR2 = 0.0;
+		int optimizedN = 0;
+		for(int i=20;i<prices.size()-10;i++){
+			List<Double> coefs = GaussianCalculator.calculateCoefficients(prices.subList(0, i), 3);
+			double r2 = GaussianCalculator.calculateR2(prices, coefs);
+			if(r2 > maxR2){
+				maxR2 = r2;
+				optimizedN = i;
+			}			
+		}
+		List<Double> estimatedPrice = new ArrayList<Double>();
+		for(int i=0;i<10;i++){
+			List<Double> subPrices = prices.subList(i, i+optimizedN);
+			List<Double> coefs = GaussianCalculator.calculateCoefficients(subPrices, 3);
+			estimatedPrice.add(GaussianCalculator.calculateYHatAtT(i, coefs));
+		}
+		
+		List<Double> coefsEstimatedPrice = GaussianCalculator.calculateCoefficients(estimatedPrice, 2);
+		columns.put(Column.PRED, "" + coefsEstimatedPrice.get(0));
+		columns.put(Column.VELOCITY, "" + coefsEstimatedPrice.get(1));
+		columns.put(Column.VALUE, "" + 100*(prices.get(0) / coefsEstimatedPrice.get(0) - 1.0));
+		
 		
 		columns.put(Column.STAB, "" + 100*lengthNormalized);
 		columns.put(Column.CONS, ""+ 100*consistency);
@@ -315,6 +302,20 @@ public class Run {
 		columns.put(Column.WILLIAMS, "" + CommonFinancialMathMethods.calculateWilliams(prices));
 		
 		return columns;
+	}
+	
+	public static double calculateFirstDerivativeAtTimeN(List<Double> coefs, int n){
+		double firstDerivative = 0.0;
+		for(int i=1;i<coefs.size();i++)
+			firstDerivative += i*coefs.get(i)*Math.pow(n, i-1.0);
+		return firstDerivative;
+	}
+
+	public static double calculateSecondDerivativeAtTimeN(List<Double> coefs, int n){
+		double secondDerivative = 0.0;
+		for(int i=2;i<coefs.size();i++)
+			secondDerivative += i*(i-1)*coefs.get(i)*Math.pow(n, i-2.0);
+		return secondDerivative;
 	}
 	
 	private static String truncate(String nameRaw){
