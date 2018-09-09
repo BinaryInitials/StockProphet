@@ -283,7 +283,7 @@ public class Run {
 		columns.put(Column.N, "" + optimizedN);
 		columns.put(Column.PRED, "" + coefsEstimatedPrice.get(0));
 		columns.put(Column.VELOCITY, "" + coefsEstimatedPrice.get(1));
-		columns.put(Column.VALUE, "" + 100*(prices.get(0) / coefsEstimatedPrice.get(0) - 1.0));
+		columns.put(Column.PVALUE, "" + 100*(prices.get(0) / coefsEstimatedPrice.get(0) - 1.0));
 		columns.put(Column.PCONF, "" + 100*r2);
 		columns.put(Column.MAXR2, "" + 100*maxR2);
 		

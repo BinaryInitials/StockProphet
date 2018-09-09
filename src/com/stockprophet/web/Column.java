@@ -11,7 +11,7 @@ public enum Column {
 	INDUSTRY(false, null, null, false, false),
 	PRICE(true, 0, 1000000, true, false),
 	PRED(true, 0, 1000000, true, false),
-	VALUE(true, -100, 100, true, true),
+	PVALUE(true, -100, 100, true, true),
 	VELOCITY(true, -100, 100, true, false),
 	N(true, 0, Run.TWO_YEARS, true, false),
 	PCONF(true, 0, 100, true, true),
