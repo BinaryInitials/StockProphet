@@ -177,15 +177,7 @@ public class Run {
 		for (HashMap<Column, String> row : columns)
 			totalRank.put(row.get(Column.SYMB),0);
 		for(Column column : Column.values())
-			if(
-					column != Column.RANK && 
-					column != Column.COMPANY && 
-					column != Column.SECTOR && 
-					column != Column.INDUSTRY && 
-					column != Column.SYMB && 
-					column != Column.DIFF && 
-					column != Column.PRICE
-				){
+			if(column.isRanking()){
 				System.out.println("RANKING " + column.toString());
 				List<HashMap<String, String>> entries = new ArrayList<HashMap<String, String>>();
 				for(HashMap<Column, String> row : columns){
@@ -254,7 +246,7 @@ public class Run {
 		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
 		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 250)));
 		columns.put(Column.YEAR2, "" + 100*StockUtil.calculateGrowth(prices.subList(0, TWO_YEARS-1)));
-		
+
 		columns.put(Column.PRICE, "" + prices.get(0));
 		
     	List<Double> pricesMDA5 = CommonFinancialMathMethods.calculateMovingAverage(prices, 5);
@@ -292,7 +284,8 @@ public class Run {
 		columns.put(Column.PRED, "" + coefsEstimatedPrice.get(0));
 		columns.put(Column.VELOCITY, "" + coefsEstimatedPrice.get(1));
 		columns.put(Column.VALUE, "" + 100*(prices.get(0) / coefsEstimatedPrice.get(0) - 1.0));
-		
+		columns.put(Column.PCONF, "" + 100*r2);
+		columns.put(Column.MAXR2, "" + 100*maxR2);
 		
 		columns.put(Column.STAB, "" + 100*lengthNormalized);
 		columns.put(Column.CONS, ""+ 100*consistency);
