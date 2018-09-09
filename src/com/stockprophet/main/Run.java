@@ -62,14 +62,13 @@ public class Run {
 		System.out.println("Time: " + getTime(timeSteps) + " seconds");
 		System.out.println("3. Generation of Gaussian Least Squares");
 		for(String key : stocks.keySet()){
-			
 	    	List<List<Double>> coefss = new ArrayList<List<Double>>();
 	    	List<List<Double>> yHats = new ArrayList<List<Double>>();
 	    	for(int n=0;n<10;n++)
 	    		coefss.add(GaussianCalculator.calculateCoefficients(stocks.get(key).subList(n, ONE_YEAR+n), 3));
 	    	
 	    	for(int i=0;i<coefss.size();i++)
-    			yHats.add(GaussianCalculator.calculateYHat(-ONE_YEAR+1+i, i, coefss.get(i)));
+    			yHats.add(GaussianCalculator.calculateYHat(-ONE_YEAR+i, i, coefss.get(i)));
 	    	
 	    	File file = new File(key + ".json");
 			try{
@@ -272,11 +271,11 @@ public class Run {
 		int optimizedN = 0;
 		for(int i=20;i<prices.size()-10;i++){
 			List<Double> coefs = GaussianCalculator.calculateCoefficients(prices.subList(0, i), 3);
-			double r2 = GaussianCalculator.calculateR2(prices, coefs);
+			double r2 = GaussianCalculator.calculateR2(prices.subList(0, i), coefs);
 			if(r2 > maxR2){
 				maxR2 = r2;
 				optimizedN = i;
-			}			
+			}
 		}
 		List<Double> estimatedPrice = new ArrayList<Double>();
 		for(int i=0;i<10;i++){
@@ -286,6 +285,9 @@ public class Run {
 		}
 		
 		List<Double> coefsEstimatedPrice = GaussianCalculator.calculateCoefficients(estimatedPrice, 2);
+		double r2 = GaussianCalculator.calculateR2(estimatedPrice, coefsEstimatedPrice);
+		System.out.println(symbol + "\t" + optimizedN + "\t" + maxR2 + "\t" + coefsEstimatedPrice.get(0) + "\t" + r2);
+		
 		columns.put(Column.PRED, "" + coefsEstimatedPrice.get(0));
 		columns.put(Column.VELOCITY, "" + coefsEstimatedPrice.get(1));
 		columns.put(Column.VALUE, "" + 100*(prices.get(0) / coefsEstimatedPrice.get(0) - 1.0));

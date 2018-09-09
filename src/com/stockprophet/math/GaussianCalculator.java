@@ -58,12 +58,9 @@ public class GaussianCalculator {
 		
 		//Creating a Vandermonde Matrix
 		for(int row = 0;row<data.size(); row++){
-			for(int col=1;col<degree+1;col++){
+			for(int col=1;col<degree+1;col++)
 				matrixX[row][col-1] = Math.pow(row/(0.0+data.size()),col);
-				System.out.print(String.format("%.3f", matrixX[row][col-1]) + "\t");
-			}
 			matrixY[row] = dataNormalized.get(row);
-			System.out.println("|" + String.format("%.3f", matrixY[row]));
 		}
 
 		List<Double> coefficients = new ArrayList<Double>();
@@ -153,7 +150,8 @@ public class GaussianCalculator {
 	
 	public static double calculateResiduals(List<Double> data, List<Double> coefs){
 		double error = 0.0;
-		List<Double> yhat = calculateYHat(-data.size(), -1, coefs);
+		List<Double> yhat = calculateYHat(-data.size()-1, -1, coefs);
+		Collections.reverse(yhat);
 		for(int i=0;i<data.size();i++)
 			error += (data.get(i)- yhat.get(i))*(data.get(i)- yhat.get(i));
 		return error;
