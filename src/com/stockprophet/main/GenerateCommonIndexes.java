@@ -16,7 +16,7 @@ public class GenerateCommonIndexes {
 		HashMap<String, String[]> indexMap = new HashMap<String, String[]>();
 		indexMap.put("SPY", new String[]{"SPDR S&P 500 ETF Trust", "Index", "Index"});
 		indexMap.put("TQQQ", new String[]{"ProShares UltraPro QQQ", "Index", "Index"});
-		indexMap.put("SQ", "Square");
+		indexMap.put("SQ", new String[]{"Information Technology", "Internet Software & Services", "Square"});
 		indexMap.putAll(StockUtil.generateSPwithSectorsMap());
 		indexMap = StockUtil.cleanMap(indexMap);
 		return indexMap;
