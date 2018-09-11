@@ -90,7 +90,7 @@ public class Run {
 						lines.add(line);
 				bufferReader.close();
 				for(int i=0;i<ONE_YEAR;i++){
-					String newline = lines.get(lines.size()-1-ONE_YEAR+i);
+					String newline = lines.get(lines.size()-ONE_YEAR+i);
 					bufferWriter.write(newline);
 					for(List<Double> yHat : yHats)
 						bufferWriter.write("," + 0.0001*Math.round(10000*yHat.get(i)));
