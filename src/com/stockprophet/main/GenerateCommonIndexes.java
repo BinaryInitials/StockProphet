@@ -22,6 +22,9 @@ public class GenerateCommonIndexes {
 		indexMap.put("YEXT", new String[]{"Information Technology", "Internet Software & Services", "Yext"});
 		indexMap.put("SFIX", new String[]{"Information Technology", "Internet Software & Services", "Stitch Fix"});
 		indexMap.put("SNAP", new String[]{"Information Technology", "Internet Software & Services", "Snapchat"});
+		indexMap.put("ESTC", new String[]{"Information Technology", "Internet Software & Services", "Elastic"});
+		indexMap.put("TWLO", new String[]{"Information Technology", "Internet Software & Services", "Twilio"});
+		indexMap.put("SHOP", new String[] {"Information Technology", "Internet Software & Services", "Shopify"});
 		indexMap.put("YELP", new String[]{"Information Technology", "Internet Software & Services", "Yelp"});
 		indexMap.putAll(StockUtil.generateSPwithSectorsMap());
 		indexMap = StockUtil.cleanMap(indexMap);
