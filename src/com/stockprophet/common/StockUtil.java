@@ -267,8 +267,8 @@ public class StockUtil {
 					String industry = "";
 					if(indexType == IndexType.SP400){
 						if(lines.get(i).equals("view")){
-							key = lines.get(i-4);
-							company = lines.get(i-3);
+							company = lines.get(i-4);
+							key = lines.get(i-3);
 							sector = lines.get(i-2);
 							industry = lines.get(i-1);
 							map.put(key, new String[]{company, sector, industry});
@@ -277,8 +277,8 @@ public class StockUtil {
 						}
 					}else if(indexType == IndexType.SP500){
 						if(lines.get(i).equals("reports")){
-							key = lines.get(i-2);
-							company = lines.get(i-1);
+							company = lines.get(i-2);
+							key = lines.get(i-1);
 							sector = lines.get(i+1);
 							industry = lines.get(i+2);
 							map.put(key, new String[]{company, sector, industry});
