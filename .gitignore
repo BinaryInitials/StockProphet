@@ -1,1 +1,10 @@
-/bin/
+#!/bin/bash
+*.php
+*.html
+*.jar
+*.txt
+*.json
+temp/
+bin/
+data/
+test/
