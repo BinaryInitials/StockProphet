@@ -17,7 +17,7 @@ public class GenerateCommonIndexes {
 		indexMap.put("SPY", new String[]{"SPDR S&P 500 ETF Trust", "Index", "Index"});
 		indexMap.put("TQQQ", new String[]{"ProShares UltraPro QQQ", "Index", "Index"});
 		indexMap.put("SQ", new String[]{"Information Technology", "Internet Software & Services", "Square"});
-		indexMap.put("TEAM", new String[]{"Information Technology", "Internet Software & Services", "Atlasian"});
+		indexMap.put("TEAM", new String[]{"Information Technology", "Internet Software & Services", "Atlassian"});
 		indexMap.put("MDB", new String[]{"Information Technology", "Internet Software & Services", "Mongo DB"});
 		indexMap.put("YEXT", new String[]{"Information Technology", "Internet Software & Services", "Yext"});
 		indexMap.put("SFIX", new String[]{"Information Technology", "Internet Software & Services", "Stitch Fix"});
