@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,18 +17,12 @@ import com.stockprophet.common.StockUtil;
 import com.stockprophet.common.StockUtil.CalculatedMetricType;
 import com.stockprophet.common.StockUtil.PriceType;
 import com.stockprophet.math.AdvancedFinancialMathMethods;
-import com.stockprophet.math.CommonFinancialMathMethods;
-import com.stockprophet.math.CommonLinearAlgebraMethods;
 import com.stockprophet.math.GaussianCalculator;
-import com.stockprophet.math.StatsClass;
 import com.stockprophet.web.Column;
 import com.stockprophet.web.GenerateHtml;
 
-
-
 public class Run {
 	
-	public static final int TWO_YEARS = 503;
 	public static final int ONE_YEAR = 251;
 	public static final int TODAY = 0;
 	public static final int YESTERDAY = 1;
@@ -54,7 +47,7 @@ public class Run {
 		for (String key : indexMap.keySet()) {
 			List<Double> prices = StockUtil.getPriceFromFile(key);
 			
-			if (prices.size() < TWO_YEARS){
+			if (prices.size() < ONE_YEAR){
 				System.out.println("Not enough data points for " + key + ": " + prices.size());
 				continue;
 			}
@@ -67,7 +60,7 @@ public class Run {
 	    	List<List<Double>> coefss = new ArrayList<List<Double>>();
 	    	List<List<Double>> yHats = new ArrayList<List<Double>>();
 	    	for(int n=0;n<10;n++)
-	    		coefss.add(GaussianCalculator.calculateCoefficients(stocks.get(key).subList(n, ONE_YEAR+n), 3));
+	    		coefss.add(GaussianCalculator.calculateCoefficients(stocks.get(key).subList(n, ONE_YEAR-10+n), 3));
 	    	
 	    	for(int i=0;i<coefss.size();i++)
     			yHats.add(GaussianCalculator.calculateYHat(-ONE_YEAR+i, i, coefss.get(i)));
@@ -135,9 +128,7 @@ public class Run {
 			System.out.println((rank+1) + "\t" + 
 					sortedColumnsYesterday.get(rank).get(Column.SYMB) + "\t" +
 					sortedColumnsYesterday.get(rank).get(Column.LINEAR) + "\t" +
-					sortedColumnsYesterday.get(rank).get(Column.RIGID) + "\t" +
-					sortedColumnsYesterday.get(rank).get(Column.TURB) + "\t" +
-					sortedColumnsYesterday.get(rank).get(Column.YEAR1)
+					sortedColumnsYesterday.get(rank).get(Column.RIGID)
 					);
 		
 		System.out.println("TODAY");
@@ -145,9 +136,7 @@ public class Run {
 			System.out.println((rank+1) + "\t" + 
 					sortedColumnsToday.get(rank).get(Column.SYMB) + "\t" +
 					sortedColumnsToday.get(rank).get(Column.LINEAR) + "\t" +
-					sortedColumnsToday.get(rank).get(Column.RIGID) + "\t" +
-					sortedColumnsToday.get(rank).get(Column.TURB) + "\t" +
-					sortedColumnsToday.get(rank).get(Column.YEAR1)
+					sortedColumnsToday.get(rank).get(Column.RIGID)
 					);
 		
 		for(int rank=0;rank<sortedColumnsToday.size();rank++){
@@ -218,22 +207,19 @@ public class Run {
 		columns.put(Column.SECTOR, properties[1]);
 		columns.put(Column.INDUSTRY, properties[2]);
 		
-		List<Double> prices = allPrices.subList(startingPoint, TWO_YEARS-1+startingPoint);
+		List<Double> prices = allPrices.subList(startingPoint, ONE_YEAR-1+startingPoint);
 		
 		
 		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateMetrics(prices);
 
 		columns.put(Column.LINEAR, "" + 100*metricMap.get(CalculatedMetricType.ALGO_SCORE));
 		columns.put(Column.RIGID, "" + 100*metricMap.get(CalculatedMetricType.RIGIDITY_SCORE));
-		columns.put(Column.TURB, "" + 100*metricMap.get(CalculatedMetricType.TURBULANCE_SCORE));
+		columns.put(Column.GROWTH, "" + 100*metricMap.get(CalculatedMetricType.GROWTH_SCORE));
 		
 		List<Double> open = StockUtil.getPriceFromFile(symbol, PriceType.OPEN);  
 		List<Double> high = StockUtil.getPriceFromFile(symbol, PriceType.HIGH);  
-		List<Double> low = StockUtil.getPriceFromFile(symbol, PriceType.LOW);  
 		List<Double> volume = StockUtil.getPriceFromFile(symbol, PriceType.VOLUME);  
 		
-		double noise = 2000*(high.get(0) - low.get(0))/((high.get(0) + low.get(0)));
-		columns.put(Column.NOISE, "" + noise);
 		double marketCap = Math.log10(volume.get(0) * prices.get(0));
 		columns.put(Column.MKTCAP, "" + marketCap);
 		
@@ -241,91 +227,7 @@ public class Run {
 		
 		columns.put(Column.OIDR, "" + metrics[0]);
 		columns.put(Column.MIDR, "" + metrics[1]);
-		
-		columns.put(Column.WEEK1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 5))); 
-		columns.put(Column.MONTH1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 20))); 
-		columns.put(Column.MONTH3, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 60))); 
-		columns.put(Column.MONTH6, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 120))); 
-		columns.put(Column.YEAR1, "" + 100*StockUtil.calculateGrowth(prices.subList(0, 250)));
-		columns.put(Column.YEAR2, "" + 100*StockUtil.calculateGrowth(prices.subList(0, TWO_YEARS-1)));
-
 		columns.put(Column.PRICE, "" + prices.get(0));
-		
-    	List<Double> pricesMDA5 = CommonFinancialMathMethods.calculateMovingAverage(prices, 5);
-    	List<Double> pricesMDA5Normalized = GaussianCalculator.normalizeTo0and1(pricesMDA5);
-    	double lengthNormalized = Math.sqrt(2.0)/CommonFinancialMathMethods.calculateLength(pricesMDA5Normalized);
-    	List<Double> consistencyMetrics = CommonLinearAlgebraMethods.calculateCustomConsistency(prices, 30, 8);
-		double consistency1 = Math.exp(-consistencyMetrics.get(0)/100);
-		double consistency2 = Math.exp(-consistencyMetrics.get(1)/200);
-		double consistency = Math.sqrt(consistency1 * consistency2);
-		
-		columns.put(Column.CONF, "" + 100*consistencyMetrics.get(3));
-		
-		double maxR2 = 0.0;
-		int optimizedN = 0;
-		for(int i=20;i<prices.size()-10;i++){
-			List<Double> coefs = GaussianCalculator.calculateCoefficients(prices.subList(0, i), 3);
-			double r2 = GaussianCalculator.calculateR2(prices.subList(0, i), coefs);
-			if(r2 > maxR2){
-				maxR2 = r2;
-				optimizedN = i;
-			}
-		}
-		List<Double> estimatedPrice = new ArrayList<Double>();
-		for(int i=0;i<10;i++){
-			List<Double> subPrices = prices.subList(i, i+optimizedN);
-			List<Double> coefs = GaussianCalculator.calculateCoefficients(subPrices, 3);
-			estimatedPrice.add(GaussianCalculator.calculateYHatAtT(i, coefs));
-		}
-		//Outlier detection
-		int indexOfMax2ndDifference = -1;
-		double max2ndDifference = -1;
-		for(int i=0;i<estimatedPrice.size()-2;i++){
-			double secondDiff = Math.pow(estimatedPrice.get(i) - 2*estimatedPrice.get(i+1) + estimatedPrice.get(i+2), 2.0);
-			if(secondDiff > max2ndDifference){
-				max2ndDifference = secondDiff;
-				indexOfMax2ndDifference = i;
-			}
-		}
-		List<Double> outlierCandidates = Arrays.asList(
-				estimatedPrice.get(indexOfMax2ndDifference),
-				estimatedPrice.get(indexOfMax2ndDifference+1),
-				estimatedPrice.get(indexOfMax2ndDifference+2)
-				);
-		double average = StatsClass.getAverage(outlierCandidates);
-		double maxDeviation = -1.0;
-		int indexOfOutlier = -1;
-		for(int i=0;i<outlierCandidates.size(); i++){
-			double deviation = Math.pow(outlierCandidates.get(i) - average, 2.0);
-			if(deviation > maxDeviation){
-				maxDeviation = deviation;
-				indexOfOutlier = i;
-			}
-		}
-		int index = indexOfMax2ndDifference + indexOfOutlier;
-		if(index > 0 && index < estimatedPrice.size()-1){
-			estimatedPrice.set(index, 0.5*(estimatedPrice.get(index-1)+estimatedPrice.get(index+1)));
-		}else if(index == 0){
-			estimatedPrice.set(index, 2.0*estimatedPrice.get(index+1) - estimatedPrice.get(index+2));
-		}else if(index == estimatedPrice.size()-1){
-			estimatedPrice.set(index, 2.0*estimatedPrice.get(index-1) - estimatedPrice.get(index-2));
-		}
-		
-		List<Double> coefsEstimatedPrice = GaussianCalculator.calculateCoefficients(estimatedPrice, 2);
-		double r2 = GaussianCalculator.calculateR2(estimatedPrice, coefsEstimatedPrice);
-		
-		columns.put(Column.N, "" + optimizedN);
-		columns.put(Column.PRED, "" + coefsEstimatedPrice.get(0));
-		columns.put(Column.VELOCITY, "" + coefsEstimatedPrice.get(1));
-		columns.put(Column.PVALUE, "" + 100*(prices.get(0) / coefsEstimatedPrice.get(0) - 1.0));
-		columns.put(Column.PCONF, "" + 100*r2);
-		columns.put(Column.MAXR2, "" + 100*maxR2);
-		
-		columns.put(Column.STAB, "" + 100*lengthNormalized);
-		columns.put(Column.CONS, ""+ 100*consistency);
-		
-		columns.put(Column.SHARPE, "" + CommonFinancialMathMethods.calculateSharpe(prices));
-		columns.put(Column.WILLIAMS, "" + CommonFinancialMathMethods.calculateWilliams(prices));
 		
 		return columns;
 	}

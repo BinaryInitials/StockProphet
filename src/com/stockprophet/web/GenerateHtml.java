@@ -254,7 +254,7 @@ public class GenerateHtml {
 			
 			/*
 			 * This line allows the settings table to scroll horizontally. 
-			 * It's a wonder that the main table doesn't need it and yet can
+			 * It's a wonder why the main table doesn't need it and yet can
 			 * still scroll that way.
 			 */ 
 			buffer.write("<div style=\"overflow-x:auto;\">\n");

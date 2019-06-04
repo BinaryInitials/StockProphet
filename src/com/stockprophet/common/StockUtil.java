@@ -75,21 +75,17 @@ public class StockUtil {
 		ALGO_SCORE,
 		GROWTH_SCORE,
 		RIGIDITY_SCORE,
-		TURBULANCE_SCORE
 	}
 	
 	public static HashMap<CalculatedMetricType, Double> calculateMetrics(List<Double> prices){
 		HashMap<CalculatedMetricType, Double> calculatedMetrics = new HashMap<CalculatedMetricType, Double>();
-		double maxChange = StockUtil.findMaxChange(prices, PeriodType.ONE_YEAR);
 		double metric1 = StockUtil.calculateScore(prices, PeriodType.ONE_YEAR);
 		double rate = (prices.get(0) - prices.get(prices.size() - 1)) / (prices.get(prices.size() - 1));
 		double metric2 = 1.0 / (1.0 + Math.exp(-8.0 * rate));
 		double metric3 = -StatsClass.getR(prices)*0.5+0.5;
-		double metric4 = Math.exp(-5.0 * maxChange);
 		calculatedMetrics.put(CalculatedMetricType.ALGO_SCORE, metric1);
 		calculatedMetrics.put(CalculatedMetricType.GROWTH_SCORE, metric2);
 		calculatedMetrics.put(CalculatedMetricType.RIGIDITY_SCORE, metric3);
-		calculatedMetrics.put(CalculatedMetricType.TURBULANCE_SCORE, metric4);
 		return calculatedMetrics;
 	}
 	
@@ -180,14 +176,6 @@ public class StockUtil {
 		if(rCoef != null)
 			return -rCoef;
 		return null;
-	}
-	
-	public static double findMaxChange(List<Double> adjPAll, PeriodType periodType){
-		double change = 0.0;
-		List<Double> adjPTruncated  = adjPAll.subList(0, Math.min(PeriodType.getConstants(periodType)[0], adjPAll.size()));
-		for(int i=0;i<adjPTruncated.size()-1;i++)
-			change = Math.max(change, Math.abs(adjPTruncated.get(i)-adjPTruncated.get(i+1))/adjPTruncated.get(i+1));
-		return change;
 	}
 	
 	public static Double calculateMovingR(List<Double> adjPAll, PeriodType periodType) {

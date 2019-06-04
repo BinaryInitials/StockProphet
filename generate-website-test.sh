@@ -1,5 +1,5 @@
 #!/bin/bash
-folder="temp/"
+folder="temp"
 if [ -z "$1" ];then
 	echo "No arguments specified. Creating temp folder"
 else
