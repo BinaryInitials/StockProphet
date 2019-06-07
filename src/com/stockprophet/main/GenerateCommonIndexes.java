@@ -37,8 +37,19 @@ public class GenerateCommonIndexes {
 		indexMap.put("TWLO", new String[]{"Information Technology", "Internet Software & Services", "Twilio"});
 		indexMap.put("SHOP", new String[] {"Information Technology", "Internet Software & Services", "Shopify"});
 		indexMap.put("YELP", new String[]{"Information Technology", "Internet Software & Services", "Yelp"});
-		indexMap.putAll(StockUtil.generateSPwithSectorsMap());
-		indexMap = StockUtil.cleanMap(indexMap);
-		return indexMap;
+		indexMap.put("MELI", new String[]{"Information Technology", "Internet Software & Services", "MercadoLibre"});
+		indexMap.put("ROKU", new String[]{"Information Technology", "Internet Software & Services", "Roku"});
+
+		HashMap<String, String[]> indexMapRightOrder = new HashMap<String, String[]>();
+		for(String key : indexMap.keySet()) {
+			String company = indexMap.get(key)[2];
+			String sector = indexMap.get(key)[0];
+			String industry = indexMap.get(key)[1];
+			indexMapRightOrder.put(key, new String[] {company, sector, industry});
+		}
+		
+		indexMapRightOrder.putAll(StockUtil.generateSPwithSectorsMap());
+		indexMapRightOrder = StockUtil.cleanMap(indexMapRightOrder);
+		return indexMapRightOrder;
 	}
 }
