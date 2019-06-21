@@ -26,6 +26,7 @@ public class Run {
 	public static final int ONE_YEAR = 251;
 	public static final int TODAY = 0;
 	public static final int YESTERDAY = 1;
+	public static final int MVA_KERNEL = 5; 
 	
 	public static void main(String[] args) throws IOException {
 		List<Date> timeSteps = new ArrayList<Date>();
@@ -55,10 +56,33 @@ public class Run {
 		}
 		timeSteps.add(new Date());
 		System.out.println("Time: " + getTime(timeSteps) + " seconds");
-		System.out.println("3. Generation of Gaussian Least Squares");
+		System.out.println("3. Generation of Gaussian Least Squares and Bollinger Bands");
+		HashMap<String, Double> hbands = new HashMap<String, Double>();
+		HashMap<String, Double> lbands = new HashMap<String, Double>();
 		for(String key : stocks.keySet()){
 	    	List<List<Double>> coefss = new ArrayList<List<Double>>();
 	    	List<List<Double>> yHats = new ArrayList<List<Double>>();
+	    	
+	    	List<Double> prices = stocks.get(key).subList(0, ONE_YEAR);
+	    	
+			List<Double> mavg5 = new ArrayList<Double>();
+			List<Double> noise5 = new ArrayList<Double>();
+			
+			//Calculating Bollinger bands
+			for(int i=0;i<prices.size()-MVA_KERNEL;i++) {
+				double sum = 0.0;
+				double sum2 = 0.0;
+				for(int j=0;j<MVA_KERNEL;j++) {
+					sum+=prices.get(j+i);
+					sum2+=prices.get(j+i)*prices.get(j+i);
+				}
+				double avg = sum/MVA_KERNEL; 
+				mavg5.add(avg);
+				noise5.add(Math.sqrt(MVA_KERNEL/(MVA_KERNEL-1)*(sum2/MVA_KERNEL - avg*avg)));
+			}
+			hbands.put(key, (mavg5.get(0) + noise5.get(0)));
+			lbands.put(key, (mavg5.get(0) - noise5.get(0)));
+	    	
 	    	for(int n=0;n<10;n++)
 	    		coefss.add(GaussianCalculator.calculateCoefficients(stocks.get(key).subList(n, ONE_YEAR-10+n), 3));
 	    	
@@ -75,6 +99,8 @@ public class Run {
 				String header = bufferReader.readLine();
 				for(int i=0;i<yHats.size();i++)
 					header += ",Fit" + i;
+				header += ",HBand,LBand";
+				
 				bufferWriter.write(header + "\n");
 				String line;
 				List<String> lines = new ArrayList<String>();
@@ -82,11 +108,14 @@ public class Run {
 					if(!line.contains("null") && line.contains(","))
 						lines.add(line);
 				bufferReader.close();
-				for(int i=0;i<ONE_YEAR;i++){
+				for(int i=0;i<ONE_YEAR-MVA_KERNEL;i++){
 					String newline = lines.get(lines.size()-ONE_YEAR+i);
 					bufferWriter.write(newline);
 					for(List<Double> yHat : yHats)
-						bufferWriter.write("," + 0.0001*Math.round(10000*yHat.get(i)));
+						bufferWriter.write("," + String.format("%.3f", 0.0001*Math.round(10000*yHat.get(i))));
+					double hband = mavg5.get(i) + noise5.get(i);
+					double lband = mavg5.get(i) - noise5.get(i);
+					bufferWriter.write("," + String.format("%.3f", 0.0001*Math.round(10000*hband)) + "," + String.format("%.3f",0.0001*Math.round(10000*lband)));
 					bufferWriter.write("\n");
 				}
 				bufferWriter.close();
@@ -100,14 +129,14 @@ public class Run {
 		System.out.println("4. Calculate Metrics");
 		//calculate metrics
 		for(String key : stocks.keySet()){
-			HashMap<Column, String> columnToday = populateColumns(key, indexMap.get(key), stocks.get(key), TODAY);
+			HashMap<Column, String> columnToday = populateColumns(key, indexMap.get(key), stocks.get(key), hbands.get(key), lbands.get(key), TODAY);
 			if(columnToday != null){
 				columnsToday.add(columnToday);
 			}else{
 				System.out.println("Error found for " + key);
 			}
 
-			HashMap<Column, String> columnYesterday = populateColumns(key, indexMap.get(key), stocks.get(key), YESTERDAY);
+			HashMap<Column, String> columnYesterday = populateColumns(key, indexMap.get(key), stocks.get(key), hbands.get(key), lbands.get(key), YESTERDAY);
 			if(columnYesterday != null){
 				columnsYesterday.add(columnYesterday);
 			}
@@ -200,7 +229,7 @@ public class Run {
 	}
 	
 	
-	public static HashMap<Column, String> populateColumns(String symbol, String[] properties, List<Double> allPrices, int startingPoint){
+	public static HashMap<Column, String> populateColumns(String symbol, String[] properties, List<Double> allPrices, double hband, double lband, int startingPoint){
 		HashMap<Column, String> columns = new HashMap<Column, String>();
 		columns.put(Column.SYMB, symbol);
 		columns.put(Column.COMPANY, truncate(properties[0]));
@@ -221,7 +250,7 @@ public class Run {
 		List<Double> volume = StockUtil.getPriceFromFile(symbol, PriceType.VOLUME);  
 		
 		double marketCap = Math.log10(volume.get(0) * prices.get(0));
-		columns.put(Column.MKTCAP, "" + marketCap);
+		columns.put(Column.MKTCAP, "" + 100*(1 - Math.exp(-(marketCap-6.0)*Math.log(100)/(5))));
 		
 		double[] metrics = AdvancedFinancialMathMethods.calculateOptimalAndMaximalIntradayReturns(open, high);
 		
@@ -229,21 +258,14 @@ public class Run {
 		columns.put(Column.MIDR, "" + metrics[1]);
 		columns.put(Column.PRICE, "" + prices.get(0));
 		
+		columns.put(Column.HBAND, "" + hband);
+		columns.put(Column.LBAND, "" + lband);
+		
+		double rating = (prices.get(0) - lband)/(hband-lband)*2-1; 
+		
+		columns.put(Column.RATING, "" + rating);
+		
 		return columns;
-	}
-	
-	public static double calculateFirstDerivativeAtTimeN(List<Double> coefs, int n){
-		double firstDerivative = 0.0;
-		for(int i=1;i<coefs.size();i++)
-			firstDerivative += i*coefs.get(i)*Math.pow(n, i-1.0);
-		return firstDerivative;
-	}
-
-	public static double calculateSecondDerivativeAtTimeN(List<Double> coefs, int n){
-		double secondDerivative = 0.0;
-		for(int i=2;i<coefs.size();i++)
-			secondDerivative += i*(i-1)*coefs.get(i)*Math.pow(n, i-2.0);
-		return secondDerivative;
 	}
 	
 	private static String truncate(String nameRaw){

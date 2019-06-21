@@ -383,6 +383,8 @@ public class StockUtil {
 			while((line=buffer.readLine())!=null)
 				if(!line.contains("null") && line.contains(","))
 					prices.add(Double.valueOf(line.split(",")[priceType.getIndex()]));
+			
+			//Newest prices are on top
 			Collections.reverse(prices);
 			buffer.close();
 		} catch (IOException e) {

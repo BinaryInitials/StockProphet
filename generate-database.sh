@@ -16,7 +16,7 @@ do
 	./get-data.sh $key; 
 done
 
-
+mv *.csv data/
 toc=`date +%s`
 
 runtime=$((toc-tic))

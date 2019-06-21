@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -rf *.json
 rm -rf temp/
 rm -rf test/
 rm -rf bin/
