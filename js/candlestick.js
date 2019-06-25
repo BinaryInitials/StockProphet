@@ -14,7 +14,7 @@ var price = {
   low: unpack(rows, 'Low'),
   open: unpack(rows, 'Open'),
 
-  // cutomise colors
+  // customize colors
   increasing: {line: {color: 'green'}},
   decreasing: {line: {color: 'red'}},
 
@@ -153,8 +153,34 @@ var fit9 = {
   yaxis: 'y'
 };
 
+var hband = {
+		  x: unpack(rows, 'Date'),
+		  y: unpack(rows, 'HBand'),
+		  line: {
+		  	color: '#00FF00',
+		  	width: 1
+		  },
+		  mode: 'lines',
+		  type: 'scatter',
+		  xaxis: 'x',
+		  yaxis: 'y'
+		};
 
-var data = [price, fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9];
+var lband = {
+		  x: unpack(rows, 'Date'),
+		  y: unpack(rows, 'LBand'),
+		  line: {
+		  	color: '#FF0000',
+		  	width: 1
+		  },
+		  mode: 'lines',
+		  type: 'scatter',
+		  xaxis: 'x',
+		  yaxis: 'y'
+		};
+
+
+var data = [price, fit0, fit1, fit2, fit3, fit4, fit5, fit6, fit7, fit8, fit9, hband, lband];
 
 var layout = {
   dragmode: 'zoom',
