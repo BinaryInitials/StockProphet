@@ -80,8 +80,12 @@ public class Run {
 				mavg5.add(avg);
 				noise5.add(Math.sqrt(MVA_KERNEL/(MVA_KERNEL-1)*(sum2/MVA_KERNEL - avg*avg)));
 			}
-			hbands.put(key, (mavg5.get(0) + noise5.get(0)));
-			lbands.put(key, (mavg5.get(0) - noise5.get(0)));
+			
+			Collections.reverse(mavg5);
+			Collections.reverse(noise5);
+			
+			hbands.put(key, (mavg5.get(mavg5.size()-1) + noise5.get(noise5.size()-1)));
+			lbands.put(key, (mavg5.get(mavg5.size()-1) - noise5.get(noise5.size()-1)));
 	    	
 	    	for(int n=0;n<10;n++)
 	    		coefss.add(GaussianCalculator.calculateCoefficients(stocks.get(key).subList(n, ONE_YEAR-10+n), 3));
@@ -108,7 +112,7 @@ public class Run {
 					if(!line.contains("null") && line.contains(","))
 						lines.add(line);
 				bufferReader.close();
-				for(int i=0;i<ONE_YEAR-MVA_KERNEL;i++){
+				for(int i=MVA_KERNEL;i<ONE_YEAR;i++){
 					String newline = lines.get(lines.size()-ONE_YEAR+i);
 					bufferWriter.write(newline);
 					for(List<Double> yHat : yHats)
