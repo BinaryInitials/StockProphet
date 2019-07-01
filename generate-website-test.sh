@@ -18,7 +18,6 @@ mkdir $folder/images/
 ./build-stockprophet.sh
 java -jar stockprophet.jar
 cp index.php $folder
-cp mobile.php $folder
 cp css/* $folder/css
 cp js/* $folder/js
 cp images/* $folder/images
@@ -26,6 +25,4 @@ cp *.json $folder/
 
 echo "Website creation successful."
 cat $folder/index.php | sed '1,/?>/d'> $folder/index.html
-cat $folder/mobile.php | sed '1,/?>/d'> $folder/mobile.html
-
 open $folder/index.html

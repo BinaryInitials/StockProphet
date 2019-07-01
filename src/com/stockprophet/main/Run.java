@@ -112,8 +112,8 @@ public class Run {
 					if(!line.contains("null") && line.contains(","))
 						lines.add(line);
 				bufferReader.close();
-				for(int i=MVA_KERNEL;i<ONE_YEAR;i++){
-					String newline = lines.get(lines.size()-ONE_YEAR+i);
+				for(int i=0;i<ONE_YEAR-MVA_KERNEL;i++){
+					String newline = lines.get(lines.size()-ONE_YEAR+i+MVA_KERNEL);
 					bufferWriter.write(newline);
 					for(List<Double> yHat : yHats)
 						bufferWriter.write("," + String.format("%.3f", 0.0001*Math.round(10000*yHat.get(i))));
