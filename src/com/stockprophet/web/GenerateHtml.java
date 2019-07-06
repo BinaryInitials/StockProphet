@@ -58,6 +58,7 @@ public class GenerateHtml {
 		buffer.write("<title>Stock Prophet</title>\n");
 		buffer.write("<link rel=\"stylesheet\" href=\"css/c13.css\">\n");
 		buffer.write("<link rel=\"stylesheet\" href=\"css/jquery-ui-1.10.3.custom.min.css\">\n");
+		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />");
 		buffer.write("</head>\n");
 		buffer.write("<body link=\"blue\">\n");
 		buffer.write("<div class=\"container\">\n");
@@ -92,6 +93,7 @@ public class GenerateHtml {
 		for(String phpLog : phpLogCode)
 			buffer.write(phpLog);
 		buffer.write("<head>\n");
+		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />");
 		buffer.write("<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>\n");
 		buffer.write("<script src=\"js/candlestick.js\"></script>\n");
 		buffer.write("</head>\n");
