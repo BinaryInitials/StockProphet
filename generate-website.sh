@@ -29,14 +29,7 @@ cp css/* $folder/css
 cp js/* $folder/js
 cp images/* $folder/images
 
-cd data
-
-for file in $(ls data/*.csv); do
-  symbol = $(echo $file | perl -pe 's/\.csv//g')
-  mv $file $symbol".json"
-done
-mv *.json ../$folder/
-cd ..
+mv data/*.json ../$folder/
 echo "Website creation successful."
 #cat $folder/index.php | sed '1,/?>/d'> $folder/index.html
 #open $folder/index.html
