@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -126,6 +127,7 @@ public class GenerateHtml {
 	public static void writeWeb(List<HashMap<Column, String>> data) {
 		File file = new File("index.php");
 		Date timestamp = new Date();
+		SimpleDateFormat sdt = new SimpleDateFormat("MM.dd.YY");
 		List<String> phpLogCode = loadPhpLog("stockprophet_log.html");
 		try{
 			file.createNewFile();
@@ -142,7 +144,6 @@ public class GenerateHtml {
 			for(String cssFile : cssFiles)
 				buffer.write("<link rel=\"stylesheet\" href=\"css/"+ cssFile + "\" />\n");
 
-			
 			buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />");
 			
 			buffer.write("</head>\n");
@@ -168,6 +169,7 @@ public class GenerateHtml {
 			
 			buffer.write("</tr>\n");
 			buffer.write("</thead>\n");
+			buffer.write("<h2>Stock Prophet: " + sdt.format(timestamp) + "</h2>");
 			buffer.write("<tbody>\n");
 			buffer.write("<tr>\n");
 			
@@ -187,8 +189,7 @@ public class GenerateHtml {
 			buffer.write("</div>\n");
 			
 			buffer.write("<div align=\"center\">\n");
-			String cleanTimestamp = formatTimestamp2(timestamp); 
-			buffer.write("<input id=\"checkboxId\" type=\"checkbox\" onclick=\"resetValues()\" name=\"resetFilterValues\"/><div class=\"tooltip\">Reset Values<span class=\"tooltiptext\">Generated on " + cleanTimestamp + "</span></div>\n");
+			buffer.write("<input id=\"checkboxId\" type=\"checkbox\" onclick=\"resetValues()\" name=\"resetFilterValues\"/><div class=\"tooltip\">Reset Values<span class=\"tooltiptext\">Click twice to reset values</span></div>\n");
 			buffer.write("</div>");
 			
 			buffer.write("<br>\n");
@@ -386,11 +387,6 @@ public class GenerateHtml {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	private static String formatTimestamp2(Date date){
-		return ((date.getYear()+1900)%100) + "." + (date.getMonth()+1) + "." + date.getDate() + "." + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds();
 	}
 	
 	enum WebFileType {
