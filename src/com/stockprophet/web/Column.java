@@ -9,10 +9,6 @@ public enum Column {
 	INDUSTRY(false, null, null, false, false),
 	PRICE(false, null, null, true, false),
 	
-	HBAND(false, null, null, true, false),
-	LBAND(false, null, null, true, false),
-	RATING(true, -5, 5, true, false),
-	
 	MKTCAP(true, 0, 100, true, true),
 	LINEAR(true, 0, 100, true, true),
 	RIGID(true, 0, 100, true, true),

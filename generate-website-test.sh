@@ -5,23 +5,32 @@ if [ -z "$1" ];then
 else
 	folder=$(echo $1)
 fi
+
+rm -rf $folder
+
 if [ -e $folder ];then
 	echo "Recycling "$folder
 else
 	echo "Creating "$folder"..."
 	mkdir $folder
 fi
+
+
 mkdir $folder/css/
 mkdir $folder/js/
 mkdir $folder/images/
+mkdir $folder/json/
 
 ./build-stockprophet.sh
 java -jar stockprophet.jar
+
 cp index.php $folder
 cp css/* $folder/css
 cp js/* $folder/js
 cp images/* $folder/images
-cp *.json $folder/
+
+
+mv data/*.json $folder/json/
 
 echo "Website creation successful."
 cat $folder/index.php | sed '1,/?>/d'> $folder/index.html

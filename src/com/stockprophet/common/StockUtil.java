@@ -372,7 +372,12 @@ public class StockUtil {
 	public static List<Double> getPriceFromFile(String key, PriceType priceType) {
 		List<Double> prices = new ArrayList<Double>();
 		try {
-			BufferedReader buffer = new BufferedReader(new FileReader(new File("data/" + key.replaceAll("\\.", "-") + ".csv")));
+			File file = new File("data/" + key.replaceAll("\\.", "-") + ".json");
+			if(!file.exists()) {
+				return prices;
+			}
+			
+			BufferedReader buffer = new BufferedReader(new FileReader(file));
 			//Skip headers
 			String line = buffer.readLine();
 			if(line == null || line.startsWith("{")){
@@ -380,6 +385,7 @@ public class StockUtil {
 				buffer.close();
 				return prices;
 			}
+			
 			while((line=buffer.readLine())!=null)
 				if(!line.contains("null") && line.contains(","))
 					prices.add(Double.valueOf(line.split(",")[priceType.getIndex()]));
