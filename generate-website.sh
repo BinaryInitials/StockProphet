@@ -24,12 +24,13 @@ mkdir $folder/json/
 
 ./build-stockprophet.sh
 java -jar stockprophet.jar
+
 cp *.php $folder
 cp css/* $folder/css
 cp js/* $folder/js
 cp images/* $folder/images
+mv data/*.json $folder/json
 
-mv data/*.json ../$folder/
 echo "Website creation successful."
 #cat $folder/index.php | sed '1,/?>/d'> $folder/index.html
 #open $folder/index.html

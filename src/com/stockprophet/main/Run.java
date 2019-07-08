@@ -170,8 +170,6 @@ public class Run {
 		columns.put(Column.INDUSTRY, properties[2]);
 		
 		List<Double> prices = allPrices.subList(startingPoint, ONE_YEAR-1+startingPoint);
-		
-		
 		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateMetrics(prices);
 
 		columns.put(Column.LINEAR, "" + 100*metricMap.get(CalculatedMetricType.ALGO_SCORE));
