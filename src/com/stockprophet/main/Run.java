@@ -189,6 +189,21 @@ public class Run {
 		columns.put(Column.MIDR, "" + metrics[1]);
 		columns.put(Column.PRICE, "" + prices.get(0));
 		
+		double sum = 0.0;
+		double sum2 = 0.0;
+		for(int i=0;i<5;i++) {
+			sum += prices.get(i);
+			sum2 += prices.get(i)*prices.get(i);
+		}
+		double mva5 = sum/5.0;
+		for(int i=5;i<13;i++) {
+			sum += prices.get(i);
+		}
+		double mva13 = sum/13.0;
+		columns.put(Column.MVA, "" + (mva5-mva13));
+		
+		double stdev = Math.sqrt(sum2/5.0 - mva5*mva5);
+		columns.put(Column.BBAND, "" + (prices.get(0) - (mva5 - 2*stdev)) / (4*stdev));
 		return columns;
 	}
 	
