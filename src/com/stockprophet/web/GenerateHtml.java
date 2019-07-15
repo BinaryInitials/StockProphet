@@ -98,6 +98,14 @@ public class GenerateHtml {
 		buffer.write("<script src=\"js/candlestick.js\"></script>\n");
 		buffer.write("</head>\n");
 		buffer.write("<body>\n");
+		
+		buffer.write("<?php\n");
+		buffer.write("$symbol = $_GET['s'];\n");
+		buffer.write("chdir('/home/pi/StockProphet/');\n");
+		buffer.write("$output = shell_exec('sudo ./get-data.sh ' . $symbol);\n");
+		buffer.write("$output = shell_exec('sudo mv ' . $symbol . '.json /var/www/html/stockprophet/json/');\n");
+		buffer.write("?>\n");
+		
 		buffer.write("<div id=\"graph\"></div>\n");
 		buffer.write("<script>\n");
 		buffer.write("plot(location.search.substring(1).replace(/.*=/g,''));\n");

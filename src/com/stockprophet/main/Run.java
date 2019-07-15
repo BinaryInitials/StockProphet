@@ -203,7 +203,7 @@ public class Run {
 		columns.put(Column.MVA, "" + (mva5-mva13));
 		
 		double stdev = Math.sqrt(sum2/5.0 - mva5*mva5);
-		columns.put(Column.BBAND, "" + (prices.get(0) - (mva5 - 2*stdev)) / (4*stdev));
+		columns.put(Column.BBAND, "" + (prices.get(0) - mva5) / stdev);
 		return columns;
 	}
 	
