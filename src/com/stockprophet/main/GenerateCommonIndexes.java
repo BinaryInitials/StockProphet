@@ -39,6 +39,8 @@ public class GenerateCommonIndexes {
 		indexMap.put("YELP", new String[]{"Information Technology", "Internet Software & Services", "Yelp"});
 		indexMap.put("MELI", new String[]{"Information Technology", "Internet Software & Services", "MercadoLibre"});
 		indexMap.put("ROKU", new String[]{"Information Technology", "Internet Software & Services", "Roku"});
+		indexMap.put("TSLA", new String[]{"Consumer Discretionary", "Automobile Manufacturers", "Tesla"});
+		
 
 		HashMap<String, String[]> indexMapRightOrder = new HashMap<String, String[]>();
 		for(String key : indexMap.keySet()) {

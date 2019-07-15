@@ -54,8 +54,6 @@ public class Run {
 			stocks.put(key, prices);
 		}
 		
-		System.out.println("EXISTING KEYS: " + existingKeys);
-		
 		timeSteps.add(new Date());
 		System.out.println("Time: " + getTime(timeSteps) + " seconds");
 		System.out.println("3. Calculate Metrics");
@@ -204,6 +202,10 @@ public class Run {
 		
 		double stdev = Math.sqrt(sum2/5.0 - mva5*mva5);
 		columns.put(Column.BBAND, "" + (prices.get(0) - mva5) / stdev);
+		
+		columns.put(Column.SELL, "" + (mva5+2*stdev));
+		columns.put(Column.BUY,  "" + (mva5-2*stdev));
+		
 		return columns;
 	}
 	

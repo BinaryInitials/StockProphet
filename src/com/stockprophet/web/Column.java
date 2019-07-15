@@ -8,6 +8,9 @@ public enum Column {
 	SECTOR(false, null, null, false, false),
 	INDUSTRY(false, null, null, false, false),
 	PRICE(false, null, null, true, false),
+
+	BUY(false, null, null, true, false),
+	SELL(false, null, null, true, false),
 	
 	MKTCAP(true, 0, 100, true, true),
 	LINEAR(true, 0, 100, true, true),
