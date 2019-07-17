@@ -95,7 +95,7 @@ function prepData(rawData) {
     var mva5 = [];
     var mva13 = [];
     
-    var kernel = 10;
+    var kernel = 5;
     var xmva = [];
     for(var i=0;i<c.length-kernel;i++){
       var sum = 0;
