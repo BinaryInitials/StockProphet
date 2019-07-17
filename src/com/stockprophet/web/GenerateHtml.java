@@ -57,7 +57,7 @@ public class GenerateHtml {
 		buffer.write("<html><head><meta name=\"viewport\" http-equiv=\"Content-Type\" content=\"width=device-width, initial-scale=1\">\n");
 		buffer.write("<title>Stock Prophet</title>\n");
 		buffer.write("<link rel=\"stylesheet\" href=\"css/c13.css\">\n");
-		buffer.write("<link rel=\"stylesheet\" href=\"css/jquery-ui-1.10.3.custom.min.css\">\n");
+		
 		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />");
 		buffer.write("</head>\n");
 		buffer.write("<body link=\"blue\">\n");
@@ -93,7 +93,16 @@ public class GenerateHtml {
 		for(String phpLog : phpLogCode)
 			buffer.write(phpLog);
 		buffer.write("<head>\n");
-		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />");
+		
+		buffer.write("<meta charset=\"utf-8\">\n");
+		buffer.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n");
+
+		buffer.write("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n");
+		buffer.write("<script src=\"https://code.jquery.com/jquery-3.3.1.slim.min.js\" integrity=\"sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo\" crossorigin=\"anonymous\"></script>\n");
+		buffer.write("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\" integrity=\"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1\" crossorigin=\"anonymous\"></script>\n");
+		buffer.write("<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\" integrity=\"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\" crossorigin=\"anonymous\"></script>\n");
+		
+		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />\n");
 		buffer.write("<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>\n");
 		buffer.write("<script src=\"js/candlestick.js\"></script>\n");
 		buffer.write("</head>\n");
@@ -106,7 +115,7 @@ public class GenerateHtml {
 		buffer.write("$output = shell_exec('sudo mv ' . $symbol . '.json /var/www/html/stockprophet/json/');\n");
 		buffer.write("?>\n");
 		
-		buffer.write("<div id=\"graph\"></div>\n");
+		buffer.write("<div id=\"graph\">\n</div>\n");
 		buffer.write("<script>\n");
 		buffer.write("plot(location.search.substring(1).replace(/.*=/g,''));\n");
 		buffer.write("</script>\n");
@@ -150,7 +159,7 @@ public class GenerateHtml {
 			buffer.write("<html>\n");
 			buffer.write("<head>\n");
 			buffer.write("<title> STOCK PROPHET </title>\n");
-			List<String> cssFiles = getWebFiles(WebFileType.CSS, false);
+			List<String> cssFiles = getWebFiles(WebFileType.CSS);
 			for(String cssFile : cssFiles)
 				buffer.write("<link rel=\"stylesheet\" href=\"css/"+ cssFile + "\" />\n");
 
@@ -378,13 +387,7 @@ public class GenerateHtml {
 			buffer.write("}\n");
 			buffer.write("</script>\n");
 			
-//			buffer.write("<script type=\"text/javascript\">\n");
-//			buffer.write("if (screen.width <= 699) {\n");
-//			buffer.write("document.location = \"mobile.php\"\n");
-//			buffer.write("}\n");
-//			buffer.write("</script>\n");
-			
-			List<String> jsFiles = getWebFiles(WebFileType.JS, false);
+			List<String> jsFiles = getWebFiles(WebFileType.JS);
 			Collections.sort(jsFiles);
 			for(String jsFile : jsFiles)
 				buffer.write("<script src=\"js/" + jsFile + "\"></script>\n");
@@ -404,17 +407,13 @@ public class GenerateHtml {
 		JS
 	}
 	
-	private static List<String> getWebFiles(WebFileType wbf, boolean isMobile){
+	private static List<String> getWebFiles(WebFileType wbf){
 		String extension = wbf.toString().toLowerCase();
 		File folder = 	new File(extension + "/");
 		List<String> files = new ArrayList<String>();
 		for(File file : folder.listFiles())
 			if(file.isFile() && file.getName().endsWith(extension))
-				if(isMobile && !file.getName().contains("Desktop"))
-					files.add(file.getName().replaceAll(".*/", ""));
-				else if(!isMobile && !file.getName().contains("Mobile")){
-					files.add(file.getName().replaceAll(".*/", ""));
-				}
+				files.add(file.getName().replaceAll(".*/", ""));
 		Collections.sort(files);
 		return files;
 	}

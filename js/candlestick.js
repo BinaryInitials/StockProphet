@@ -48,7 +48,7 @@ Plotly.d3.csv(rawDataURL, function(err, rawData) {
 
     var data = prepData(rawData);
     var layout = {
-        title: 'Time series with Bollinger Bands and ST/LT Moving Averages for ' + stock,
+        title: 'Time series for ' + stock,
         xaxis: {
             rangeselector: selectorOptions,
 			rangeslider: {
