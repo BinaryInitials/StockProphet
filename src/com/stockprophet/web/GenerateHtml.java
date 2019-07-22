@@ -387,12 +387,14 @@ public class GenerateHtml {
 			buffer.write("}\n");
 			buffer.write("</script>\n");
 			
+			buffer.write("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n");
+			
 			List<String> jsFiles = getWebFiles(WebFileType.JS);
 			Collections.sort(jsFiles);
 			for(String jsFile : jsFiles)
 				buffer.write("<script src=\"js/" + jsFile + "\"></script>\n");
 
-			buffer.write("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n");
+			
 			
 			buffer.write("</ul>\n");
 			buffer.write("<script type=\"text/javascript\" src=\"js/prettify.js\"></script>\n");
