@@ -108,7 +108,8 @@ public class Run {
 			sortedColumnsToday.get(rank).put(Column.RANK, "" + (rank+1));
 		}
 		
-		GenerateHtml.writeWeb(sortedColumnsToday);
+		GenerateHtml.writeWebBootstrap(sortedColumnsToday);
+		GenerateHtml.writeJSfiles();
 		GenerateHtml.writePlotHtml();
 		
 		timeSteps.add(new Date());
@@ -164,8 +165,8 @@ public class Run {
 		HashMap<Column, String> columns = new HashMap<Column, String>();
 		columns.put(Column.SYMB, symbol);
 		columns.put(Column.COMPANY, truncate(properties[0]));
-		columns.put(Column.SECTOR, properties[1]);
-		columns.put(Column.INDUSTRY, properties[2]);
+		columns.put(Column.SECTOR, properties[1].replaceAll("&#[0-9]+;",""));
+		columns.put(Column.INDUSTRY, properties[2].replaceAll("&#[0-9]+;",""));
 		
 		List<Double> prices = allPrices.subList(startingPoint, ONE_YEAR-1+startingPoint);
 		HashMap<CalculatedMetricType, Double> metricMap= StockUtil.calculateMetrics(prices);
@@ -210,7 +211,7 @@ public class Run {
 	}
 	
 	private static String truncate(String nameRaw){
-		String name = nameRaw.replaceAll(",? Inc\\.?", "").replaceAll(" [Cc]orp[a-z\\.]+","").replaceAll("\\(page does not exist\\)","");
+		String name = nameRaw.replaceAll(",? Inc\\.?", "").replaceAll(" [Cc]orp[a-z\\.]+","").replaceAll("\\(page does not exist\\)","").replaceAll("&#[0-9]+;","");
 		return name.length() > 30 ? name.substring(0, 27) + "..." : name;
 	}
 }
