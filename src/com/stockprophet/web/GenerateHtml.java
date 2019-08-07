@@ -270,8 +270,9 @@ public class GenerateHtml {
 						
 			buffer.write("<!DOCTYPE html>\n");
 			buffer.write("<html lang=\"en\">\n");
-			buffer.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">");
 			buffer.write("<head>\n");
+			buffer.write("<meta charset=\"utf-8\">\n");
+			buffer.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n");
 			buffer.write("<title> STOCK PROPHET </title>\n");
 			
 			//Loading bootstrap CSS files
@@ -281,9 +282,9 @@ public class GenerateHtml {
 			buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\">\n");
 
 			//Loading bootstrap JS files
-			buffer.write("<script src=\"https://code.jquery.com/jquery<span class=\"badge badge-danger\">-3</span>.3.1.slim.min.js\" integrity=\"sha384-q8i/X<span class=\"badge badge-success\">+0</span>65DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH<span class=\"badge badge-success\">+0</span>abtTE1Pi6jizo\" crossorigin=\"anonymous\" defer></script>\n");
-			buffer.write("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\" integrity=\"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1\" crossorigin=\"anonymous\" defer></script>\n");
-			buffer.write("<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\" integrity=\"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\" crossorigin=\"anonymous\" defer></script>");
+			buffer.write("<script src=\"https://code.jquery.com/jquery-3.3.1.slim.min.js\" integrity=\"sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo\" crossorigin=\"anonymous\"></script>\n");
+			buffer.write("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\" integrity=\"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1\" crossorigin=\"anonymous\"></script>\n");
+			buffer.write("<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\" integrity=\"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\" crossorigin=\"anonymous\"></script>\n");
 			buffer.write("<script src=\"js/candlestick.js\" defer></script>\n");
 			buffer.write("<script src=\"js/search.js\" defer></script>\n");
 			buffer.write("<script src=\"js/searchIndustry.js\" defer></script>\n");

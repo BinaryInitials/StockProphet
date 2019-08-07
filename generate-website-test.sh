@@ -15,8 +15,6 @@ else
 	mkdir $folder
 fi
 
-
-mkdir $folder/css/
 mkdir $folder/js/
 mkdir $folder/images/
 mkdir $folder/json/
@@ -25,7 +23,6 @@ mkdir $folder/json/
 java -jar stockprophet.jar
 
 cp *.php $folder
-cp css/* $folder/css
 cp js/* $folder/js
 cp images/* $folder/images
 
