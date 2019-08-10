@@ -372,6 +372,7 @@ public class GenerateHtml {
 					badgeType = "success";
 				}else if(diff < 0) {
 					badgeType = "danger";
+					sign = "";
 				}
 				String tableRow = "<tr>";
 				String symbol = data.get(row).get(Column.SYMB);
