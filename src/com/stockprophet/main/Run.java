@@ -2,6 +2,7 @@ package com.stockprophet.main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -174,6 +175,26 @@ public class Run {
 		columns.put(Column.LINEAR, "" + 100*metricMap.get(CalculatedMetricType.ALGO_SCORE));
 		columns.put(Column.RIGID, "" + 100*metricMap.get(CalculatedMetricType.RIGIDITY_SCORE));
 		columns.put(Column.GROWTH, "" + 100*metricMap.get(CalculatedMetricType.GROWTH_SCORE));
+		
+		
+		HashMap<Integer, Integer> countMap = new HashMap<Integer, Integer>();
+		List<Double> drops = Arrays.asList(0.5, 1.0, 2.0, 5.0, 10.0, 20.0);
+		for(int i=0;i<drops.size();i++) {
+			countMap.put(i, 0);
+		}
+		for(int i=1;i<allPrices.size();i++) {
+			for(int j=0;j<drops.size();j++) {
+				if(allPrices.get(i) < (1.0-drops.get(j)/100.0)*allPrices.get(i-1)) {
+					countMap.put(0,countMap.get(0)+1);
+				}
+			}
+		}
+		double sumOfDrops = 0.0;
+		for(int i=0;i<drops.size();i++) {
+			sumOfDrops += drops.get(i)*countMap.get(i);
+		}
+		double drop = Math.exp(-sumOfDrops/(drops.size()*(allPrices.size()-1.0))); 
+		columns.put(Column.DROP, "" + 100*drop);
 		
 		List<Double> open = StockUtil.getPriceFromFile(symbol, PriceType.OPEN);  
 		List<Double> high = StockUtil.getPriceFromFile(symbol, PriceType.HIGH);  
