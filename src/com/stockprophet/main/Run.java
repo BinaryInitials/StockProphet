@@ -127,8 +127,9 @@ public class Run {
 	
 	public static List<HashMap<Column, String>> overallRanking(List<HashMap<Column, String>> columns){
 		HashMap<String, Integer> totalRank = new HashMap<String, Integer>();
-		for (HashMap<Column, String> row : columns)
+		for (HashMap<Column, String> row : columns) {
 			totalRank.put(row.get(Column.SYMB),0);
+		}
 		for(Column column : Column.values())
 			if(column.isRanking()){
 				System.out.println("RANKING " + column.toString());
@@ -140,13 +141,15 @@ public class Run {
 					entries.add(entrie);
 				}
 				Collections.sort(entries, CustomComparators.ColumnComparator);
-				for(int i=0;i<entries.size();i++)
+				for(int i=0;i<entries.size();i++) {
 					totalRank.put(entries.get(i).get("KEY"), totalRank.get(entries.get(i).get("KEY")) + i);
+				}
 			}
 
 		List<String> hackyList = new ArrayList<String>();
-		for(String key : totalRank.keySet())
+		for(String key : totalRank.keySet()) {
 			hackyList.add(key + "," + totalRank.get(key));
+		}
 		Collections.sort(hackyList, CustomComparators.FinalRankComparator);
 		List<HashMap<Column, String>> sortedColumns = new ArrayList<HashMap<Column, String>>();
 		for(String item : hackyList){
@@ -177,24 +180,34 @@ public class Run {
 		columns.put(Column.GROWTH, "" + 100*metricMap.get(CalculatedMetricType.GROWTH_SCORE));
 		
 		
-		HashMap<Integer, Integer> countMap = new HashMap<Integer, Integer>();
-		List<Double> drops = Arrays.asList(0.5, 1.0, 2.0, 5.0, 10.0, 20.0);
-		for(int i=0;i<drops.size();i++) {
-			countMap.put(i, 0);
+		HashMap<Integer, Integer> countMapDrop = new HashMap<Integer, Integer>();
+		HashMap<Integer, Integer> countMapRise = new HashMap<Integer, Integer>();
+		List<Double> rates = Arrays.asList(0.5, 1.0, 2.0, 5.0, 10.0, 20.0);
+		for(int i=0;i<rates.size();i++) {
+			countMapDrop.put(i, 0);
+			countMapRise.put(i, 0);
 		}
 		for(int i=1;i<allPrices.size();i++) {
-			for(int j=0;j<drops.size();j++) {
-				if(allPrices.get(i) < (1.0-drops.get(j)/100.0)*allPrices.get(i-1)) {
-					countMap.put(j,countMap.get(j)+1);
+			for(int j=0;j<rates.size();j++) {
+				if(allPrices.get(i) < (1.0-rates.get(j)/100.0)*allPrices.get(i-1)) {
+					countMapDrop.put(j,countMapDrop.get(j)+1);
+				}
+				if(allPrices.get(i) > (1.0+rates.get(j)/100.0)*allPrices.get(i-1)) {
+					countMapRise.put(j,countMapDrop.get(j)+1);
 				}
 			}
 		}
 		double sumOfDrops = 0.0;
-		for(int i=0;i<drops.size();i++) {
-			sumOfDrops += drops.get(i)*countMap.get(i);
+		double sumOfRises = 0.0;
+		for(int i=0;i<rates.size();i++) {
+			sumOfDrops += rates.get(i)*countMapDrop.get(i);
+			sumOfRises += rates.get(i)*countMapRise.get(i);
 		}
-		double drop = Math.exp(-sumOfDrops/(drops.size()*(allPrices.size()-1.0))); 
+		double drop = Math.exp(-sumOfDrops/(allPrices.size()-1.0));
+		double rise = 1.0-Math.exp(-sumOfRises/(allPrices.size()-1.0));
 		columns.put(Column.DROP, "" + 100*drop);
+		columns.put(Column.RISE, "" + 100*rise);
+		columns.put(Column.FLUX, "" + 100*(rise+drop-1));
 		
 		List<Double> open = StockUtil.getPriceFromFile(symbol, PriceType.OPEN);  
 		List<Double> high = StockUtil.getPriceFromFile(symbol, PriceType.HIGH);  

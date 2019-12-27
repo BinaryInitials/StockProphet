@@ -17,6 +17,8 @@ public enum Column {
 	RIGID(true, 0, 100, true, true),
 	GROWTH(true, 0, 100, true, true),
 	DROP(true, 0, 100, true, true),	
+	RISE(true, 0, 100, true, true),	
+	FLUX(true, -100, 100, true, true),
 	
 	MVA(true, -5, 5, true, false),
 	BBAND(true, -5, 5, true, false),
