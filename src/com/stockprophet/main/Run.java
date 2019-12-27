@@ -185,7 +185,7 @@ public class Run {
 		for(int i=1;i<allPrices.size();i++) {
 			for(int j=0;j<drops.size();j++) {
 				if(allPrices.get(i) < (1.0-drops.get(j)/100.0)*allPrices.get(i-1)) {
-					countMap.put(0,countMap.get(0)+1);
+					countMap.put(j,countMap.get(j)+1);
 				}
 			}
 		}
