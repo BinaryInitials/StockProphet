@@ -226,7 +226,7 @@ public class StockUtil {
 		HashMap<String, String[]> map = new HashMap<String, String[]>();
 		URL url;
 		List<IndexType> indices = new ArrayList<IndexType>();
-		indices.add(IndexType.SP400);
+//		indices.add(IndexType.SP400);
 		indices.add(IndexType.SP500);
 		for(IndexType indexType : indices){
 			try {
