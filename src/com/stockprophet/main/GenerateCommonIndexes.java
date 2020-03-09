@@ -1,9 +1,5 @@
 package com.stockprophet.main;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 
 import com.stockprophet.common.StockUtil;
@@ -58,22 +54,7 @@ public class GenerateCommonIndexes {
 			indexMapRightOrder.put(key, new String[] {company, sector, industry});
 		}
 		
-		try {
-			BufferedReader buffer = new BufferedReader(new FileReader(new File("sp500")));
-			String line;
-			while((line=buffer.readLine()) != null){
-				String parts[] = line.split("\t");
-				String symbol = parts[0];
-				String company = parts[1];
-				String sector = parts[2];
-				String industry = parts[3];
-				indexMapRightOrder.put(symbol, new String[]{company, sector, industry});
-			}
-			buffer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		indexMapRightOrder.putAll(StockUtil.generateSPwithSectorsMap());
 		indexMapRightOrder = StockUtil.cleanMap(indexMapRightOrder);
 		return indexMapRightOrder;
 	}
