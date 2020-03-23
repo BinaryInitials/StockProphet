@@ -111,7 +111,6 @@ public class Run {
 		
 		GenerateHtml.writeWebBootstrap(sortedColumnsToday);
 		GenerateHtml.writeJSfiles();
-		GenerateHtml.writePlotHtml();
 		
 		timeSteps.add(new Date());
 		System.out.println("Total Elapsed time: "  + getTime(timeSteps, true)/60 + " minutes");

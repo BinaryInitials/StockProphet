@@ -5,10 +5,8 @@ import static com.stockprophet.web.Methods.darken;
 import static com.stockprophet.web.Methods.generateColorMap;
 import static com.stockprophet.web.Methods.generateColorsFromColorMap;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -19,110 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class GenerateHtml {
-	
-	
-	public static List<HashMap<Employee, String>> loadEmployees(String teamDescription) throws IOException{
-		BufferedReader buffer = new BufferedReader(new FileReader(new File("txt/bios.txt")));
-		teamDescription = buffer.readLine();
-		String line;
-		List<HashMap<Employee, String>> employees = new ArrayList<HashMap<Employee, String>>();
-		List<String> bios = new ArrayList<String>();
-		while((line=buffer.readLine())!=null)
-			bios.add(line);
-		buffer.close();
-		for(int i=0;i<bios.size();i++)
-			if(i%4==3){
-				HashMap<Employee, String> employee = new HashMap<Employee, String>();
-				employee.put(Employee.NAME, bios.get(i-3));
-				employee.put(Employee.TITLE, bios.get(i-2));
-				employee.put(Employee.IMAGE, bios.get(i-1));
-				employee.put(Employee.DESCRIPTION, bios.get(i-0));
-				employees.add(employee);
-			}
-		return employees;
-	}
-	
-	
-	public static void writeMeetTheTeam() throws IOException{
-		String teamDescription = "";
-		List<HashMap<Employee, String>> employees = loadEmployees(teamDescription); 
-		File file = new File("MeetTheTeam.php");
-		List<String> phpLogCode = loadPhpLog("meettheteam_log.html");
-		file.createNewFile();
-		FileWriter writer = new FileWriter(file.getAbsoluteFile());
-		BufferedWriter buffer = new BufferedWriter(writer);
-		for(String phpLog : phpLogCode)
-			buffer.write(phpLog);
-		buffer.write("<!DOCTYPE html>\n");
-		buffer.write("<html><head><meta name=\"viewport\" http-equiv=\"Content-Type\" content=\"width=device-width, initial-scale=1\">\n");
-		buffer.write("<title>Stock Prophet</title>\n");
-		buffer.write("<link rel=\"stylesheet\" href=\"css/c13.css\">\n");
-		
-		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />");
-		buffer.write("</head>\n");
-		buffer.write("<body link=\"blue\">\n");
-		buffer.write("<div class=\"container\">\n");
-		buffer.write("<form>\n");
-		buffer.write("<div class=\"one-third column\">\n");
-		buffer.write("<img src=\"images/logo.png\" alt=\"logo\" id=\"logo\">");
-		buffer.write("<h2 class=\"welcome\">Meet The Team</h2>\n");
-		buffer.write("<p class=\"intro\" align=\"justify\">" + teamDescription + "</p>");
-		buffer.write("<center></center></div>\n");
-		
-		for(HashMap<Employee, String> employee : employees){
-			buffer.write("<div class=\"one-third column\">\n");
-			buffer.write("<h2>" + employee.get(Employee.NAME) + "</h2>\n");
-			buffer.write("<div class=\"name\">\n");
-			buffer.write("<label for=\"name\" class=\"required\">" + employee.get(Employee.TITLE) + "</label>\n");
-			buffer.write("<center><img src=\"images/" + employee.get(Employee.IMAGE) + "\" style=\"width:250px;height:350px;\"></center>\n");
-			buffer.write("</div>\n");
-			buffer.write("<p class=\"intro\" align=\"justify\">" + employee.get(Employee.DESCRIPTION) + "</p>\n");
-			buffer.write("</div>\n");
-		}
-		buffer.write("</form></div></body></html>\n");
-		buffer.close();
-	}
-	
-	public static void writePlotHtml() throws IOException{
-		File file = new File("financeChart.php");
-		List<String> phpLogCode = loadPhpLog("plot-log.html");
-		file.createNewFile();
-		FileWriter writer = new FileWriter(file.getAbsoluteFile());
-		BufferedWriter buffer = new BufferedWriter(writer);
-		
-		for(String phpLog : phpLogCode)
-			buffer.write(phpLog);
-		buffer.write("<head>\n");
-		
-		buffer.write("<meta charset=\"utf-8\">\n");
-		buffer.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n");
-
-		buffer.write("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n");
-		buffer.write("<script src=\"https://code.jquery.com/jquery-3.3.1.slim.min.js\" integrity=\"sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo\" crossorigin=\"anonymous\"></script>\n");
-		buffer.write("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\" integrity=\"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1\" crossorigin=\"anonymous\"></script>\n");
-		buffer.write("<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\" integrity=\"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\" crossorigin=\"anonymous\"></script>\n");
-		
-		buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\" />\n");
-		buffer.write("<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>\n");
-		buffer.write("<script src=\"js/candlestick.js\"></script>\n");
-		buffer.write("</head>\n");
-		buffer.write("<body>\n");
-		
-		buffer.write("<?php\n");
-		buffer.write("$symbol = $_GET['s'];\n");
-		buffer.write("chdir('/home/pi/StockProphet/');\n");
-		buffer.write("$output = shell_exec('sudo ./get-data.sh ' . $symbol);\n");
-		buffer.write("$output = shell_exec('sudo mv ' . $symbol . '.json /var/www/html/stockprophet/json/');\n");
-		buffer.write("?>\n");
-		
-		buffer.write("<div id=\"graph\">\n</div>\n");
-		buffer.write("<script>\n");
-		buffer.write("plot(location.search.substring(1).replace(/.*=/g,''));\n");
-		buffer.write("</script>\n");
-		buffer.write("</body>\n");
-		
-		buffer.close();
-	}
 	
 	public static List<String> loadPhpLog(String fileName){
 		List<String> phpLogCode = new ArrayList<String>();
@@ -141,6 +35,22 @@ public class GenerateHtml {
 		phpLogCode.add("fclose( $file );\n");
 		phpLogCode.add("?>\n");
 		return phpLogCode;
+	}
+	
+	public static List<String> loadLoginLogic(){
+		List<String> phpCode = new ArrayList<String>();
+		phpCode.add("<?php\n");
+		phpCode.add("if($_GET){\n");
+		phpCode.add("$token = $_GET['token'];\n");
+		phpCode.add("if  ($token == \"a157547000b864a9295394a23d8ae391f36c2cea328d36018a4ac9af9628b3b2\" || $token == \"f07cf93b2f08d29275980caaa412839af69b087d63904c26f2193a59395f038c\" || $token == \"62ce566861f3b62f5052688858e01d55e114c436d536b27db85482eae36ec1f9\" || $token == \"151f2781f22ee45d1477c5e464c309fb2480c6b7953e585cd1611364bd49cfee\"){\n");
+		phpCode.add("}else{\n");
+		phpCode.add("header(\"Location: http://binaryinitials.com/stockprophet/\");\n");
+		phpCode.add("}\n");
+		phpCode.add("}else{\n");
+		phpCode.add("header(\"Location: http://binaryinitials.com/stockprophet/\");\n");
+		phpCode.add("}\n");
+		phpCode.add("?>\n");
+		return phpCode;
 	}
 	
 	public static void writeJSfiles() {
@@ -261,11 +171,15 @@ public class GenerateHtml {
 		Date timestamp = new Date();
 		SimpleDateFormat sdt = new SimpleDateFormat("MM.dd.YY");
 		List<String> phpLogCode = loadPhpLog("stockprophet_log.html");
+		List<String> phpLoginCode = loadLoginLogic();
 		try{
 			file.createNewFile();
 			FileWriter writer = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter buffer = new BufferedWriter(writer);
 			for(String phpLog : phpLogCode)
+				buffer.write(phpLog);
+			
+			for(String phpLog : phpLoginCode)
 				buffer.write(phpLog);
 						
 			buffer.write("<!DOCTYPE html>\n");
@@ -282,20 +196,21 @@ public class GenerateHtml {
 			buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\">\n");
 
 			//Loading bootstrap JS files
-			buffer.write("<script src=\"https://code.jquery.com/jquery-3.3.1.slim.min.js\" integrity=\"sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo\" crossorigin=\"anonymous\"></script>\n");
+			buffer.write("<script src=\"js/jquery-3.2.1.min.js\" defer></script>\n");
 			buffer.write("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\" integrity=\"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1\" crossorigin=\"anonymous\"></script>\n");
 			buffer.write("<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\" integrity=\"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\" crossorigin=\"anonymous\"></script>\n");
 			buffer.write("<script src=\"js/candlestick.js\" defer></script>\n");
 			buffer.write("<script src=\"js/search.js\" defer></script>\n");
 			buffer.write("<script src=\"js/searchIndustry.js\" defer></script>\n");
 			buffer.write("<script src=\"js/searchSector.js\" defer></script>\n");
-			buffer.write("<script src=\"js/jquery.js\" defer></script>\n");
+			
 			buffer.write("<script src=\"js/sort-table.js\" defer></script>\n");
 			buffer.write("<script src=\"js/resetvalues.js\" defer></script>\n");
 			buffer.write("<script src=\"js/filterFunction.js\" defer></script>\n");
 			buffer.write("<style>\n");
 			buffer.write("body {\n");
-			buffer.write("background-image: linear-gradient(91deg, #FFFFFF, #BBBBBB);\n");
+			buffer.write("background-image: linear-gradient(216deg, #33AAFF, #000000);\n");
+			buffer.write("background-attachment: fixed");
 			buffer.write("}\n");
 			buffer.write("table {\n");
 			buffer.write("border-collapse: separate;\n");
@@ -305,15 +220,53 @@ public class GenerateHtml {
 			
 			buffer.write("</head>\n");
 			buffer.write("<body>\n");
-			buffer.write("<div class=\"container\" id=\"myHeader\">\n");
-			buffer.write("<div class=\"container\">\n");
-			buffer.write("<h2>Stock Prophet</h2><h3>" + sdt.format(timestamp) + "</h3>\n");
+			
+			//NAV BAR
+			
+			buffer.write("<nav style=\"color: #000000\" class=\"navbar navbar-expand-sm navbar-dark bg-dark fixed-top\">\n");
+			buffer.write("<a class=\"navbar-brand\" href=\"#\"><img src=\"images/logo.ico\" width=\"30\" height=\"30\" alt=\"\"> Stock Prophet </a>\n");
+			buffer.write("<button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n");
+			buffer.write("<span class=\"navbar-toggler-icon\"></span>\n");
+			buffer.write("</button>\n");
+			buffer.write("\n");
+			buffer.write("<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n");
+			buffer.write("<ul class=\"navbar-nav mr-auto\">\n");
+			buffer.write("<li class=\"nav-item active dropdown\">\n");
+			buffer.write("<a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"navbarDropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Releases<span class=\"sr-only\">(current)</span></a>\n");
+			buffer.write("<div class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\"> \n");
+			buffer.write("<div class=\"container\">" + sdt.format(timestamp) + " <- </div>\n");
+			buffer.write("<div class=\"dropdown-divider\"></div>\n");
+			buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-1*86400000)) + "</div>\n");
+			buffer.write("<div class=\"dropdown-divider\"></div>\n");
+			buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-2*86400000)) + "</div>\n");
+			buffer.write("<div class=\"dropdown-divider\"></div>\n");
+			buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-3*86400000)) + "</div>\n");
+			buffer.write("<div class=\"dropdown-divider\"></div>\n");
+			buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-4*86400000)) + "</div>\n");
+			buffer.write("<div class=\"dropdown-divider\"></div>\n");
 			buffer.write("</div>\n");
+			buffer.write("</li>\n");
+			buffer.write("<li class=\"nav-item\">\n");
+			buffer.write("<a class=\"nav-link\" href=\"#\">Discussion <span class=\"sr-only\"></span></a>\n");
+			buffer.write("</li>\n");
+			buffer.write("<li class=\"nav-item\">\n");
+			buffer.write("<a class=\"nav-link\" href=\"#\">About <span class=\"sr-only\"></span></a>\n");
+			buffer.write("</li>\n");
+			buffer.write("</ul>\n");
+			buffer.write("<div class=\"nav-item\">\n");
+			buffer.write("<button type=\"button\" class=\"btn btn-primary\" onclick=\"logout()\">LOGOUT</button>\n");
+			buffer.write("</div>\n");
+			buffer.write("</div>\n");
+			buffer.write("</nav>\n");
 			
 			
-			
+			// HEADER
+			buffer.write("<br>\n");
+			buffer.write("<br>\n");
+			buffer.write("<br>\n");
+			buffer.write("<div class=\"container sticky-top\" id=\"myHeader\">\n");
 			buffer.write("<div class=\"container\">\n");
-			buffer.write("<table id=\"setting-table\" class=\"table table-bordered border border-dark\">\n");
+			buffer.write("<table id=\"setting-table\" class=\"table table-dark table-bordered border border-dark\">\n");
 			buffer.write("<thead>\n");
 			buffer.write("<tr>\n");
 			for(Column column : Column.values())
@@ -351,12 +304,61 @@ public class GenerateHtml {
 			buffer.write("</div>\n");
 			
 			/*
+			 * MODAL
+			 */
+			buffer.write("<div class=\"modal fade\" id=\"modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"modal_label\" aria-hidden=\"true\">\n");
+			buffer.write("<div class=\"modal-dialog\" role=\"document\">\n");
+			buffer.write("<div class=\"modal-content\">\n");
+			buffer.write("<div class=\"modal-header\">\n");
+			buffer.write("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n");
+			buffer.write("<span aria-hidden=\"true\">&times;</span>\n");
+			buffer.write("</button>\n");
+			buffer.write("</div>\n");
+			buffer.write("<div class=\"modal-body\">\n");
+			buffer.write("<div id=\"graph\"></div>\n");
+			buffer.write("<div class=\"modal-footer\">\n");
+			buffer.write("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>\n");
+			buffer.write("</div>\n");
+			buffer.write("</div>\n");
+			buffer.write("</div>\n");
+			buffer.write("</div>\n");
+			buffer.write("</div>\n");
+			
+			/*
+			 * Logout and plot logic
+			 */
+			buffer.write("<script type=\"text/javascript\">\n");
+			buffer.write("\n");
+			buffer.write("function logout(){\n");
+			buffer.write("	window.location.href = \"index.html\";\n");
+			buffer.write("}\n");
+			buffer.write("\n");
+			buffer.write("</script>\n");
+			buffer.write("\n");
+			buffer.write("<script type=\"text/javascript\">\n");
+			buffer.write("function wrapper(symbol){\n");
+			buffer.write("var x = new XMLHttpRequest();\n");
+			buffer.write("x.open(\"POST\", \"get-data.php\", true);\n");
+			buffer.write("x.setRequestHeader(\"Content-type\", \"application/x-www-form-urlencoded\");\n");
+			buffer.write("x.onreadystatechange = function() {\n");
+			buffer.write("if (this.readyState == 4 && this.status == 200) {\n");
+			buffer.write("plot(symbol);\n");
+			buffer.write("$('#modal').modal('show');\n");
+			buffer.write("}\n");
+			buffer.write("};\n");
+			buffer.write("x.send(\"symbol=\"+symbol);\n");
+			buffer.write("return false;\n");
+			buffer.write("}\n");
+			buffer.write("</script>\n");
+			
+			
+			/*
 			 * The table with data
 			 */
 			
 			buffer.write("<div class=\"container\">\n");
 			buffer.write("<div class=\"content\">\n");
-			buffer.write("<table id=\"myTable\" class=\"sortable table table-hover table-striped table-wrapper-scroll-y table-bordered border border-dark table-responsive\">\n");
+			buffer.write("<table id=\"myTable\" class=\"sortable table table-dark table-hover table-striped table-wrapper-scroll-y table-bordered border border-dark table-responsive\">\n");
 			buffer.write("<thead>\n<tr>\n");
 			
 			for(Column column : Column.values())
@@ -392,7 +394,7 @@ public class GenerateHtml {
 					}else{
 						if(data.get(row).get(column) != null){
 							if( column == Column.PRICE ){
-								tableRow += "<td><a href=\"financeChart.php?s=" + symbol + "\" target=\"_blank\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
+								tableRow += "<button type=\"button\" class=\"btn btn-primary btn-sm\" data-toggle=\"modal\" onclick=\"wrapper('" + symbol + "')\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</button>";
 							}else{
 								tableRow += "<td>" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
 							}
