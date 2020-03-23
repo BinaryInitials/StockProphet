@@ -1,6 +1,6 @@
 function filterFunction() {
-var min1, max1, min2, max2, min3, max3, min4, max4, min5, max5, min6, max6, min7, max7, min8, max8, table;
-var tr, td1, td2, td3, td4, td5, td6, td7, td8, i;
+var min1, max1, min2, max2, min3, max3, min4, max4, min5, max5, min6, max6, min7, max7, min8, max8, min9, max9, min10, max10, min11, max11, table;
+var tr, td1, td2, td3, td4, td5, td6, td7, td8, td9, td10, td11, i;
 var input, filter, table, te1, te2, te3, te4;
 input = document.getElementById("filter-search");
 filter = input.value.toUpperCase().split(" ");
@@ -12,14 +12,20 @@ min3 = document.getElementById("rigid-min").value;
 max3 = document.getElementById("rigid-max").value;
 min4 = document.getElementById("growth-min").value;
 max4 = document.getElementById("growth-max").value;
-min5 = document.getElementById("mva-min").value;
-max5 = document.getElementById("mva-max").value;
-min6 = document.getElementById("bband-min").value;
-max6 = document.getElementById("bband-max").value;
-min7 = document.getElementById("oidr-min").value;
-max7 = document.getElementById("oidr-max").value;
-min8 = document.getElementById("midr-min").value;
-max8 = document.getElementById("midr-max").value;
+min5 = document.getElementById("drop-min").value;
+max5 = document.getElementById("drop-max").value;
+min6 = document.getElementById("rise-min").value;
+max6 = document.getElementById("rise-max").value;
+min7 = document.getElementById("flux-min").value;
+max7 = document.getElementById("flux-max").value;
+min8 = document.getElementById("mva-min").value;
+max8 = document.getElementById("mva-max").value;
+min9 = document.getElementById("bband-min").value;
+max9 = document.getElementById("bband-max").value;
+min10 = document.getElementById("oidr-min").value;
+max10 = document.getElementById("oidr-max").value;
+min11 = document.getElementById("midr-min").value;
+max11 = document.getElementById("midr-max").value;
 
 table = document.getElementById("myTable");
 tr = table.getElementsByTagName("tr");
@@ -36,6 +42,9 @@ td5 = tr[i].getElementsByTagName("td")[13];
 td6 = tr[i].getElementsByTagName("td")[14];
 td7 = tr[i].getElementsByTagName("td")[15];
 td8 = tr[i].getElementsByTagName("td")[16];
+td9 = tr[i].getElementsByTagName("td")[17];
+td10 = tr[i].getElementsByTagName("td")[18];
+td11 = tr[i].getElementsByTagName("td")[19];
 
 var exist = false;
 if (te1 && te2 && te3 && te4) {
@@ -49,7 +58,7 @@ exist = true;
 }
 }
 }
-if (td1 && td2 && td3 && td4 && td5 && td6 && td7 && td8){
+if (td1 && td2 && td3 && td4 && td5 && td6 && td7 && td8 && td9 && td10 && td11){
 if (
 Number(td1.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) > Number(min1) &&
 Number(td1.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max1) &&
@@ -67,6 +76,12 @@ Number(td7.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,''
 Number(td7.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max7) &&
 Number(td8.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) > Number(min8) &&
 Number(td8.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max8) &&
+Number(td9.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) > Number(min9) &&
+Number(td9.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max9) &&
+Number(td10.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) > Number(min10) &&
+Number(td10.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max10) &&
+Number(td11.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) > Number(min11) &&
+Number(td11.innerHTML.replace(/%$/g,"").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max11) &&
 exist
 ){
 tr[i].style.display = "";

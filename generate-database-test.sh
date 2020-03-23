@@ -11,6 +11,7 @@ tic=`date +%s`
 ./get-data.sh GOOG
 ./get-data.sh MCD
 ./get-data.sh SBUX
+./get-data.sh ROKU
  
 mv *.json data/
 toc=`date +%s`
