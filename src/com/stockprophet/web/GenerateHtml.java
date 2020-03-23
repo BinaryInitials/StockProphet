@@ -394,7 +394,7 @@ public class GenerateHtml {
 					}else{
 						if(data.get(row).get(column) != null){
 							if( column == Column.PRICE ){
-								tableRow += "<button type=\"button\" class=\"btn btn-primary btn-sm\" data-toggle=\"modal\" onclick=\"wrapper('" + symbol + "')\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</button>";
+								tableRow += "<td><button type=\"button\" class=\"btn btn-primary btn-sm\" data-toggle=\"modal\" onclick=\"wrapper('" + symbol + "')\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</button></td>";
 							}else{
 								tableRow += "<td>" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
 							}
@@ -416,7 +416,7 @@ public class GenerateHtml {
 		}
 	}
 	
-	
+	@Deprecated
 	public static void writeWeb(List<HashMap<Column, String>> data) {
 		File file = new File("index.php");
 		Date timestamp = new Date();
