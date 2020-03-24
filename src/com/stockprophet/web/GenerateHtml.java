@@ -5,8 +5,10 @@ import static com.stockprophet.web.Methods.darken;
 import static com.stockprophet.web.Methods.generateColorMap;
 import static com.stockprophet.web.Methods.generateColorsFromColorMap;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -18,47 +20,42 @@ import java.util.List;
 
 public class GenerateHtml {
 	
-	public static List<String> loadPhpLog(String fileName){
-		List<String> phpLogCode = new ArrayList<String>();
-		phpLogCode.add("<?php\n");
-		phpLogCode.add("$file = fopen(\"" + fileName + "\", \"a\") or die(\"Unable to open file!\");\n");
-		phpLogCode.add("fwrite($file, date('Y-m-d|H:i:s'));\n");
-		phpLogCode.add("fwrite($file,\"|\");\n");
-		phpLogCode.add("fwrite($file, $_SERVER[\"HTTP_REFERER\"]);\n");
-		phpLogCode.add("fwrite($file,\"|\");\n");
-		phpLogCode.add("fwrite($file, $_SERVER[\"HTTP_HOST\"]);\n");
-		phpLogCode.add("fwrite($file,\"|\");\n");
-		phpLogCode.add("fwrite($file, $_SERVER[\"REMOTE_ADDR\"]);\n");
-		phpLogCode.add("fwrite($file,\"|\");\n");
-		phpLogCode.add("fwrite($file, $_SERVER['HTTP_USER_AGENT']);\n");
-		phpLogCode.add("fwrite($file,'<br>\n');\n");
-		phpLogCode.add("fclose( $file );\n");
-		phpLogCode.add("?>\n");
-		return phpLogCode;
+	public static List<String> loadPhpLog(){
+		List<String> php = new ArrayList<String>();
+		try{
+			BufferedReader buffer = new BufferedReader(new FileReader(new File("php/log.php")));
+			String line;
+			while((line = buffer.readLine()) != null) {
+				php.add(line);
+			}
+			buffer.close();
+		}catch(IOException e) {
+			
+		}
+		return php;
 	}
 	
 	public static List<String> loadLoginLogic(){
-		List<String> phpCode = new ArrayList<String>();
-		phpCode.add("<?php\n");
-		phpCode.add("if($_GET){\n");
-		phpCode.add("$token = $_GET['token'];\n");
-		phpCode.add("if  ($token == \"a157547000b864a9295394a23d8ae391f36c2cea328d36018a4ac9af9628b3b2\" || $token == \"f07cf93b2f08d29275980caaa412839af69b087d63904c26f2193a59395f038c\" || $token == \"62ce566861f3b62f5052688858e01d55e114c436d536b27db85482eae36ec1f9\" || $token == \"151f2781f22ee45d1477c5e464c309fb2480c6b7953e585cd1611364bd49cfee\"){\n");
-		phpCode.add("}else{\n");
-		phpCode.add("header(\"Location: http://binaryinitials.com/stockprophet/\");\n");
-		phpCode.add("}\n");
-		phpCode.add("}else{\n");
-		phpCode.add("header(\"Location: http://binaryinitials.com/stockprophet/\");\n");
-		phpCode.add("}\n");
-		phpCode.add("?>\n");
-		return phpCode;
+		List<String> php = new ArrayList<String>();
+		try{
+			BufferedReader buffer = new BufferedReader(new FileReader(new File("php/login-session.php")));
+			String line;
+			while((line = buffer.readLine()) != null) {
+				php.add(line);
+			}
+			buffer.close();
+		}catch(IOException e) {
+			
+		}
+		return php;
 	}
 	
 	public static void writeJSfiles() {
 		
-		File file1 = new File("js/resetvalues.js");
-		File file2 = new File("js/filterFunction.js");
+		
 		try{
 			{
+				File file1 = new File("js/resetvalues.js");
 				file1.createNewFile();
 				BufferedWriter buffer1 = new BufferedWriter(new FileWriter(file1.getAbsoluteFile()));
 				buffer1.write("function resetValues() {\n");
@@ -72,9 +69,13 @@ public class GenerateHtml {
 				buffer1.write("}\n");
 				buffer1.close();
 			}
-		
+		}catch(IOException e) {
+			
+		}
+		try {
+			File file2 = new File("js/filterFunction.js");
 			file2.createNewFile();
-			BufferedWriter buffer2 = new BufferedWriter(new FileWriter(file1.getAbsoluteFile()));
+			BufferedWriter buffer2 = new BufferedWriter(new FileWriter(file2.getAbsoluteFile()));
 			buffer2.write("function filterFunction() {\n");
 			String varRow = "var ";
 			int i=1;
@@ -129,39 +130,36 @@ public class GenerateHtml {
 			buffer2.write("}\n");
 			buffer2.write("}\n");
 			buffer2.write("}\n");
-		
-		
-		String conditionRow = "if (";
-		i=1;
-		for(Column column : Column.values())
-			if(column.isFilterable())
-				conditionRow += "td" + i++ + " && "; 
-		conditionRow = conditionRow.replaceAll(" && $", "){\n");
-		
-		buffer2.write(conditionRow);
-		buffer2.write("if (\n");
-		
-		String giantCondition = "";
-		i=1;
-		for(Column column : Column.values()){
-			if(column.isFilterable()){
-				giantCondition += "Number(td" + i + ".innerHTML.replace(/%$/g,\"\").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) > Number(min" + i +") &&\n";
-				giantCondition += "Number(td" + i + ".innerHTML.replace(/%$/g,\"\").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max" + i +") &&\n";
-				i++;
-			}
-		}
-		giantCondition += "exist\n){\n";
-		buffer2.write(giantCondition);
-		buffer2.write("tr[i].style.display = \"\";\n");
-		buffer2.write("} else {\n");
-		buffer2.write("tr[i].style.display = \"none\";\n");
-		buffer2.write("}\n");
-		buffer2.write("}\n");
-		buffer2.write("}\n");
-		buffer2.write("}\n");
-		buffer2.close();
-		}catch(IOException e) {
+			String conditionRow = "if (";
+			i=1;
+			for(Column column : Column.values())
+				if(column.isFilterable())
+					conditionRow += "td" + i++ + " && "; 
+			conditionRow = conditionRow.replaceAll(" && $", "){\n");
 			
+			buffer2.write(conditionRow);
+			buffer2.write("if (\n");
+			
+			String giantCondition = "";
+			i=1;
+			for(Column column : Column.values()){
+				if(column.isFilterable()){
+					giantCondition += "Number(td" + i + ".innerHTML.replace(/%$/g,\"\").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) > Number(min" + i +") &&\n";
+					giantCondition += "Number(td" + i + ".innerHTML.replace(/%$/g,\"\").replace(/N.A/,'-1').replace(/<[^>]+>/g,'')) < Number(max" + i +") &&\n";
+					i++;
+				}
+			}
+			giantCondition += "exist\n){\n";
+			buffer2.write(giantCondition);
+			buffer2.write("tr[i].style.display = \"\";\n");
+			buffer2.write("} else {\n");
+			buffer2.write("tr[i].style.display = \"none\";\n");
+			buffer2.write("}\n");
+			buffer2.write("}\n");
+			buffer2.write("}\n");
+			buffer2.write("}\n");
+			buffer2.close();
+		}catch(IOException e) {
 		}
 	}
 	
@@ -170,7 +168,7 @@ public class GenerateHtml {
 		File file = new File("index.php");
 		Date timestamp = new Date();
 		SimpleDateFormat sdt = new SimpleDateFormat("MM.dd.YY");
-		List<String> phpLogCode = loadPhpLog("stockprophet_log.html");
+		List<String> phpLogCode = loadPhpLog();
 		List<String> phpLoginCode = loadLoginLogic();
 		try{
 			file.createNewFile();
@@ -196,9 +194,10 @@ public class GenerateHtml {
 			buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\">\n");
 
 			//Loading bootstrap JS files
-			buffer.write("<script src=\"js/jquery-3.2.1.min.js\" defer></script>\n");
+			buffer.write("<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\"\n");
 			buffer.write("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\" integrity=\"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1\" crossorigin=\"anonymous\"></script>\n");
 			buffer.write("<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\" integrity=\"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\" crossorigin=\"anonymous\"></script>\n");
+			buffer.write("<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>");
 			buffer.write("<script src=\"js/candlestick.js\" defer></script>\n");
 			buffer.write("<script src=\"js/search.js\" defer></script>\n");
 			buffer.write("<script src=\"js/searchIndustry.js\" defer></script>\n");
@@ -209,7 +208,7 @@ public class GenerateHtml {
 			buffer.write("<script src=\"js/filterFunction.js\" defer></script>\n");
 			buffer.write("<style>\n");
 			buffer.write("body {\n");
-			buffer.write("background-image: linear-gradient(216deg, #33AAFF, #000000);\n");
+			buffer.write("background-image: linear-gradient(216deg, #AAA, #000);\n");
 			buffer.write("background-attachment: fixed");
 			buffer.write("}\n");
 			buffer.write("table {\n");
@@ -301,40 +300,38 @@ public class GenerateHtml {
 			buffer.write("<button class=\"btn btn-danger\" onclick=\"resetValues()\">RESET</button>\n");
 			buffer.write("</div>\n");
 			buffer.write("</div>\n");
+			buffer.write("<div class=\"container\" id=\"graph\"></div>");
 			buffer.write("</div>\n");
 			
 			/*
 			 * MODAL
 			 */
-			buffer.write("<div class=\"modal fade\" id=\"modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"modal_label\" aria-hidden=\"true\">\n");
-			buffer.write("<div class=\"modal-dialog\" role=\"document\">\n");
-			buffer.write("<div class=\"modal-content\">\n");
-			buffer.write("<div class=\"modal-header\">\n");
-			buffer.write("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n");
-			buffer.write("<span aria-hidden=\"true\">&times;</span>\n");
-			buffer.write("</button>\n");
-			buffer.write("</div>\n");
-			buffer.write("<div class=\"modal-body\">\n");
-			buffer.write("<div id=\"graph\"></div>\n");
-			buffer.write("<div class=\"modal-footer\">\n");
-			buffer.write("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>\n");
-			buffer.write("</div>\n");
-			buffer.write("</div>\n");
-			buffer.write("</div>\n");
-			buffer.write("</div>\n");
-			buffer.write("</div>\n");
+//			buffer.write("<div class=\"modal fade\" id=\"modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"modal_label\" aria-hidden=\"true\">\n");
+//			buffer.write("<div class=\"modal-dialog\" role=\"document\">\n");
+//			buffer.write("<div class=\"modal-content\">\n");
+//			buffer.write("<div class=\"modal-header\">\n");
+//			buffer.write("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n");
+//			buffer.write("<span aria-hidden=\"true\">&times;</span>\n");
+//			buffer.write("</button>\n");
+//			buffer.write("</div>\n");
+//			buffer.write("<div class=\"modal-body\">\n");
+//			buffer.write("<div id=\"graph\"></div>\n");
+//			buffer.write("<div class=\"modal-footer\">\n");
+//			buffer.write("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>\n");
+//			buffer.write("</div>\n");
+//			buffer.write("</div>\n");
+//			buffer.write("</div>\n");
+//			buffer.write("</div>\n");
+//			buffer.write("</div>\n");
 			
 			/*
 			 * Logout and plot logic
 			 */
 			buffer.write("<script type=\"text/javascript\">\n");
-			buffer.write("\n");
 			buffer.write("function logout(){\n");
-			buffer.write("	window.location.href = \"index.html\";\n");
+			buffer.write("	window.location.href = \"logout.php\";\n");
 			buffer.write("}\n");
-			buffer.write("\n");
 			buffer.write("</script>\n");
-			buffer.write("\n");
 			buffer.write("<script type=\"text/javascript\">\n");
 			buffer.write("function wrapper(symbol){\n");
 			buffer.write("var x = new XMLHttpRequest();\n");
@@ -343,7 +340,10 @@ public class GenerateHtml {
 			buffer.write("x.onreadystatechange = function() {\n");
 			buffer.write("if (this.readyState == 4 && this.status == 200) {\n");
 			buffer.write("plot(symbol);\n");
-			buffer.write("$('#modal').modal('show');\n");
+			buffer.write("window.location.href = '#graph';");
+			
+//			buffer.write("$('#modal').modal('show');\n");
+
 			buffer.write("}\n");
 			buffer.write("};\n");
 			buffer.write("x.send(\"symbol=\"+symbol);\n");
@@ -421,7 +421,7 @@ public class GenerateHtml {
 		File file = new File("index.php");
 		Date timestamp = new Date();
 		SimpleDateFormat sdt = new SimpleDateFormat("MM.dd.YY");
-		List<String> phpLogCode = loadPhpLog("stockprophet_log.html");
+		List<String> phpLogCode = loadPhpLog();
 		try{
 			file.createNewFile();
 			FileWriter writer = new FileWriter(file.getAbsoluteFile());

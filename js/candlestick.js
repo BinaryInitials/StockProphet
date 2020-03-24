@@ -1,4 +1,7 @@
 function plot(stock){
+
+Plotly.purge("graph");
+
 var rawDataURL = 'json/' + stock + '.json';
 var xField = 'Date';
 var oField = 'Open';
@@ -55,6 +58,8 @@ Plotly.d3.csv(rawDataURL, function(err, rawData) {
 				 visible: false
 			}
         },
+	plot_bgcolor: 'rgba(255, 255, 255, 0.7)', 
+        paper_bgcolor: 'rgba(255, 255, 255, 0.7)',
         showlegend: false
     };
 
