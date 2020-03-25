@@ -9,8 +9,8 @@ public enum Column {
 	INDUSTRY(false, null, null, false, false),
 	PRICE(false, null, null, true, false),
 
-	BUY(false, null, null, true, false),
-	SELL(false, null, null, true, false),
+//	BUY(false, null, null, true, false),
+//	SELL(false, null, null, true, false),
 	
 	MKTCAP(true, 0, 100, true, true),
 	LINEAR(true, 0, 100, true, true),
@@ -20,11 +20,11 @@ public enum Column {
 	RISE(true, 0, 100, true, true),	
 	FLUX(true, -100, 100, true, true),
 	
-	MVA(true, -5, 5, true, false),
+//	MVA(true, -5, 5, true, false),
 	BBAND(true, -5, 5, true, false),
 	
-	OIDR(true, 0, 10, true, false),
-	MIDR(true, 0, 10, true, false),
+//	OIDR(true, 0, 10, true, false),
+//	MIDR(true, 0, 10, true, false),
 	
 	;
 	private boolean isFilterable, isNumber, isRanking;

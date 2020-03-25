@@ -14,7 +14,6 @@ import com.stockprophet.common.CustomComparators;
 import com.stockprophet.common.StockUtil;
 import com.stockprophet.common.StockUtil.CalculatedMetricType;
 import com.stockprophet.common.StockUtil.PriceType;
-import com.stockprophet.math.AdvancedFinancialMathMethods;
 import com.stockprophet.web.Column;
 import com.stockprophet.web.GenerateHtml;
 
@@ -208,17 +207,17 @@ public class Run {
 		columns.put(Column.RISE, "" + 100*rise);
 		columns.put(Column.FLUX, "" + 100*(rise+drop-1));
 		
-		List<Double> open = StockUtil.getPriceFromFile(symbol, PriceType.OPEN);  
-		List<Double> high = StockUtil.getPriceFromFile(symbol, PriceType.HIGH);  
+//		List<Double> open = StockUtil.getPriceFromFile(symbol, PriceType.OPEN);  
+//		List<Double> high = StockUtil.getPriceFromFile(symbol, PriceType.HIGH);  
 		List<Double> volume = StockUtil.getPriceFromFile(symbol, PriceType.VOLUME);  
 		
 		double marketCap = Math.log10(volume.get(0) * prices.get(0));
 		columns.put(Column.MKTCAP, "" + 100*(1 - Math.exp(-(marketCap-6.0)*Math.log(100)/(5))));
 		
-		double[] metrics = AdvancedFinancialMathMethods.calculateOptimalAndMaximalIntradayReturns(open, high);
+//		double[] metrics = AdvancedFinancialMathMethods.calculateOptimalAndMaximalIntradayReturns(open, high);
 		
-		columns.put(Column.OIDR, "" + metrics[0]);
-		columns.put(Column.MIDR, "" + metrics[1]);
+//		columns.put(Column.OIDR, "" + metrics[0]);
+//		columns.put(Column.MIDR, "" + metrics[1]);
 		columns.put(Column.PRICE, "" + prices.get(0));
 		
 		double sum = 0.0;
@@ -231,14 +230,14 @@ public class Run {
 		for(int i=5;i<13;i++) {
 			sum += prices.get(i);
 		}
-		double mva13 = sum/13.0;
-		columns.put(Column.MVA, "" + (mva5-mva13));
+//		double mva13 = sum/13.0;
+//		columns.put(Column.MVA, "" + (mva5-mva13));
 		
 		double stdev = Math.sqrt(sum2/5.0 - mva5*mva5);
 		columns.put(Column.BBAND, "" + (prices.get(0) - mva5) / stdev);
 		
-		columns.put(Column.SELL, "" + (mva5+2*stdev));
-		columns.put(Column.BUY,  "" + (mva5-2*stdev));
+//		columns.put(Column.SELL, "" + (mva5+2*stdev));
+//		columns.put(Column.BUY,  "" + (mva5-2*stdev));
 		
 		return columns;
 	}

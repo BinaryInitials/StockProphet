@@ -1,4 +1,5 @@
 *.html
+!html/template.html
 *.jar
 *.txt
 *.json

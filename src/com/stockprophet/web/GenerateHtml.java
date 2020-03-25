@@ -163,10 +163,25 @@ public class GenerateHtml {
 		}
 	}
 	
+	public static List<String> readTemplate(){
+		List<String> template = new ArrayList<String>();
+		try {
+		BufferedReader buffer = new BufferedReader(new FileReader(new File("html/template.html")));
+		String line;
+		while((line= buffer.readLine()) != null) {
+			template.add(line);
+		}
+		buffer.close();
+		}catch(IOException e) {
+			
+		}
+		return template;
+	}
+	
 	
 	public static void writeWebBootstrap(List<HashMap<Column, String>> data) {
 		File file = new File("index.php");
-		Date timestamp = new Date();
+		List<String> template = readTemplate();
 		SimpleDateFormat sdt = new SimpleDateFormat("MM.dd.YY");
 		List<String> phpLogCode = loadPhpLog();
 		List<String> phpLoginCode = loadLoginLogic();
@@ -175,245 +190,101 @@ public class GenerateHtml {
 			FileWriter writer = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter buffer = new BufferedWriter(writer);
 			for(String phpLog : phpLogCode)
-				buffer.write(phpLog);
+				buffer.write(phpLog + "\n");
 			
 			for(String phpLog : phpLoginCode)
-				buffer.write(phpLog);
+				buffer.write(phpLog + "\n");
 						
-			buffer.write("<!DOCTYPE html>\n");
-			buffer.write("<html lang=\"en\">\n");
-			buffer.write("<head>\n");
-			buffer.write("<meta charset=\"utf-8\">\n");
-			buffer.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n");
-			buffer.write("<title> STOCK PROPHET </title>\n");
-			
-			//Loading bootstrap CSS files
-			buffer.write("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n");
 
-			//Loading icon
-			buffer.write("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"images/logo.ico\">\n");
-
-			//Loading bootstrap JS files
-			buffer.write("<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\"\n");
-			buffer.write("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\" integrity=\"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1\" crossorigin=\"anonymous\"></script>\n");
-			buffer.write("<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\" integrity=\"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\" crossorigin=\"anonymous\"></script>\n");
-			buffer.write("<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>");
-			buffer.write("<script src=\"js/candlestick.js\" defer></script>\n");
-			buffer.write("<script src=\"js/search.js\" defer></script>\n");
-			buffer.write("<script src=\"js/searchIndustry.js\" defer></script>\n");
-			buffer.write("<script src=\"js/searchSector.js\" defer></script>\n");
-			
-			buffer.write("<script src=\"js/sort-table.js\" defer></script>\n");
-			buffer.write("<script src=\"js/resetvalues.js\" defer></script>\n");
-			buffer.write("<script src=\"js/filterFunction.js\" defer></script>\n");
-			buffer.write("<style>\n");
-			buffer.write("body {\n");
-			buffer.write("background-image: linear-gradient(216deg, #AAA, #000);\n");
-			buffer.write("background-attachment: fixed");
-			buffer.write("}\n");
-			buffer.write("table {\n");
-			buffer.write("border-collapse: separate;\n");
-			buffer.write("border-spacing: 0.125em;\n");
-			buffer.write("}");
-			buffer.write("</style>\n");
-			
-			buffer.write("</head>\n");
-			buffer.write("<body>\n");
-			
-			//NAV BAR
-			
-			buffer.write("<nav style=\"color: #000000\" class=\"navbar navbar-expand-sm navbar-dark bg-dark fixed-top\">\n");
-			buffer.write("<a class=\"navbar-brand\" href=\"#\"><img src=\"images/logo.ico\" width=\"30\" height=\"30\" alt=\"\"> Stock Prophet </a>\n");
-			buffer.write("<button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n");
-			buffer.write("<span class=\"navbar-toggler-icon\"></span>\n");
-			buffer.write("</button>\n");
-			buffer.write("\n");
-			buffer.write("<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n");
-			buffer.write("<ul class=\"navbar-nav mr-auto\">\n");
-			buffer.write("<li class=\"nav-item active dropdown\">\n");
-			buffer.write("<a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"navbarDropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Releases<span class=\"sr-only\">(current)</span></a>\n");
-			buffer.write("<div class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\"> \n");
-			buffer.write("<div class=\"container\">" + sdt.format(timestamp) + " <- </div>\n");
-			buffer.write("<div class=\"dropdown-divider\"></div>\n");
-			buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-1*86400000)) + "</div>\n");
-			buffer.write("<div class=\"dropdown-divider\"></div>\n");
-			buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-2*86400000)) + "</div>\n");
-			buffer.write("<div class=\"dropdown-divider\"></div>\n");
-			buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-3*86400000)) + "</div>\n");
-			buffer.write("<div class=\"dropdown-divider\"></div>\n");
-			buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-4*86400000)) + "</div>\n");
-			buffer.write("<div class=\"dropdown-divider\"></div>\n");
-			buffer.write("</div>\n");
-			buffer.write("</li>\n");
-			buffer.write("<li class=\"nav-item\">\n");
-			buffer.write("<a class=\"nav-link\" href=\"#\">Discussion <span class=\"sr-only\"></span></a>\n");
-			buffer.write("</li>\n");
-			buffer.write("<li class=\"nav-item\">\n");
-			buffer.write("<a class=\"nav-link\" href=\"#\">About <span class=\"sr-only\"></span></a>\n");
-			buffer.write("</li>\n");
-			buffer.write("</ul>\n");
-			buffer.write("<div class=\"nav-item\">\n");
-			buffer.write("<button type=\"button\" class=\"btn btn-primary\" onclick=\"logout()\">LOGOUT</button>\n");
-			buffer.write("</div>\n");
-			buffer.write("</div>\n");
-			buffer.write("</nav>\n");
-			
-			
-			// HEADER
-			buffer.write("<br>\n");
-			buffer.write("<br>\n");
-			buffer.write("<br>\n");
-			buffer.write("<div class=\"container sticky-top\" id=\"myHeader\">\n");
-			buffer.write("<div class=\"container\">\n");
-			buffer.write("<table id=\"setting-table\" class=\"table table-dark table-bordered border border-dark\">\n");
-			buffer.write("<thead>\n");
-			buffer.write("<tr>\n");
-			for(Column column : Column.values())
-				if(column.isFilterable())
-					buffer.write("<th scope=\"col\">" + column.name() + "</th>\n");
-			buffer.write("</tr>\n");
-			buffer.write("</thead>\n");
-			
-			buffer.write("<tbody>\n");
-			buffer.write("<tr scope=\"row\">\n");
-			for(Column column : Column.values())
-				if(column.isFilterable())
-					buffer.write(
-							"<td id=\"metric-range\">" +
-							"<input class=\"form-control\" type=\"text\" id=\"" + column.name().toLowerCase() + "-min\" onkeyup=\"filterFunction()\" value=\"" + column.getMin() + "\"/>" +
-							"<input class=\"form-control\" type=\"text\" id=\"" + column.name().toLowerCase() + "-max\" onkeyup=\"filterFunction()\" value=\"" + column.getMax() + "\"/>" + 
-							"</td>\n");
-			buffer.write("</tr>\n");
-			buffer.write("</tbody>\n");
-			buffer.write("</table>\n");
-			buffer.write("</div>\n");
-			
-			/*
-			 * Search bar
-			 */
-			buffer.write("<div id=\"search\" class=\"container\">\n");
-			buffer.write("<div class=\"input-group mb-3\">\n");
-			buffer.write("<div class=\"input-group-prepend\">\n");
-			buffer.write("<span class=\"input-group-text\" id=\"inputGroup-sizing-default\">Search</span>\n");
-			buffer.write("</div>\n\n");
-			buffer.write("<input type=\"text\" class=\"form-control\" onkeyup=\"search()\" id=\"filter-search\" aria-label=\"Default\" aria-describedby=\"inputGroup-sizing-default\">\n");
-			buffer.write("<button class=\"btn btn-danger\" onclick=\"resetValues()\">RESET</button>\n");
-			buffer.write("</div>\n");
-			buffer.write("</div>\n");
-			buffer.write("<div class=\"container\" id=\"graph\"></div>");
-			buffer.write("</div>\n");
-			
-			/*
-			 * MODAL
-			 */
-//			buffer.write("<div class=\"modal fade\" id=\"modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"modal_label\" aria-hidden=\"true\">\n");
-//			buffer.write("<div class=\"modal-dialog\" role=\"document\">\n");
-//			buffer.write("<div class=\"modal-content\">\n");
-//			buffer.write("<div class=\"modal-header\">\n");
-//			buffer.write("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n");
-//			buffer.write("<span aria-hidden=\"true\">&times;</span>\n");
-//			buffer.write("</button>\n");
-//			buffer.write("</div>\n");
-//			buffer.write("<div class=\"modal-body\">\n");
-//			buffer.write("<div id=\"graph\"></div>\n");
-//			buffer.write("<div class=\"modal-footer\">\n");
-//			buffer.write("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>\n");
-//			buffer.write("</div>\n");
-//			buffer.write("</div>\n");
-//			buffer.write("</div>\n");
-//			buffer.write("</div>\n");
-//			buffer.write("</div>\n");
-			
-			/*
-			 * Logout and plot logic
-			 */
-			buffer.write("<script type=\"text/javascript\">\n");
-			buffer.write("function logout(){\n");
-			buffer.write("	window.location.href = \"logout.php\";\n");
-			buffer.write("}\n");
-			buffer.write("</script>\n");
-			buffer.write("<script type=\"text/javascript\">\n");
-			buffer.write("function wrapper(symbol){\n");
-			buffer.write("var x = new XMLHttpRequest();\n");
-			buffer.write("x.open(\"POST\", \"get-data.php\", true);\n");
-			buffer.write("x.setRequestHeader(\"Content-type\", \"application/x-www-form-urlencoded\");\n");
-			buffer.write("x.onreadystatechange = function() {\n");
-			buffer.write("if (this.readyState == 4 && this.status == 200) {\n");
-			buffer.write("plot(symbol);\n");
-			buffer.write("window.location.href = '#graph';");
-			
-//			buffer.write("$('#modal').modal('show');\n");
-
-			buffer.write("}\n");
-			buffer.write("};\n");
-			buffer.write("x.send(\"symbol=\"+symbol);\n");
-			buffer.write("return false;\n");
-			buffer.write("}\n");
-			buffer.write("</script>\n");
-			
-			
-			/*
-			 * The table with data
-			 */
-			
-			buffer.write("<div class=\"container\">\n");
-			buffer.write("<div class=\"content\">\n");
-			buffer.write("<table id=\"myTable\" class=\"sortable table table-dark table-hover table-striped table-wrapper-scroll-y table-bordered border border-dark table-responsive\">\n");
-			buffer.write("<thead>\n<tr>\n");
-			
-			for(Column column : Column.values())
-				buffer.write("<th data-sort=\"" + (column.isNumber()? "number" : "name") + "\">" + column.name().toUpperCase() + "</th>");
-
-			buffer.write("</tr>\n</thead>\n<tbody>\n");
-			
-			for(int row=0;row<data.size();row++){
-				int diff = Integer.valueOf(data.get(row).get(Column.DIFF));
-				String sign = "+";
-				String badgeType = "secondary";
-				if(diff > 0) {
-					badgeType = "success";
-				}else if(diff < 0) {
-					badgeType = "danger";
-					sign = "";
-				}
-				String tableRow = "<tr>";
-				String symbol = data.get(row).get(Column.SYMB);
-				for(Column column : Column.values()){
-					if(column == Column.RANK){
-						tableRow += "<td>" + (row+1) + "</td>";
-					}else if(column == Column.DIFF){
-						tableRow += "<td><span class=\"badge badge-" + badgeType + "\">" + sign + diff + "</span></td>";
-					}else if(column == Column.SYMB){
-						tableRow += "<td><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" + symbol + "</td>";
-					}else if(column == Column.COMPANY){
-						tableRow += "<td><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" +  data.get(row).get(Column.COMPANY) + "</td>";
-					}else if(column == Column.SECTOR){
-						tableRow += "<td onclick=\"searchSector('" + data.get(row).get(Column.SECTOR) + "')\">" +  data.get(row).get(Column.SECTOR) + "</td>";
-					}else if(column == Column.INDUSTRY){
-						tableRow += "<td onclick=\"searchIndustry('" + data.get(row).get(Column.INDUSTRY) + "')\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
-					}else{
-						if(data.get(row).get(column) != null){
-							if( column == Column.PRICE ){
-								tableRow += "<td><button type=\"button\" class=\"btn btn-primary btn-sm\" data-toggle=\"modal\" onclick=\"wrapper('" + symbol + "')\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</button></td>";
-							}else{
-								tableRow += "<td>" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
-							}
-						}else{
-							tableRow += "<td>null</td>";
+			for(String line : template) {
+				if(line.matches(".*@JAVA_INJECTION.*")) {
+					String key = line.replaceAll(".*@JAVA_INJECTION.\"([^\"]+)\".*", "$1");
+					if("RELEASE_DROPDOWN".equals(key)) {
+						Date timestamp = new Date();
+						for(int i=0;i<10;i++) {
+							buffer.write("<div class=\"container\">" + sdt.format(new Date(timestamp.getTime()-i*86400000)) + "</div>\n");
+							buffer.write("<div class=\"dropdown-divider\"></div>\n");
 						}
+					}else if("FILTER_TABLE_HEADER".equals(key)) {
+						for(Column column : Column.values()) {
+							if(column.isFilterable()) {
+								buffer.write("<th scope=\"col\">" + column.name() + "</th>\n");
+							}
+						}
+					}else if("FILTER_TABLE".equals(key)) {
+						for(Column column : Column.values()) {
+							if(column.isFilterable()) {
+								buffer.write(
+										"<td id=\"metric-range\">" +
+										"<input class=\"form-control\" type=\"text\" id=\"" + column.name().toLowerCase() + "-min\" onkeyup=\"filterFunction()\" value=\"" + column.getMin() + "\"/>" +
+										"<input class=\"form-control\" type=\"text\" id=\"" + column.name().toLowerCase() + "-max\" onkeyup=\"filterFunction()\" value=\"" + column.getMax() + "\"/>" + 
+										"</td>\n");
+							}
+						}
+					}else if("MY_TABLE".equals(key)) {
+						buffer.write("<div class=\"container\">\n");
+						buffer.write("<div class=\"content\">\n");
+						buffer.write("<table id=\"myTable\" class=\"sortable table table-dark table-hover table-striped table-wrapper-scroll-y table-bordered border border-dark table-responsive\">\n");
+						buffer.write("<thead>\n<tr>\n");
+						
+						for(Column column : Column.values())
+							buffer.write("<th data-sort=\"" + (column.isNumber()? "number" : "name") + "\">" + column.name().toUpperCase() + "</th>");
+
+						buffer.write("</tr>\n</thead>\n<tbody>\n");
+						
+						for(int row=0;row<data.size();row++){
+							int diff = Integer.valueOf(data.get(row).get(Column.DIFF));
+							String sign = "+";
+							String badgeType = "secondary";
+							if(diff > 0) {
+								badgeType = "success";
+							}else if(diff < 0) {
+								badgeType = "danger";
+								sign = "";
+							}
+							String tableRow = "<tr>";
+							String symbol = data.get(row).get(Column.SYMB);
+							for(Column column : Column.values()){
+								if(column == Column.RANK){
+									tableRow += "<td>" + (row+1) + "</td>";
+								}else if(column == Column.DIFF){
+									tableRow += "<td><span class=\"badge badge-" + badgeType + "\">" + sign + diff + "</span></td>";
+								}else if(column == Column.SYMB){
+									tableRow += "<td><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" + symbol + "</td>";
+								}else if(column == Column.COMPANY){
+									tableRow += "<td><a href=\"http://finance.yahoo.com/quote/" + symbol + "\" target=\"_blank\">" +  data.get(row).get(Column.COMPANY) + "</td>";
+								}else if(column == Column.SECTOR){
+									tableRow += "<td onclick=\"searchSector('" + data.get(row).get(Column.SECTOR) + "')\">" +  data.get(row).get(Column.SECTOR) + "</td>";
+								}else if(column == Column.INDUSTRY){
+									tableRow += "<td onclick=\"searchIndustry('" + data.get(row).get(Column.INDUSTRY) + "')\">" +  data.get(row).get(Column.INDUSTRY) + "</td>";
+								}else{
+									if(data.get(row).get(column) != null){
+										if( column == Column.PRICE ){
+											tableRow += "<td><button type=\"button\" class=\"btn btn-primary btn-sm\" data-toggle=\"modal\" onclick=\"wrapper('" + symbol + "')\">" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</button></td>";
+										}else{
+											tableRow += "<td>" + String.format("%.2f", Double.valueOf(data.get(row).get(column))) + "</td>";
+										}
+									}else{
+										tableRow += "<td>null</td>";
+									}
+								}
+							}
+							tableRow += "</tr>\n";
+							buffer.write(tableRow);
+						}
+						buffer.write("</tbody>\n");
+						buffer.write("</table>\n");
+						buffer.write("</div>\n");
+						buffer.write("</div>\n");
 					}
+				}else {
+					buffer.write(line + "\n");
 				}
-				tableRow += "</tr>\n";
-				buffer.write(tableRow);
 			}
-			
-			//The end.
-			buffer.write("</tbody></table></div></div></body></html>");
 			buffer.close();
+		}catch(IOException e) {
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		}			
 	}
 	
 	@Deprecated
