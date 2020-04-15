@@ -43,6 +43,7 @@ public class GenerateCommonIndexes {
 		indexMap.put("AYX", new String[]{"Information Technology", "Internet Software & Services", "Alteryx"});
 		indexMap.put("PTON", new String[]{"Information Technology", "Internet Software & Services", "Peleton"});
 		indexMap.put("WORK", new String[]{"Information Technology", "Internet Software & Services", "Slack"});
+		indexMap.put("INSG", new String[]{"Information Technology", "Communications Equipment", "Inseego"});
 		
 		
 
