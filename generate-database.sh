@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm -rf failed_attempts.txt
+
 echo "Compiling generateIndexes.jar..."
 ./build-index-generator.sh
 
@@ -14,6 +16,11 @@ done
 for key in $(java -jar generateIndexes.jar | awk '{print $1}' | grep "\." | perl -pe 's/\./-/g'); 
 do 
 	./get-data.sh $key; 
+done
+
+for key in $(cat failed_attempts.txt);
+do
+	./get-data.sh $key;
 done
 
 mv *.json data/
