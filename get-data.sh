@@ -10,6 +10,7 @@ fi
 if [ $ATTEMPTS -gt 10 ]
 then 
 	echo $SYMBOL": FAILURE: too many attempts"
+	echo $SYMBOL >> failed_attempts.txt
 	exit
 fi
 
