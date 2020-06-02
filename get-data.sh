@@ -7,7 +7,7 @@ then
 else
 	ATTEMPTS=$2
 fi
-if [ $ATTEMPTS -gt 5 ]
+if [ $ATTEMPTS -gt 10 ]
 then 
 	echo $SYMBOL": FAILURE: too many attempts"
 	exit
@@ -24,4 +24,4 @@ url="https://query1.finance.yahoo.com/v7/finance/download/"$SYMBOL"?period1="$ST
 curl -s --cookie $cookieJar $url > $SYMBOL.json
 
 ((ATTEMPTS++))
-if grep "cookie" $SYMBOL.json ; then echo $SYMBOL": Cookie Issues, new attempt..."; ./get-data.sh $1 $ATTEMPTS; else echo $SYMBOL": Success"; fi
+if [[ $(cat $SYMBOL.json | wc -l) -lt 20 ]] || grep "cookie" $SYMBOL.json ; then echo $SYMBOL": Cookie Issues, attempt #"$ATTEMPTS; sleep 1; ./get-data.sh $1 $ATTEMPTS; else echo $SYMBOL": Success"; fi
